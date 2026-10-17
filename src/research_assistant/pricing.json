@@ -1,0 +1,17 @@
+{
+  "_note": "estimate - verify against provider pricing page. USD per 1M tokens. Groq prices are the published PAID rates (https://console.groq.com/docs/model/openai/gpt-oss-120b and https://console.groq.com/docs/model/openai/gpt-oss-20b, read 2026-10-16), applied even on a free-tier key.",
+  "groq": {
+    "openai/gpt-oss-120b": {"input": 0.15, "output": 0.60},
+    "openai/gpt-oss-20b": {"input": 0.075, "output": 0.30}
+  },
+  "ollama": {
+    "*": {"input": 0.0, "output": 0.0}
+  },
+  "anthropic": {
+    "_note": "Placeholder model ids and deliberately conservative prices. Verify ids via GET https://api.anthropic.com/v1/models and prices via https://www.anthropic.com/pricing before use.",
+    "*": {"input": 15.0, "output": 75.0}
+  },
+  "fake": {
+    "*": {"input": 0.0, "output": 0.0}
+  }
+}

@@ -1,0 +1,36 @@
+# Local stack only (no cloud IaC). Start: docker compose -p p2-research up -d
+name: p2-research
+services:
+  redis:
+    image: redis:7.4.7-alpine@sha256:02f2cc4882f8bf87c79a220ac958f58c700bdec0dfb9b9ea61b62fb0e8f1bfcf
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    ports:
+      - "127.0.0.1:16379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    profiles: ["api"]
+    env_file:
+      - ${PORTFOLIO_ENV_FILE:-F:/.secrets/portfolio.env}
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      LLM_SPEND_LEDGER: /ledger/ledger.jsonl
+      LLM_CACHE_DIR: /app/.cache/llm
+      RESEARCH_API_KEYS: ${RESEARCH_API_KEYS:-}
+    volumes:
+      - ${LLM_SPEND_DIR:-F:/.llm-spend}:/ledger
+    ports:
+      - "127.0.0.1:8102:8102"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis-data:
