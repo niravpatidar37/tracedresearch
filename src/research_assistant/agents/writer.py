@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from research_assistant.llm.base import LLMError
 from research_assistant.report import check_citations, fallback_report, render
 from research_assistant.runtime import AgentContext, StructuredOutputError
 from research_assistant.schemas import Report, ReportDraft, RunState
@@ -64,7 +65,8 @@ def write(ctx: AgentContext, state: RunState) -> Report:
                 system=SYSTEM,
                 user=prompt,
                 schema=ReportDraft,
-                max_tokens=3000,
+                max_tokens=2000,
+                fallback_model=ctx.models.researcher,  # small model if the big one is rate limited
             )
             chk = check_citations(draft, state.findings)
             if first_check is None:
@@ -76,9 +78,10 @@ def write(ctx: AgentContext, state: RunState) -> Report:
             if exc.kind not in state.budget_tripped:
                 state.budget_tripped.append(exc.kind)
             return fallback_report(state.question, state.findings, state.plan, state.subqs, f"{exc.kind} budget")
-    except StructuredOutputError:
+    except LLMError as exc:  # includes StructuredOutputError and RateLimited
         if draft is None:
-            return fallback_report(state.question, state.findings, state.plan, state.subqs, "writer output invalid")
+            reason = "writer output invalid" if isinstance(exc, StructuredOutputError) else "writer model unavailable"
+            return fallback_report(state.question, state.findings, state.plan, state.subqs, reason)
     assert draft is not None
     notes = (
         [f"Budget limits reached during research: {', '.join(state.budget_tripped)}."] if state.budget_tripped else []

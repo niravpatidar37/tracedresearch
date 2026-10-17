@@ -11,7 +11,15 @@ from typing import TypeVar
 from pydantic import BaseModel, ValidationError
 
 from research_assistant.config import Budgets, Models
-from research_assistant.llm.base import DeadlineExceeded, LLMBadOutput, LLMClient, LLMError, LLMRequest
+from research_assistant.llm.base import (
+    DeadlineExceeded,
+    LLMBadOutput,
+    LLMClient,
+    LLMError,
+    LLMRequest,
+    LLMResponse,
+    RateLimited,
+)
 from research_assistant.llm.structured import extract_json, strict_schema
 from research_assistant.schemas import LLMCall, ToolCall
 from research_assistant.spend import BudgetExceeded, cost_usd, estimate_tokens
@@ -34,6 +42,7 @@ class AgentContext:
     clock: Callable[[], float] = time.monotonic
     sleep: Callable[[float], None] = time.sleep
     llm_calls: list[LLMCall] = field(default_factory=list)
+    failover: dict[str, str] = field(default_factory=dict)
     tool_calls: list[ToolCall] = field(default_factory=list)
 
     def remaining_s(self) -> float:
@@ -58,6 +67,44 @@ class AgentContext:
                 f"run USD budget: spent {self.usd_spent:.5f} + worst case {est_usd:.5f} > {self.budgets.max_run_usd}",
             )
 
+    def _active_model(self, model: str) -> str:
+        return self.failover.get(model, model)
+
+    def _complete(self, req: LLMRequest, role: str, fallback_model: str | None) -> LLMResponse:
+        """One call with rate-limit handling: fail over to `fallback_model`, or wait if the deadline allows."""
+        try:
+            return self.llm.complete(req, deadline=self.deadline)
+        except RateLimited as exc:
+            self.llm_calls.append(
+                LLMCall(
+                    role=role,
+                    model=req.model,
+                    provider=self.llm.provider,
+                    input_tokens=0,
+                    output_tokens=0,
+                    usd=0.0,
+                    cached=False,
+                    latency_ms=0.0,
+                    ok=False,
+                    error=f"rate_limited {exc.retry_after:.0f}s",
+                )
+            )
+            if fallback_model and fallback_model != req.model:
+                self.failover[req.model] = fallback_model  # stick to the fallback for the rest of this node
+                alt = LLMRequest(
+                    model=fallback_model,
+                    system=req.system,
+                    user=req.user,
+                    max_tokens=req.max_tokens,
+                    json_schema=req.json_schema,
+                    schema_name=req.schema_name,
+                )
+                return self.llm.complete(alt, deadline=self.deadline)
+            if self.clock() + exc.retry_after > self.deadline:
+                raise BudgetExceeded("wall_clock", f"rate limited for {exc.retry_after:.0f}s past deadline") from exc
+            self.sleep(exc.retry_after)
+            return self.llm.complete(req, deadline=self.deadline)
+
     def structured(
         self,
         *,
@@ -68,6 +115,7 @@ class AgentContext:
         schema: type[T],
         max_tokens: int,
         token_limit: int | None = None,
+        fallback_model: str | None = None,
     ) -> T:
         limit = token_limit if token_limit is not None else self.budgets.max_total_tokens
         json_schema = strict_schema(schema.model_json_schema())
@@ -81,7 +129,7 @@ class AgentContext:
                 )
             self._guard(model, system, prompt, max_tokens, limit)
             req = LLMRequest(
-                model=model,
+                model=self._active_model(model),
                 system=system,
                 user=prompt,
                 max_tokens=max_tokens,
@@ -89,7 +137,7 @@ class AgentContext:
                 schema_name=schema.__name__,
             )
             try:
-                resp = self.llm.complete(req, deadline=self.deadline)
+                resp = self._complete(req, role, fallback_model)
             except DeadlineExceeded as exc:
                 raise BudgetExceeded("wall_clock", str(exc)) from exc
             except LLMBadOutput as exc:
@@ -115,7 +163,7 @@ class AgentContext:
             self.usd_spent += resp.usd
             call = LLMCall(
                 role=role,
-                model=model,
+                model=resp.model,
                 provider=resp.provider,
                 input_tokens=resp.input_tokens,
                 output_tokens=resp.output_tokens,

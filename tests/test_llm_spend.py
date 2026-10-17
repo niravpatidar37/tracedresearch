@@ -9,7 +9,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from research_assistant.llm.base import DeadlineExceeded, LLMBadOutput, LLMRequest
+from research_assistant.llm.base import DeadlineExceeded, LLMBadOutput, LLMRequest, LLMResponse, RateLimited
 from research_assistant.llm.cache import DiskCache
 from research_assistant.llm.openai_compat import OpenAICompatClient
 from research_assistant.llm.structured import strict_schema
@@ -103,7 +103,7 @@ def test_global_cap_counts_other_projects(tmp_path: Path) -> None:
 
 def test_deadline_stops_retry_wait(tmp_path: Path) -> None:
     def h(req: httpx.Request) -> httpx.Response:
-        return httpx.Response(429, headers={"retry-after": "30"})
+        return httpx.Response(429, headers={"retry-after": "10"})
 
     c = client(h, tmp_path, cache=False)
     with pytest.raises(DeadlineExceeded):
@@ -142,3 +142,43 @@ def test_strict_schema_inlines_refs_and_requires_all() -> None:
 def test_log_redaction() -> None:
     out = redact("mail bob@example.com key gsk_ABCDEFGHIJKLMNOP1234 Bearer abcdefghijklmnop call 555-123-4567")
     assert "bob@" not in out and "gsk_" not in out and "abcdefghijklmnop" not in out and "555-123" not in out
+
+
+def test_long_retry_after_raises_rate_limited(tmp_path: Path) -> None:
+    def h(req: httpx.Request) -> httpx.Response:
+        return httpx.Response(429, headers={"retry-after": "60"})
+
+    sleeps: list[float] = []
+    with pytest.raises(RateLimited) as ei:
+        client(h, tmp_path, sleeps=sleeps, cache=False).complete(REQ)
+    assert ei.value.retry_after == 60 and sleeps == []  # did not block for a minute
+
+
+def test_big_model_rate_limit_fails_over_to_small_model() -> None:
+    import time as _t
+
+    from research_assistant.agents import planner
+    from research_assistant.config import Budgets, Models
+    from research_assistant.runtime import AgentContext
+
+    class BigIsLimited:
+        provider = "fake"
+
+        def __init__(self) -> None:
+            self.models: list[str] = []
+
+        def complete(self, req: LLMRequest, *, deadline: float | None = None) -> LLMResponse:
+            self.models.append(req.model)
+            if req.model.endswith("120b"):
+                raise RateLimited(90, "limited")
+            text = json.dumps({"sub_questions": [{"question": "What is X?", "search_queries": ["x"]}]})
+            return LLMResponse(text, req.model, "fake", 10, 10, 1.0)
+
+    llm = BigIsLimited()
+    ctx = AgentContext(
+        llm=llm, models=Models(), budgets=Budgets(), tokens_used=0, usd_spent=0.0, deadline=_t.monotonic() + 60
+    )
+    plan = planner.plan(ctx, "What is X and why does it matter?")
+    assert plan.sub_questions[0].question == "What is X?"
+    assert llm.models == ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
+    assert ctx.llm_calls[0].error.startswith("rate_limited") and ctx.llm_calls[1].model == "openai/gpt-oss-20b"

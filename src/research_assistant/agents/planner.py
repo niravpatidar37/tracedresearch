@@ -26,6 +26,7 @@ def plan(ctx: AgentContext, question: str) -> Plan:
         schema=PlanOutput,
         max_tokens=1200,
         token_limit=ctx.budgets.max_total_tokens - ctx.budgets.writer_token_reserve,
+        fallback_model=ctx.models.researcher,  # small model if the big one is rate limited
     )
     return build_plan(question, out, ctx.budgets.max_sub_questions)
 

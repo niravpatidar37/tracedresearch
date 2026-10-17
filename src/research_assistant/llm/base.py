@@ -14,6 +14,14 @@ class LLMBadOutput(LLMError):
     """Provider rejected / could not produce output matching the schema (retryable once by caller)."""
 
 
+class RateLimited(LLMError):
+    """Provider asked us to wait longer than we are willing to block (caller may switch model)."""
+
+    def __init__(self, retry_after: float, message: str) -> None:
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
 class DeadlineExceeded(RuntimeError):
     """A retry wait would cross the run's wall-clock deadline."""
 

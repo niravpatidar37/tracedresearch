@@ -11,7 +11,14 @@ from typing import Any
 
 import httpx
 
-from research_assistant.llm.base import DeadlineExceeded, LLMBadOutput, LLMError, LLMRequest, LLMResponse
+from research_assistant.llm.base import (
+    DeadlineExceeded,
+    LLMBadOutput,
+    LLMError,
+    LLMRequest,
+    LLMResponse,
+    RateLimited,
+)
 from research_assistant.llm.cache import DiskCache
 from research_assistant.spend import SpendLedger, cost_usd, estimate_tokens
 
@@ -44,6 +51,7 @@ class OpenAICompatClient:
         sleep: Callable[[float], None] = time.sleep,
         clock: Callable[[], float] = time.monotonic,
         request_timeout_s: float = 90.0,
+        long_wait_s: float | None = 20.0,
     ) -> None:
         self.provider = provider
         self.base_url = base_url.rstrip("/")
@@ -56,6 +64,8 @@ class OpenAICompatClient:
         self.sleep = sleep
         self.clock = clock
         self._json_object_only: set[str] = set()
+        # A 429 asking for a longer wait than this raises RateLimited so the caller can fail over to another model.
+        self.long_wait_s = long_wait_s
 
     # -- helpers -----------------------------------------------------------------
     def _body(self, req: LLMRequest) -> dict[str, Any]:
@@ -126,9 +136,12 @@ class OpenAICompatClient:
             latency_ms = (time.perf_counter() - t0) * 1000
             if r.status_code in RETRYABLE_STATUS:
                 last_err = f"HTTP {r.status_code}"
+                ra = _parse_retry_after(r.headers.get("retry-after"))
+                if r.status_code == 429 and ra is not None and self.long_wait_s is not None and ra > self.long_wait_s:
+                    raise RateLimited(ra, f"{self.provider} {req.model} rate limited; retry-after {ra:.0f}s")
                 if attempt >= self.max_retries:
                     break
-                self._wait(attempt, _parse_retry_after(r.headers.get("retry-after")), deadline)
+                self._wait(attempt, ra, deadline)
                 continue
             if r.status_code == 400:
                 err = _error_payload(r)
