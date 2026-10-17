@@ -283,7 +283,7 @@ def rebuild_v1() -> None:
 
 
 def crash() -> None:
-    out = RESULTS / "crash_resume"
+    out = RESULTS / (sys.argv[2] if len(sys.argv) > 2 else "crash_resume")
     out.mkdir(parents=True, exist_ok=True)
     for f in ("server1.log", "server2.log"):
         (out / f).write_bytes(b"")
@@ -310,6 +310,17 @@ def crash() -> None:
     p1.kill()  # TerminateProcess: no graceful shutdown, like SIGKILL / a crashed pod
     p1.wait()
     note(f"server #1 KILLED (hard) pid={p1.pid} after {len(killed_after)} committed steps: {killed_after}")
+    import socket
+
+    for _ in range(20):
+        with socket.socket() as sock:
+            port_free = sock.connect_ex(("127.0.0.1", 8102)) != 0
+        if port_free:
+            break
+        time.sleep(0.5)
+    note(f"port 8102 free after kill (nothing left listening, incl. the venv launcher's child): {port_free}")
+    if not port_free:
+        raise SystemExit("server #1 still listening after kill; aborting")
     time.sleep(2)
     p2 = start_server(out / "server2.log")
     note(f"server #2 started pid={p2.pid}; waiting for orphaned-run resume (lease TTL 10s)")
@@ -332,6 +343,8 @@ def crash() -> None:
     pids = sorted({s["pid"] for s in steps})
     by_pid = {pid: [s["node_key"] for s in steps if s["pid"] == pid] for pid in pids}
     resumed = [e for e in events if e.get("type") == "resumed"]
+    note(f"worker pids recorded in trace (real interpreter pids behind the venv launcher): {by_pid and list(by_pid)}")
+    note(f"resumed event: {resumed[0] if resumed else None}")
     summary = {
         "run_id": rid,
         "final_status": run["status"],
@@ -355,5 +368,16 @@ def crash() -> None:
     print(json.dumps(summary, indent=2))
 
 
+def pool() -> None:
+    """Pool the v2 and v3 benchmark runs (16 real runs) into results/benchmark_pooled/summary.json."""
+    out = RESULTS / "benchmark_pooled"
+    out.mkdir(exist_ok=True)
+    lines = []
+    for d in ("benchmark_v2_failover", "benchmark_v3_json_retry"):
+        lines += [ln for ln in (RESULTS / d / "runs.jsonl").read_text(encoding="utf-8").splitlines() if ln.strip()]
+    (out / "runs.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(json.dumps(summarize(out), indent=2))
+
+
 if __name__ == "__main__":
-    {"bench": bench, "crash": crash, "rebuild_v1": rebuild_v1}[sys.argv[1]]()
+    {"bench": bench, "crash": crash, "rebuild_v1": rebuild_v1, "pool": pool}[sys.argv[1]]()
