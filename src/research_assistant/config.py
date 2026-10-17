@@ -93,7 +93,9 @@ class Settings:
     @classmethod
     def from_env(cls) -> Settings:
         load_env()
-        keys = tuple(k.strip() for k in os.environ.get("RESEARCH_API_KEYS", "").split(",") if k.strip())
+        # Keys shorter than 16 chars (or placeholders like "<unset>") are ignored: the API then fails closed.
+        raw = os.environ.get("RESEARCH_API_KEYS", "").split(",")
+        keys = tuple(k.strip() for k in raw if len(k.strip()) >= 16 and not k.strip().startswith("<"))
         provider = os.environ.get("LLM_PROVIDER", "groq")
         return cls(
             redis_url=os.environ.get("REDIS_URL", cls.redis_url),

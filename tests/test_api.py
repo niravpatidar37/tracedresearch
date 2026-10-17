@@ -96,3 +96,9 @@ def test_input_validation(client: TestClient) -> None:
 
 def test_healthz(client: TestClient) -> None:
     assert client.get("/healthz").json() == {"status": "ok"}
+
+
+def test_short_or_placeholder_keys_are_ignored(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PORTFOLIO_ENV_FILE", "does-not-exist.env")
+    monkeypatch.setenv("RESEARCH_API_KEYS", "<unset>,short,  , a-long-enough-key-123")
+    assert Settings.from_env().api_keys == ("a-long-enough-key-123",)
