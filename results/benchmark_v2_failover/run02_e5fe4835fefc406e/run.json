@@ -1,0 +1,123 @@
+{
+  "run_id": "e5fe4835fefc406e",
+  "status": "completed",
+  "question": "How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?",
+  "error": "",
+  "progress": {
+    "step": 13,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 4,
+    "tokens_used": 10076,
+    "usd_spent": 0.000776,
+    "searches_used": 4,
+    "elapsed_s": 54.23,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Partial findings",
+    "markdown": "# Partial findings\n\n**Question:** How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?\n\n## Summary\n\nWriter not run \\(writer output invalid\\); listing extracted findings per sub-question. [^1]\n\n## What criteria does the EU AI Act use to classify an AI system as high\u2011risk?\n\nAn AI system is classified as high\u2011risk if it is intended as a safety component of a product or is itself a product covered by Annex I and requires a third\u2011party conformity assessment, or if it is listed in Annex III. [^1]\n\n## Which specific AI applications or sectors are listed as high\u2011risk under the EU AI Act?\n\nThe EU AI Act lists eight high\u2011risk sectors in Annex III: biometrics, critical infrastructure, education, employment, essential services \\(including credit scoring and insurance\\), law enforcement, migration, and justice. [^2]\n\n## When do the compliance obligations for high\u2011risk AI systems under the EU AI Act become legally binding?\n\nThe EU AI Act\u2019s general application date, making all compliance obligations legally binding, is 2 August 2026. [^3]\n\nHigh\u2011risk AI systems already on the market before 2 August 2026 are exempt from the new obligations unless they undergo a significant redesign after that date. [^4]\n\n## Limitations\n\n- Report generated without the writer model because of: writer output invalid.\n\n## Sources\n\n[^1]: [AI Act Service Desk - Article 6: Classification rules for high-risk AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6) (ai-act-service-desk.ec.europa.eu, retrieved 2026-10-17). Findings F1: \u201cAn AI system is considered high-risk under the AI Act if it meets one of these criteria: \\(i\\) is intended to be used as a safety component of a product, or is itself a product, covered by the EU legislation listed in Annex I, and that produc\u201d\n[^2]: [High-Risk AI Systems Under the EU AI Act: The Complete List](https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list) (matproof.com, retrieved 2026-10-17). Findings F2: \u201cThe EU AI Act defines high-risk AI systems across 8 categories in Annex III -- covering biometrics, critical infrastructure, education, employment, essential services \\(including credit scoring and insurance\\), law enforcement, migration, and\u201d\n[^3]: [EU AI Act Timeline: Every Application Date \\(Post-Omnibus, 2026\\)](https://euaiactchecklist.com/eu-ai-act-august-2026-deadline.html) (euaiactchecklist.com, retrieved 2026-10-17). Findings F3: \u201c2 August 2026: Article 50 transparency, Article 49 registration, national market surveillance authority powers, and the general application date.\u201d\n[^4]: [EU AI Act Timeline: When Each Obligation Applies](https://aiactindex.eu/eu-ai-act/timeline) (aiactindex.eu, retrieved 2026-10-17). Findings F4: \u201crisk systems already on the market before 2 August 2026 are not subject to the new obligations unless they undergo a \"significant change\" to their design after that date.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+        "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list",
+        "title": "High-Risk AI Systems Under the EU AI Act: The Complete List",
+        "finding_ids": [
+          "F2"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://euaiactchecklist.com/eu-ai-act-august-2026-deadline.html",
+        "title": "EU AI Act Timeline: Every Application Date (Post-Omnibus, 2026)",
+        "finding_ids": [
+          "F3"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://aiactindex.eu/eu-ai-act/timeline",
+        "title": "EU AI Act Timeline: When Each Obligation Applies",
+        "finding_ids": [
+          "F4"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 5,
+      "valid": 5,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": null,
+    "fallback": true
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "An AI system is classified as high\u2011risk if it is intended as a safety component of a product or is itself a product covered by Annex I and requires a third\u2011party conformity assessment, or if it is listed in Annex III.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+      "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+      "snippet": "An AI system is considered high-risk under the AI Act if it meets one of these criteria: (i) is intended to be used as a safety component of a product, or is itself a product, covered by the EU legislation listed in Annex I, and that product is required to undergo a third-party conformity assessment; (ii) it is listed in Annex III.",
+      "retrieved_at": "2026-10-17T01:44:05.452749Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq2",
+      "claim": "The EU AI Act lists eight high\u2011risk sectors in Annex III: biometrics, critical infrastructure, education, employment, essential services (including credit scoring and insurance), law enforcement, migration, and justice.",
+      "url": "https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list",
+      "title": "High-Risk AI Systems Under the EU AI Act: The Complete List",
+      "snippet": "The EU AI Act defines high-risk AI systems across 8 categories in Annex III -- covering biometrics, critical infrastructure, education, employment, essential services (including credit scoring and insurance), law enforcement, migration, and justice -- plus AI safety components in products listed in Annex I.",
+      "retrieved_at": "2026-10-17T01:44:21.722510Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq3",
+      "claim": "The EU AI Act\u2019s general application date, making all compliance obligations legally binding, is 2 August 2026.",
+      "url": "https://euaiactchecklist.com/eu-ai-act-august-2026-deadline.html",
+      "title": "EU AI Act Timeline: Every Application Date (Post-Omnibus, 2026)",
+      "snippet": "2 August 2026: Article 50 transparency, Article 49 registration, national market surveillance authority powers, and the general application date.",
+      "retrieved_at": "2026-10-17T01:44:36.477342Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq3",
+      "claim": "High\u2011risk AI systems already on the market before 2 August 2026 are exempt from the new obligations unless they undergo a significant redesign after that date.",
+      "url": "https://aiactindex.eu/eu-ai-act/timeline",
+      "title": "EU AI Act Timeline: When Each Obligation Applies",
+      "snippet": "risk systems already on the market before 2 August 2026 are not subject to the new obligations unless they undergo a \"significant change\" to their design after that date.",
+      "retrieved_at": "2026-10-17T01:44:36.483336Z"
+    }
+  ]
+}

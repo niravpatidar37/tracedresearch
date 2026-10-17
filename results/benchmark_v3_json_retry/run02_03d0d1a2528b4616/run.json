@@ -1,0 +1,132 @@
+{
+  "run_id": "03d0d1a2528b4616",
+  "status": "completed",
+  "question": "How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?",
+  "error": "",
+  "progress": {
+    "step": 13,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 5,
+    "tokens_used": 9821,
+    "usd_spent": 0.001161,
+    "searches_used": 3,
+    "elapsed_s": 93.78,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?\n\n## Summary\n\nThe EU AI Act classifies high\u2011risk AI systems as those used in sensitive domains such as biometrics, critical infrastructure, education, employment and worker management, access to essential services, law enforcement, migration, and the administration of justice, or that act as a safety component of a regulated product. The obligations for these systems become enforceable on 2 August 2026. [^1][^2]\n\n## High\u2011risk AI system categories\n\nHigh\u2011risk AI systems are defined as those employed in sensitive domains including biometrics, critical infrastructure, education, employment and worker management, access to essential services, law enforcement, migration, and the administration of justice, or that function as a safety component of a regulated product. [^1]\n\n## Obligations for providers\n\nProviders must establish a quality management system, maintain documentation and logs, and conduct a conformity assessment before market release. [^3]\n\nThey must issue an EU declaration of conformity, affix the CE marking, and comply with registration and accessibility requirements. [^3]\n\nThey are responsible for taking corrective actions and demonstrating compliance to authorities upon request. [^3]\n\n## Limitations\n\n- Evidence does not detail the specific content of the quality management system or the exact procedures for corrective actions.\n\n## Sources\n\n[^1]: [EU AI Act Risk Categories: Prohibited, High-Risk &amp; Limited](https://governancedocs.com/eu-ai-act-risk-categories/) (governancedocs.com, retrieved 2026-10-17). Findings F1: \u201crisk when used in sensitive domains - biometrics, critical infrastructure, education, employment and worker management, access to essential services, law enforcement, migration, and the administration of justice - or when they act as a safe\u201d\n[^2]: [EU AI Act Effective Dates: Compliance Phases 2024-2027](https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html) (legiscope.com, retrieved 2026-10-17). Findings F5: \u201cThe next date that binds everyone is 2 August 2026: general application of the Act and the Article 50 transparency duties, which catch any organisation running a chatbot or publishing synthetic content.\u201d\n[^3]: [AI Act Service Desk - Article 16: Obligations of providers of high-risk AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-16) (ai-act-service-desk.ec.europa.eu, retrieved 2026-10-17). Findings F2, F3, F4: \u201cProviders of high-risk AI systems must ensure their systems comply with the AI Act's requirements and have a quality management system in place. They must maintain documentation, keep logs, and undergo conformity assessments before market r\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://governancedocs.com/eu-ai-act-risk-categories/",
+        "title": "EU AI Act Risk Categories: Prohibited, High-Risk & Limited",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html",
+        "title": "EU AI Act Effective Dates: Compliance Phases 2024-2027",
+        "finding_ids": [
+          "F5"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-16",
+        "title": "AI Act Service Desk - Article 16: Obligations of providers of high-risk AI systems",
+        "finding_ids": [
+          "F2",
+          "F3",
+          "F4"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "High\u2011risk AI systems are those used in sensitive domains such as biometrics, critical infrastructure, education, employment and worker management, access to essential services, law enforcement, migration, and the administration of justice, or that act as a safety component of a regulated product.",
+      "url": "https://governancedocs.com/eu-ai-act-risk-categories/",
+      "title": "EU AI Act Risk Categories: Prohibited, High-Risk & Limited",
+      "snippet": "risk when used in sensitive domains - biometrics, critical infrastructure, education, employment and worker management, access to essential services, law enforcement, migration, and the administration of justice - or when they act as a safety component of a regulated product.",
+      "retrieved_at": "2026-10-17T01:54:58.213767Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq2",
+      "claim": "Providers of high\u2011risk AI systems must maintain a quality management system, keep documentation and logs, and undergo conformity assessment before market release.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-16",
+      "title": "AI Act Service Desk - Article 16: Obligations of providers of high-risk AI systems",
+      "snippet": "Providers of high-risk AI systems must ensure their systems comply with the AI Act's requirements and have a quality management system in place. They must maintain documentation, keep logs, and undergo conformity assessments before market release.",
+      "retrieved_at": "2026-10-17T01:55:27.083320Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "They must issue an EU declaration of conformity, affix the CE marking, and comply with registration and accessibility requirements.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-16",
+      "title": "AI Act Service Desk - Article 16: Obligations of providers of high-risk AI systems",
+      "snippet": "Providers must also issue an EU declaration of conformity, affix the CE marking, and comply with registration and accessibility requirements.",
+      "retrieved_at": "2026-10-17T01:55:27.083320Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq2",
+      "claim": "They are responsible for taking corrective actions and demonstrating compliance to authorities upon request.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-16",
+      "title": "AI Act Service Desk - Article 16: Obligations of providers of high-risk AI systems",
+      "snippet": "They are responsible for taking corrective actions and demonstrating compliance to authorities upon request.",
+      "retrieved_at": "2026-10-17T01:55:27.083320Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq3",
+      "claim": "The EU AI Act\u2019s general application, including the enforcement of high\u2011risk obligations, becomes effective on 2 August 2026.",
+      "url": "https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html",
+      "title": "EU AI Act Effective Dates: Compliance Phases 2024-2027",
+      "snippet": "The next date that binds everyone is 2 August 2026: general application of the Act and the Article 50 transparency duties, which catch any organisation running a chatbot or publishing synthetic content.",
+      "retrieved_at": "2026-10-17T01:55:48.675786Z"
+    }
+  ]
+}

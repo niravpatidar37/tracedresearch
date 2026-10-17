@@ -1,0 +1,132 @@
+{
+  "run_id": "bc4c397fe7714099",
+  "status": "completed",
+  "question": "What is the current schedule and cost estimate for the ITER fusion reactor?",
+  "error": "",
+  "progress": {
+    "step": 13,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): Projected completion date of ITER construction not provided."
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 5,
+    "tokens_used": 9607,
+    "usd_spent": 0.00099,
+    "searches_used": 3,
+    "elapsed_s": 107.77,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** What is the current schedule and cost estimate for the ITER fusion reactor?\n\n## Summary\n\nThe ITER fusion reactor is progressing ahead of its baseline schedule, with key construction milestones already surpassed and a projected completion of research operations in 2034 and deuterium\u2013tritium operation in 2039. The total cost estimate has risen from the original $20 billion to about $25 billion due to recent overruns. [^1][^2][^3][^4]\n\n## Construction Schedule\n\nSite preparation began in 2010, the Tokamak Building basemat was poured in 2013, and the assembly phase started in 2020. Major components such as the first toroidal field coil were installed in 2021 and the cryostat lower cylinder in 2022. [^1]\n\nSince January 2024 the schedule performance index has remained above 1.0, indicating that construction is ahead of the baseline plan. [^2]\n\nBy the end of June 2026, 192 Level 1 schedule milestones had been achieved against 188 planned, and six of nine vacuum\u2011vessel sector modules were in the tokamak pit. [^2][^3]\n\n## Limitations\n\n- Limited data on future milestones beyond 2039.\n- No detailed breakdown of cost components beyond the total estimate.\n\n## Sources\n\n[^1]: [ITER Timeline and Milestones \u2014 The Fusion Record](https://www.fusionenergynews.com/kb/iter-timeline.html) (fusionenergynews.com, retrieved 2026-10-17). Findings F1: \u201c2010: Site preparation begins. 2013: Tokamak Building basemat poured. 2020: Assembly phase begins; first major components delivered. 2021: First toroidal field coil installed. 2022: Cryostat lower cylinder in place.\u201d\n[^2]: [Managing ITER\u2019s progress](https://www.iter.org/node/20687/managing-iters-progress) (iter.org, retrieved 2026-10-17). Findings F2, F3: \u201cSince the start of tracking against the ITER baseline in January 2024, the Construction Project's schedule and cost performance indices have remained well above 1.0.\u201d\n[^3]: [ITER \u2014 fusion project status and timeline](https://www.nuclearnewsnetwork.com/industry-trackers/fusion-energy-companies/iter) (nuclearnewsnetwork.com, retrieved 2026-10-17). Findings F4: \u201cUnder the 2024 baseline, research operations start in 2034 and deuterium-tritium operation in 2039; by July 2026 six of nine vacuum-vessel sector modules were in the tokamak pit.\u201d\n[^4]: [Nuclear Fusion Dream in Crisis: Iter Faces Billions in Extra Costs and an 8-Year Delay, Shaking Global Hopes for Clean Energy](https://www.energy-reporters.com/news/nuclear-fusion-dream-in-crisis-iter-faces-billions-in-extra-costs-and-an-8-year-delay-shaking-global-hopes-for-clean-energy/) (energy-reporters.com, retrieved 2026-10-17). Findings F5: \u201cThe project's budget was originally set at approximately $20 billion, and the additional expenses represent a significant increase.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://www.fusionenergynews.com/kb/iter-timeline.html",
+        "title": "ITER Timeline and Milestones \u2014 The Fusion Record",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.iter.org/node/20687/managing-iters-progress",
+        "title": "Managing ITER\u2019s progress",
+        "finding_ids": [
+          "F2",
+          "F3"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://www.nuclearnewsnetwork.com/industry-trackers/fusion-energy-companies/iter",
+        "title": "ITER \u2014 fusion project status and timeline",
+        "finding_ids": [
+          "F4"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://www.energy-reporters.com/news/nuclear-fusion-dream-in-crisis-iter-faces-billions-in-extra-costs-and-an-8-year-delay-shaking-global-hopes-for-clean-energy/",
+        "title": "Nuclear Fusion Dream in Crisis: Iter Faces Billions in Extra Costs and an 8-Year Delay, Shaking Global Hopes for Clean Energy",
+        "finding_ids": [
+          "F5"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 8,
+      "valid": 8,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 9,
+      "valid": 9,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "Key construction milestones include site preparation beginning in 2010, the Tokamak Building basemat poured in 2013, assembly phase starting in 2020, first toroidal field coil installed in 2021, and the cryostat lower cylinder in place in 2022.",
+      "url": "https://www.fusionenergynews.com/kb/iter-timeline.html",
+      "title": "ITER Timeline and Milestones \u2014 The Fusion Record",
+      "snippet": "2010: Site preparation begins. 2013: Tokamak Building basemat poured. 2020: Assembly phase begins; first major components delivered. 2021: First toroidal field coil installed. 2022: Cryostat lower cylinder in place.",
+      "retrieved_at": "2026-10-17T01:48:23.114963Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "Since January 2024, the construction project\u2019s schedule performance index has remained above 1.0, indicating progress ahead of the baseline plan.",
+      "url": "https://www.iter.org/node/20687/managing-iters-progress",
+      "title": "Managing ITER\u2019s progress",
+      "snippet": "Since the start of tracking against the ITER baseline in January 2024, the Construction Project's schedule and cost performance indices have remained well above 1.0.",
+      "retrieved_at": "2026-10-17T01:48:23.115974Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq1",
+      "claim": "By the end of June 2026, 192 Level 1 schedule milestones had been achieved against 188 milestones planned for the same period.",
+      "url": "https://www.iter.org/node/20687/managing-iters-progress",
+      "title": "Managing ITER\u2019s progress",
+      "snippet": "By the end of June 2026, metrics show that 192 Level 1 schedule milestones have been achieved against 188 milestones planned for the same period.",
+      "retrieved_at": "2026-10-17T01:48:23.115974Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq1",
+      "claim": "Under the 2024 baseline, research operations are scheduled to start in 2034 and deuterium\u2013tritium operation in 2039.",
+      "url": "https://www.nuclearnewsnetwork.com/industry-trackers/fusion-energy-companies/iter",
+      "title": "ITER \u2014 fusion project status and timeline",
+      "snippet": "Under the 2024 baseline, research operations start in 2034 and deuterium-tritium operation in 2039; by July 2026 six of nine vacuum-vessel sector modules were in the tokamak pit.",
+      "retrieved_at": "2026-10-17T01:48:43.482095Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq2",
+      "claim": "The ITER project\u2019s original budget was about $20 billion, and recent cost overruns are projected to add at least $5 billion, bringing the total estimated cost to roughly $25 billion.",
+      "url": "https://www.energy-reporters.com/news/nuclear-fusion-dream-in-crisis-iter-faces-billions-in-extra-costs-and-an-8-year-delay-shaking-global-hopes-for-clean-energy/",
+      "title": "Nuclear Fusion Dream in Crisis: Iter Faces Billions in Extra Costs and an 8-Year Delay, Shaking Global Hopes for Clean Energy",
+      "snippet": "The project's budget was originally set at approximately $20 billion, and the additional expenses represent a significant increase.",
+      "retrieved_at": "2026-10-17T01:48:58.624078Z"
+    }
+  ]
+}

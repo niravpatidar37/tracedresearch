@@ -1,0 +1,539 @@
+{
+  "run_id": "2f564fcdbaaa465c",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:34:22.689049+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:34:22.692788+00:00",
+      "latency_ms": 46375.0,
+      "input": "question='What does clinical trial evidence show about semaglutide for weight loss in adults without diabetes?'",
+      "output": "4 sub-questions (proposed 4): What is the average percentage of body weight loss in adults without diabetes treated with semaglutide in randomized controlled trials? | What are the most common adverse events reported in semaglutide weight\u2011loss trials for non\u2011diabetic adults? | How does semaglutide\u2019s weight\u2011loss efficacy compare with placebo or other pharmacologic agents in non\u2011diabetic adult trials? | What is the duration of treatment and follow\u2011up period used in the major semaglutide weight\u2011loss trials for adults without diabetes?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 324,
+          "output_tokens": 336,
+          "usd": 0.0002502,
+          "cached": false,
+          "latency_ms": 1206.4215999562293,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 660,
+      "usd": 0.00025,
+      "pid": 29908,
+      "tokens_used_total": 660,
+      "elapsed_s_total": 46.38
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:35:09.067659+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 660,
+      "elapsed_s_total": 46.38
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:35:09.070917+00:00",
+      "latency_ms": 4406.0,
+      "input": "sq1: What is the average percentage of body weight loss in adults without diabetes treated with semaglutide in randomized controlled trials? queries=['semaglutide weight loss trial adults non diabetic percentage', 'semaglutide obesity randomized controlled trial results']",
+      "output": "status=ok findings=1 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide weight loss trial adults non diabetic percentage",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2452.693499973975,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0014299926000695",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 94.0000000409782,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubmed.ncbi.nlm.nih.gov/36216945/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 312.99999996554106,
+          "results": 76
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13433015/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 827.9999999795109,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.weightlossrankings.org/research/trials/step-1",
+          "status": "rate_limited",
+          "detail": "",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41591-024-02996-7",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1422.000000020489,
+          "results": 44993
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 946,
+          "output_tokens": 163,
+          "usd": 0.00011985,
+          "cached": false,
+          "latency_ms": 421.5254000155255,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1109,
+      "usd": 0.00012,
+      "pid": 29908,
+      "tokens_used_total": 1769,
+      "elapsed_s_total": 50.78
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:35:13.473296+00:00",
+      "latency_ms": 297.0,
+      "input": "sq1: result=ok findings=1",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 345,
+          "output_tokens": 84,
+          "usd": 5.1075e-05,
+          "cached": false,
+          "latency_ms": 285.5675999308005,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 429,
+      "usd": 5.1e-05,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 51.08
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:35:13.777989+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 51.08
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:35:13.781695+00:00",
+      "latency_ms": 5312.0,
+      "input": "sq2: What are the most common adverse events reported in semaglutide weight\u2011loss trials for non\u2011diabetic adults? queries=['semaglutide safety adverse events obesity trial', 'semaglutide side effects weight loss study adults']",
+      "output": "status=error findings=0 no usable pages (error)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide safety adverse events obesity trial",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "search",
+          "input": "semaglutide side effects weight loss study adults",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2299.956800066866,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubmed.ncbi.nlm.nih.gov/42536519/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 77.9999999795109,
+          "results": 76
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11144277/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 94.0000000409782,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41366-026-02189-x.pdf",
+          "status": "blocked",
+          "detail": "too_many_redirects",
+          "latency_ms": 1202.999999979511,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nejm.org/doi/full/10.1056/NEJMoa2032183",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 46.999999904073775,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.thelancet.com/journals/landia/article/PIIS2213-8587(25)00226-8/abstract",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 875.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 56.39
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:35:19.104194+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=error findings=0",
+      "output": "answered=False by_llm=False missing='research status: error' follow_up='What are the most common adverse events reported in semaglutide weight\u2011loss trials for non\u2011diabetic adults?'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 56.39
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:35:19.112320+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 56.39
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T01:35:19.117474+00:00",
+      "latency_ms": 4313.0,
+      "input": "sq3: How does semaglutide\u2019s weight\u2011loss efficacy compare with placebo or other pharmacologic agents in non\u2011diabetic adult trials? queries=['semaglutide versus placebo weight loss trial', 'semaglutide vs liraglutide obesity trial results']",
+      "output": "status=no_results findings=0 no usable pages (no_results)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide versus placebo weight loss trial",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "search",
+          "input": "semaglutide vs liraglutide obesity trial results",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 60.7
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T01:35:23.425752+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='How does semaglutide\u2019s weight\u2011loss efficacy compare with placebo or other pharmacologic agents in non\u2011diabetic adult tri'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 60.7
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:35:23.428353+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:unanswered, sq3:reviewed, sq4:pending",
+      "output": "next=researcher subq=sq4",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 2198,
+      "elapsed_s_total": 60.7
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq4:0",
+      "started_at": "2026-10-17T01:35:23.431497+00:00",
+      "latency_ms": 7969.0,
+      "input": "sq4: What is the duration of treatment and follow\u2011up period used in the major semaglutide weight\u2011loss trials for adults without diabetes? queries=['semaglutide STEP trial duration adults', 'semaglutide obesity trial length follow up']",
+      "output": "status=ok findings=3 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide STEP trial duration adults",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2440.3730999911204,
+          "results": 7
+        },
+        {
+          "tool": "search",
+          "input": "semaglutide obesity trial length follow up",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2287.0130999945104,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.thelancet.com/journals/landia/article/PIIS2213-8587(25)00226-8/fulltext",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 46.999999904073775,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://glp1nutrition.org/research/step-trials-overview-2026/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 218.99999992456287,
+          "results": 5996
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.novonordiskmedical.com/content/dam/medical/scientific-exchange/ta/obesity/pharmacotherapies/resource-documents/intro-to-step-program-phase-3-chronic-weight-mgmt-studies.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 327.9999999795109,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://jamanetwork.com/journals/jama/fullarticle/2777886",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 108.99999993853271,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.ajconline.org/article/S0002-9149(24)00319-9/fulltext",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 2500.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1021,
+          "output_tokens": 265,
+          "usd": 0.00015607499999999999,
+          "cached": false,
+          "latency_ms": 687.6260000281036,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1286,
+      "usd": 0.000156,
+      "pid": 29908,
+      "tokens_used_total": 3484,
+      "elapsed_s_total": 68.67
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq4:0",
+      "started_at": "2026-10-17T01:35:31.412532+00:00",
+      "latency_ms": 422.0,
+      "input": "sq4: result=ok findings=3",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 381,
+          "output_tokens": 96,
+          "usd": 5.7375e-05,
+          "cached": false,
+          "latency_ms": 405.7407999644056,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 477,
+      "usd": 5.7e-05,
+      "pid": 29908,
+      "tokens_used_total": 3961,
+      "elapsed_s_total": 69.09
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T01:35:31.833225+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:unanswered, sq3:unanswered, sq4:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 3961,
+      "elapsed_s_total": 69.09
+    },
+    {
+      "step": 16,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:35:31.837559+00:00",
+      "latency_ms": 180422.0,
+      "input": "findings=4 subqs=4",
+      "output": "fallback=True attempts=0 citations_final=5/5",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 3961,
+      "elapsed_s_total": 249.52
+    }
+  ]
+}

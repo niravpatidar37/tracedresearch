@@ -1,0 +1,55 @@
+{
+  "run_id": "da88ceb02f5b4fae",
+  "status": "completed",
+  "question": "What are the main differences between the Raft and Paxos consensus algorithms in practice?",
+  "error": "",
+  "progress": {
+    "step": 14,
+    "sub_questions": {
+      "sq1": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: budget_exhausted"
+      },
+      "sq2": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: budget_exhausted"
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: budget_exhausted"
+      }
+    },
+    "findings": 0,
+    "tokens_used": 560,
+    "usd_spent": 0.000191,
+    "searches_used": 6,
+    "elapsed_s": 48.59,
+    "budget_tripped": [
+      "wall_clock"
+    ]
+  },
+  "report": {
+    "title": "Partial findings",
+    "markdown": "# Partial findings\n\n**Question:** What are the main differences between the Raft and Paxos consensus algorithms in practice?\n\n## Summary\n\n_Summary omitted: it had no valid citation._\n\n## Limitations\n\n- Report generated without the writer model because of: no findings were collected.\n- Unanswered: What are the typical performance metrics \\(throughput and latency\\) of Raft versus Paxos in real-world deployments? (search budget reached: research status: budget\\_exhausted)\n- Unanswered: How do Raft and Paxos differ in terms of implementation complexity and required components \\(leader election, log replication, safety guarantees\\) as described in open-source projects? (search budget reached: research status: budget\\_exhausted)\n- Unanswered: What practical deployment scenarios \\(e.g., distributed databases, key-value stores\\) use Raft versus Paxos and why? (search budget reached: research status: budget\\_exhausted)\n- 1 paragraph(s) removed because they had no valid citation.\n\n## Sources\n",
+    "citations": [],
+    "citation_check": {
+      "total": 0,
+      "valid": 0,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": null,
+    "fallback": true
+  },
+  "findings": []
+}

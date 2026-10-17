@@ -1,0 +1,18 @@
+{
+  "run_id": "4ec75c9502704a9f",
+  "status": "failed",
+  "question": "How have James Webb Space Telescope observations changed our understanding of the earliest galaxies?",
+  "error": "planner failed: groq openai/gpt-oss-20b rate limited; retry-after 24s",
+  "progress": {
+    "step": 3,
+    "sub_questions": {},
+    "findings": 0,
+    "tokens_used": 0,
+    "usd_spent": 0.0,
+    "searches_used": 0,
+    "elapsed_s": 0.17,
+    "budget_tripped": []
+  },
+  "report": null,
+  "findings": []
+}

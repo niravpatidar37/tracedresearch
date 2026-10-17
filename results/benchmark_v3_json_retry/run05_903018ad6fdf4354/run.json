@@ -1,0 +1,157 @@
+{
+  "run_id": "903018ad6fdf4354",
+  "status": "completed",
+  "question": "How do sodium-ion batteries compare with lithium-ion batteries on cost, energy density and commercial deployment?",
+  "error": "",
+  "progress": {
+    "step": 19,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      }
+    },
+    "findings": 6,
+    "tokens_used": 13665,
+    "usd_spent": 0.001367,
+    "searches_used": 5,
+    "elapsed_s": 127.5,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Partial findings",
+    "markdown": "# Partial findings\n\n**Question:** How do sodium-ion batteries compare with lithium-ion batteries on cost, energy density and commercial deployment?\n\n## Summary\n\nWriter not run \\(writer output invalid\\); listing extracted findings per sub-question. [^1]\n\n## What is the current cost per kWh of sodium\u2011ion batteries compared to lithium\u2011ion batteries?\n\nIn 2024 sodium\u2011ion batteries are projected to cost about $85 per kWh, slightly lower than lithium\u2011ion batteries at $89 per kWh. [^1]\n\nThe average cost for sodium\u2011ion cells in 2024 is $87 per kWh, marginally cheaper than lithium\u2011ion cells at $89 per kWh. [^2]\n\nCATL\u2019s sodium\u2011ion cells are priced at $50\u201360 per kWh at the cell level in Q4 2024, compared to $80\u2013100 per kWh for its own LFP cells. [^3]\n\n## What are the gravimetric energy densities \\(Wh/kg\\) of sodium\u2011ion versus lithium\u2011ion batteries?\n\nKPIT Technologies\u2019 sodium\u2011ion batteries have energy densities ranging from 100 Wh/kg to 170 Wh/kg. [^4]\n\nSodium\u2011ion cells have a gravimetric energy density of roughly 120\u2013160 Wh/kg at the cell level. [^5]\n\nLithium\u2011ion batteries typically achieve gravimetric energy densities between 150 and 250 Wh/kg. [^6]\n\n## Limitations\n\n- Report generated without the writer model because of: writer output invalid.\n- Unanswered: What is the current commercial deployment volume \\(in MW or number of units\\) of sodium\u2011ion batteries versus lithium\u2011ion batteries? (send-back limit reached: research status: no\\_results)\n\n## Sources\n\n[^1]: [Sodium Ion Battery Cost: Future Affordability and Technology Insights](https://poweringautos.com/how-much-will-a-sodium-ion-battery-cost/) (poweringautos.com, retrieved 2026-10-17). Findings F1: \u201cIn 2024, sodium-ion batteries will cost around $85 per kilowatt-hour \\(kWh\\). This price is lower than lithium-ion batteries, which will be about $89/kWh.\u201d\n[^2]: [Exclusive: Sodium batteries to disrupt energy storage market](https://www.power-technology.com/features/exclusive-sodium-batteries-to-disrupt-energy-storage-market/) (power-technology.com, retrieved 2026-10-17). Findings F2: \u201cThe average cost for sodium-ion cells in 2024 is $87 per kilowatt-hour \\(kWh\\), marginally cheaper than lithium-ion cells at $89/kWh.\u201d\n[^3]: [CATL Sodium-Ion Batteries: Cost-Breakdown for B2B Buyers \\(What the Price per kWh Actually Means\\)](http://www.catlsupply.com/blog/catl-sodiumion-batteries-costbreakdown-for-b2b-buyers-what-the-price-per-kwh-96.html) (catlsupply.com, retrieved 2026-10-17). Findings F3: \u201cCATL's sodium-ion cells land around $50-60/kWh at the cell level \\(as of Q4 2024\\), compared to $80-100/kWh for its own LFP cells.\u201d\n[^4]: [Sodium-ion battery - Wikipedia](https://en.wikipedia.org/wiki/Sodium-ion_battery) (en.wikipedia.org, retrieved 2026-10-17). Findings F4: \u201cwith varied energy densities between 100 and 170 Wh/Kg.\u201d\n[^5]: [Lithium Ion Battery Pack Energy Density \\(Wh/kg\\): 2026 EV Chemistry Guide](https://autoedgeview.com/battery-guides/lithium-ion-battery-energy-density-whkg-guide) (autoedgeview.com, retrieved 2026-10-17). Findings F5: \u201cSodium-ion batteries: CATL and BYD are producing sodium-ion cells for low-cost, short-range EVs in China. Energy density is low \\(\\~120-160 Wh/kg cell-level\\), but cost is significantly below LFP.\u201d\n[^6]: [Lithium-Ion Battery Energy Density: Wh/kg, Wh/L &amp; EVs](https://www.ufinebattery.com/blog/what-is-the-energy-density-of-a-lithium-ion-battery/) (ufinebattery.com, retrieved 2026-10-17). Findings F6: \u201cThe energy density of a lithium-ion battery typically ranges from 150-250 Wh/kg \\(gravimetric\\) and 300-700 Wh/L \\(volumetric\\).\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://poweringautos.com/how-much-will-a-sodium-ion-battery-cost/",
+        "title": "Sodium Ion Battery Cost: Future Affordability and Technology Insights",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.power-technology.com/features/exclusive-sodium-batteries-to-disrupt-energy-storage-market/",
+        "title": "Exclusive: Sodium batteries to disrupt energy storage market",
+        "finding_ids": [
+          "F2"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "http://www.catlsupply.com/blog/catl-sodiumion-batteries-costbreakdown-for-b2b-buyers-what-the-price-per-kwh-96.html",
+        "title": "CATL Sodium-Ion Batteries: Cost-Breakdown for B2B Buyers (What the Price per kWh Actually Means)",
+        "finding_ids": [
+          "F3"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://en.wikipedia.org/wiki/Sodium-ion_battery",
+        "title": "Sodium-ion battery - Wikipedia",
+        "finding_ids": [
+          "F4"
+        ]
+      },
+      {
+        "number": 5,
+        "url": "https://autoedgeview.com/battery-guides/lithium-ion-battery-energy-density-whkg-guide",
+        "title": "Lithium Ion Battery Pack Energy Density (Wh/kg): 2026 EV Chemistry Guide",
+        "finding_ids": [
+          "F5"
+        ]
+      },
+      {
+        "number": 6,
+        "url": "https://www.ufinebattery.com/blog/what-is-the-energy-density-of-a-lithium-ion-battery/",
+        "title": "Lithium-Ion Battery Energy Density: Wh/kg, Wh/L & EVs",
+        "finding_ids": [
+          "F6"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 7,
+      "valid": 7,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": null,
+    "fallback": true
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "In 2024 sodium\u2011ion batteries are projected to cost about $85 per kWh, slightly lower than lithium\u2011ion batteries at $89 per kWh.",
+      "url": "https://poweringautos.com/how-much-will-a-sodium-ion-battery-cost/",
+      "title": "Sodium Ion Battery Cost: Future Affordability and Technology Insights",
+      "snippet": "In 2024, sodium-ion batteries will cost around $85 per kilowatt-hour (kWh). This price is lower than lithium-ion batteries, which will be about $89/kWh.",
+      "retrieved_at": "2026-10-17T01:59:26.253298Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "The average cost for sodium\u2011ion cells in 2024 is $87 per kWh, marginally cheaper than lithium\u2011ion cells at $89 per kWh.",
+      "url": "https://www.power-technology.com/features/exclusive-sodium-batteries-to-disrupt-energy-storage-market/",
+      "title": "Exclusive: Sodium batteries to disrupt energy storage market",
+      "snippet": "The average cost for sodium-ion cells in 2024 is $87 per kilowatt-hour (kWh), marginally cheaper than lithium-ion cells at $89/kWh.",
+      "retrieved_at": "2026-10-17T01:59:26.254297Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq1",
+      "claim": "CATL\u2019s sodium\u2011ion cells are priced at $50\u201360 per kWh at the cell level in Q4 2024, compared to $80\u2013100 per kWh for its own LFP cells.",
+      "url": "http://www.catlsupply.com/blog/catl-sodiumion-batteries-costbreakdown-for-b2b-buyers-what-the-price-per-kwh-96.html",
+      "title": "CATL Sodium-Ion Batteries: Cost-Breakdown for B2B Buyers (What the Price per kWh Actually Means)",
+      "snippet": "CATL's sodium-ion cells land around $50-60/kWh at the cell level (as of Q4 2024), compared to $80-100/kWh for its own LFP cells.",
+      "retrieved_at": "2026-10-17T01:59:26.254297Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq2",
+      "claim": "KPIT Technologies\u2019 sodium\u2011ion batteries have energy densities ranging from 100 Wh/kg to 170 Wh/kg.",
+      "url": "https://en.wikipedia.org/wiki/Sodium-ion_battery",
+      "title": "Sodium-ion battery - Wikipedia",
+      "snippet": "with varied energy densities between 100 and 170 Wh/Kg.",
+      "retrieved_at": "2026-10-17T01:59:53.537572Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq2",
+      "claim": "Sodium\u2011ion cells have a gravimetric energy density of roughly 120\u2013160 Wh/kg at the cell level.",
+      "url": "https://autoedgeview.com/battery-guides/lithium-ion-battery-energy-density-whkg-guide",
+      "title": "Lithium Ion Battery Pack Energy Density (Wh/kg): 2026 EV Chemistry Guide",
+      "snippet": "Sodium-ion batteries: CATL and BYD are producing sodium-ion cells for low-cost, short-range EVs in China. Energy density is low (~120-160 Wh/kg cell-level), but cost is significantly below LFP.",
+      "retrieved_at": "2026-10-17T02:00:24.313573Z"
+    },
+    {
+      "id": "F6",
+      "sub_question_id": "sq2",
+      "claim": "Lithium\u2011ion batteries typically achieve gravimetric energy densities between 150 and 250 Wh/kg.",
+      "url": "https://www.ufinebattery.com/blog/what-is-the-energy-density-of-a-lithium-ion-battery/",
+      "title": "Lithium-Ion Battery Energy Density: Wh/kg, Wh/L & EVs",
+      "snippet": "The energy density of a lithium-ion battery typically ranges from 150-250 Wh/kg (gravimetric) and 300-700 Wh/L (volumetric).",
+      "retrieved_at": "2026-10-17T02:00:24.313573Z"
+    }
+  ]
+}

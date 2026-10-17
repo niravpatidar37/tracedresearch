@@ -1,0 +1,159 @@
+{
+  "run_id": "181e973054144db5",
+  "status": "completed",
+  "question": "What caused the collapse of Silicon Valley Bank in March 2023?",
+  "error": "",
+  "progress": {
+    "step": 16,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): Deposit base and interest rate risk details are missing."
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 7,
+    "tokens_used": 10604,
+    "usd_spent": 0.000812,
+    "searches_used": 5,
+    "elapsed_s": 20.67,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** What caused the collapse of Silicon Valley Bank in March 2023?\n\n## Summary\n\nThe collapse of Silicon Valley Bank in March 2023 was precipitated by a rapid liquidity crisis triggered by the sale of a large Treasury bond portfolio at a loss, followed by a bank run that drained deposits and forced the bank to raise emergency capital. [^1]\n\n## Liquidity Risk and Asset Composition\n\nPrior to its failure, Silicon Valley Bank held approximately $212 billion in total assets, with its principal subsidiary holding about $209 billion. A significant portion of its loan portfolio\u2014about $6.7 billion\u2014was concentrated in early\u2011 and growth\u2011stage companies whose repayment depended on exit events such as IPOs or sales. [^2][^3]\n\n## Regulatory Warnings\n\nThe California Department of Financial Protection and Innovation issued a supervisory letter on November 17 2022 highlighting liquidity risk factors for the bank, and a May 31 2022 letter addressed governance and risk management concerns. [^4]\n\n## Triggering Events and Bank Run\n\nOn March 8, 2023, SVB announced the sale of over $21 billion of securities, a $15 billion borrowing, and an emergency sale of treasury stock to raise $2.25 billion. The announcement, coupled with investor warnings, triggered a bank run, with customers withdrawing $42 billion by the next day. [^1]\n\nThe sale of its Treasury bond portfolio at a large loss raised depositor concerns about liquidity, directly contributing to the run and the bank\u2019s collapse. [^1]\n\n## Limitations\n\n- Limited data on the exact timing of deposit withdrawals relative to the bond sale.\n- No detailed breakdown of the bank\u2019s risk management response to the liquidity warnings.\n\n## Sources\n\n[^1]: [2023 United States banking crisis - Wikipedia](https://en.wikipedia.org/wiki/2023_United_States_banking_crisis) (en.wikipedia.org, retrieved 2026-10-17). Findings F5, F6, F7: \u201cSilicon Valley Bank \\(SVB\\) failed when a bank run was triggered after it sold its Treasury bond portfolio at a large loss, causing depositor concerns about the bank's liquidity.\u201d\n[^2]: [Evolution of Silicon Valley Bank](https://www.federalreserve.gov/publications/2023-April-SVB-Evolution-of-Silicon-Valley-Bank.htm) (federalreserve.gov, retrieved 2026-10-17). Findings F2: \u201cSilicon Valley Bank Financial Group \\(SVBFG\\) was founded in 1983 and was headquartered in Santa Clara, California. Prior to its failure, SVBFG was a financial services company, financial holding company, and bank holding company with approxi\u201d\n[^3]: [Credit funds scrutinize 'mythical, enormous' Silicon Valley Bank loan book](https://financialpost.com/fp-finance/banking/credit-funds-silicon-valley-bank-loan-book) (financialpost.com, retrieved 2026-10-17). Findings F1: \u201cSVB also has about US$6.7 billion of loans to early- and growth-stage companies that it had previously warned in securities filings would likely only be repaid on a so-called exit event, such as an initial public offering or sale of the com\u201d\n[^4]: [Review of DFPI Oversight and Regulation of Silicon Valley Bank](https://dfpi.ca.gov/news/reports/review-of-dfpi-oversight-and-regulation-of-silicon-valley-bank/) (dfpi.ca.gov, retrieved 2026-10-17). Findings F3, F4: \u201cSVBFG 2023 LFBO Horizontal Liquidity Review Entry Letter, November 17, 2022 \\(PDF\\)\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+        "title": "2023 United States banking crisis - Wikipedia",
+        "finding_ids": [
+          "F5",
+          "F6",
+          "F7"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.federalreserve.gov/publications/2023-April-SVB-Evolution-of-Silicon-Valley-Bank.htm",
+        "title": "Evolution of Silicon Valley Bank",
+        "finding_ids": [
+          "F2"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://financialpost.com/fp-finance/banking/credit-funds-silicon-valley-bank-loan-book",
+        "title": "Credit funds scrutinize 'mythical, enormous' Silicon Valley Bank loan book",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://dfpi.ca.gov/news/reports/review-of-dfpi-oversight-and-regulation-of-silicon-valley-bank/",
+        "title": "Review of DFPI Oversight and Regulation of Silicon Valley Bank",
+        "finding_ids": [
+          "F3",
+          "F4"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 10,
+      "valid": 10,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "Silicon Valley Bank had about $6.7 billion of loans to early\u2011 and growth\u2011stage companies that were likely to be repaid only on an exit event.",
+      "url": "https://financialpost.com/fp-finance/banking/credit-funds-silicon-valley-bank-loan-book",
+      "title": "Credit funds scrutinize 'mythical, enormous' Silicon Valley Bank loan book",
+      "snippet": "SVB also has about US$6.7 billion of loans to early- and growth-stage companies that it had previously warned in securities filings would likely only be repaid on a so-called exit event, such as an initial public offering or sale of the company.",
+      "retrieved_at": "2026-10-17T01:43:48.472262Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "Prior to its failure, Silicon Valley Bank Financial Group had approximately $212 billion in total assets, with its principal subsidiary Silicon Valley Bank holding about $209 billion in assets.",
+      "url": "https://www.federalreserve.gov/publications/2023-April-SVB-Evolution-of-Silicon-Valley-Bank.htm",
+      "title": "Evolution of Silicon Valley Bank",
+      "snippet": "Silicon Valley Bank Financial Group (SVBFG) was founded in 1983 and was headquartered in Santa Clara, California. Prior to its failure, SVBFG was a financial services company, financial holding company, and bank holding company with approximately $212 billion in total assets.27 SVBFG's principal subsidiary was Silicon Valley Bank (SVB), a California state-chartered bank with approximately $209 billion in assets (figure 2)",
+      "retrieved_at": "2026-10-17T01:43:48.472262Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "The California DFPI released a supervisory letter on November 17, 2022, titled \u201cSVBFG 2023 LFBO Horizontal Liquidity Review Entry Letter,\u201d which highlighted liquidity risk factors for Silicon Valley Bank.",
+      "url": "https://dfpi.ca.gov/news/reports/review-of-dfpi-oversight-and-regulation-of-silicon-valley-bank/",
+      "title": "Review of DFPI Oversight and Regulation of Silicon Valley Bank",
+      "snippet": "SVBFG 2023 LFBO Horizontal Liquidity Review Entry Letter, November 17, 2022 (PDF)",
+      "retrieved_at": "2026-10-17T01:43:56.229351Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq2",
+      "claim": "A supervisory letter dated May 31, 2022, titled \u201cSVBFG and SVB Governance and Risk Management Target Supervisory Letter,\u201d addressed governance and risk management risk factors for the bank.",
+      "url": "https://dfpi.ca.gov/news/reports/review-of-dfpi-oversight-and-regulation-of-silicon-valley-bank/",
+      "title": "Review of DFPI Oversight and Regulation of Silicon Valley Bank",
+      "snippet": "SVBFG and SVB Governance and Risk Management Target Supervisory Letter, May 31, 2022 (PDF)",
+      "retrieved_at": "2026-10-17T01:43:56.230350Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq3",
+      "claim": "SVB\u2019s bank run was triggered by the sale of its Treasury bond portfolio at a large loss, which raised depositor concerns about liquidity.",
+      "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+      "title": "2023 United States banking crisis - Wikipedia",
+      "snippet": "Silicon Valley Bank (SVB) failed when a bank run was triggered after it sold its Treasury bond portfolio at a large loss, causing depositor concerns about the bank's liquidity.",
+      "retrieved_at": "2026-10-17T01:44:00.666545Z"
+    },
+    {
+      "id": "F6",
+      "sub_question_id": "sq3",
+      "claim": "On March 8, SVB announced it had sold over US$21 billion of securities, borrowed US$15 billion, and planned an emergency sale of treasury stock to raise US$2.25 billion, sparking withdrawals.",
+      "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+      "title": "2023 United States banking crisis - Wikipedia",
+      "snippet": "To raise cash to pay withdrawals by its depositors, SVB announced on March 8 that it had sold over US$21 billion worth of securities, borrowed US$15 billion, and would hold an emergency sale of some of its treasury stock to raise US$2.25 billion.",
+      "retrieved_at": "2026-10-17T01:44:00.666545Z"
+    },
+    {
+      "id": "F7",
+      "sub_question_id": "sq3",
+      "claim": "The announcement and investor warnings caused a bank run, with customers withdrawing US$42 billion by the next day.",
+      "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+      "title": "2023 United States banking crisis - Wikipedia",
+      "snippet": "The announcement, coupled with warnings from prominent Silicon Valley investors, caused a bank run as customers withdrew funds totaling US$42 billion by the following day.",
+      "retrieved_at": "2026-10-17T01:44:00.666545Z"
+    }
+  ]
+}

@@ -1,0 +1,740 @@
+{
+  "run_id": "25f041ee06904231",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:45:21.849080+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:45:21.851230+00:00",
+      "latency_ms": 16.0,
+      "input": "question='What changed technically between Llama 2 and Llama 3?'",
+      "output": "4 sub-questions (proposed 4): What are the architectural differences (e.g., model depth, attention mechanism) between Llama 2 and Llama 3? | How does the total parameter count and token context window differ between Llama 2 and Llama 3? | What changes were made to the training dataset size and composition for Llama 3 compared to Llama 2? | What are the reported inference latency and hardware efficiency improvements of Llama 3 over Llama 2?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 319,
+          "output_tokens": 323,
+          "usd": 0.0,
+          "cached": true,
+          "latency_ms": 0.0,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 642,
+      "usd": 0.0,
+      "pid": 34668,
+      "tokens_used_total": 642,
+      "elapsed_s_total": 0.02
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:45:21.864025+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 642,
+      "elapsed_s_total": 0.02
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:45:21.865590+00:00",
+      "latency_ms": 4531.0,
+      "input": "sq1: What are the architectural differences (e.g., model depth, attention mechanism) between Llama 2 and Llama 3? queries=['Llama 3 architecture compared to Llama 2', 'Llama 3 model depth attention changes']",
+      "output": "status=ok findings=2 2 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 3 architecture compared to Llama 2",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2779.2424999643117,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://medium.com/@vineethveetil/llama-2-vs-llama-3-an-in-depth-comparison-aebb6a3f8c51",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.999999965541065,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://karam-nus.github.io/models/02_Llama",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 391.0000000614673,
+          "results": 28128
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.bluetickconsultants.com/exploring-the-evolution-llama-2-to-llama-3/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1734.9999999860302,
+          "results": 16426
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.blockchain-council.org/ai/llama-2-vs-llama-3/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 234.99999998603016,
+          "results": 8284
+        },
+        {
+          "tool": "fetch",
+          "input": "https://medium.com/@akdemir_bahadir/the-llama-model-family-architecture-evolution-from-llama-1-to-llama-4-76eb405e5f91",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 31.00000007543713,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 2007,
+          "output_tokens": 407,
+          "usd": 0.0,
+          "cached": true,
+          "latency_ms": 0.0,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2414,
+      "usd": 0.0,
+      "pid": 34668,
+      "tokens_used_total": 3056,
+      "elapsed_s_total": 4.55
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:45:26.395347+00:00",
+      "latency_ms": 16.0,
+      "input": "sq1: result=ok findings=2",
+      "output": "answered=False by_llm=True missing='Model depth and other architectural details beyond GQA and tokenizer size are not provided.' follow_up='Llama 2 vs Llama 3 model depth comparison'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 386,
+          "output_tokens": 112,
+          "usd": 0.0,
+          "cached": true,
+          "latency_ms": 0.0,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 498,
+      "usd": 0.0,
+      "pid": 34668,
+      "tokens_used_total": 3554,
+      "elapsed_s_total": 4.56
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:45:26.407001+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3554,
+      "elapsed_s_total": 4.56
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:1",
+      "started_at": "2026-10-17T01:45:26.409323+00:00",
+      "latency_ms": 2594.0,
+      "input": "sq1: What are the architectural differences (e.g., model depth, attention mechanism) between Llama 2 and Llama 3? queries=['Llama 2 vs Llama 3 model depth comparison']",
+      "output": "status=no_results findings=0 no usable pages (no_results)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 2 vs Llama 3 model depth comparison",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3554,
+      "elapsed_s_total": 7.16
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:1",
+      "started_at": "2026-10-17T01:45:29.003946+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='Llama 3 architecture compared to Llama 2'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3554,
+      "elapsed_s_total": 7.16
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:45:29.006072+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3554,
+      "elapsed_s_total": 7.16
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:45:29.008653+00:00",
+      "latency_ms": 4782.0,
+      "input": "sq2: How does the total parameter count and token context window differ between Llama 2 and Llama 3? queries=['Llama 3 parameter count vs Llama 2', 'Llama 3 context window size']",
+      "output": "status=ok findings=2 2 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 3 parameter count vs Llama 2",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2496.592800016515,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/Llama_(language_model)",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 827.9999999795109,
+          "results": 37975
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.lifewire.com/llama-2-vs-llama-3-8714445",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 515.0000000139698,
+          "results": 5181
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.apps4rent.com/blog/llama-3-vs-llama-2/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1250.0,
+          "results": 5585
+        },
+        {
+          "tool": "fetch",
+          "input": "https://artificial-intelligence-wiki.com/generative-ai/large-language-models/llama-models-comparison/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 515.0000000139698,
+          "results": 17020
+        },
+        {
+          "tool": "fetch",
+          "input": "https://huggingface.co/blog/aaditya/llama3-in-medical-domain",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 219.0000000409782,
+          "results": 3240
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 2111,
+          "output_tokens": 601,
+          "usd": 0.000338625,
+          "cached": false,
+          "latency_ms": 1027.22749998793,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2712,
+      "usd": 0.000339,
+      "pid": 34668,
+      "tokens_used_total": 6266,
+      "elapsed_s_total": 11.94
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:45:33.809393+00:00",
+      "latency_ms": 1156.0,
+      "input": "sq2: result=ok findings=2",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 400,
+          "output_tokens": 105,
+          "usd": 6.15e-05,
+          "cached": false,
+          "latency_ms": 1138.0962999537587,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 505,
+      "usd": 6.2e-05,
+      "pid": 34668,
+      "tokens_used_total": 6771,
+      "elapsed_s_total": 13.09
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:45:34.972144+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending, sq4:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 6771,
+      "elapsed_s_total": 13.09
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T01:45:34.977377+00:00",
+      "latency_ms": 4797.0,
+      "input": "sq3: What changes were made to the training dataset size and composition for Llama 3 compared to Llama 2? queries=['Llama 3 training data size Llama 2', 'Llama 3 dataset composition compared to Llama 2']",
+      "output": "status=no_results findings=0 no usable pages (no_results)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 3 training data size Llama 2",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "search",
+          "input": "Llama 3 dataset composition compared to Llama 2",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 6771,
+      "elapsed_s_total": 17.89
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T01:45:39.780716+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='What changes were made to the training dataset size and composition for Llama 3 compared to Llama 2?'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 6771,
+      "elapsed_s_total": 17.89
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T01:45:39.789116+00:00",
+      "latency_ms": 16.0,
+      "input": "sq1:answered, sq2:answered, sq3:reviewed, sq4:pending",
+      "output": "next=researcher subq=sq4",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 6771,
+      "elapsed_s_total": 17.91
+    },
+    {
+      "step": 16,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq4:0",
+      "started_at": "2026-10-17T01:45:39.796633+00:00",
+      "latency_ms": 3437.0,
+      "input": "sq4: What are the reported inference latency and hardware efficiency improvements of Llama 3 over Llama 2? queries=['Llama 3 inference speed Llama 2 benchmark', 'Llama 3 hardware efficiency compared to Llama 2']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 3 inference speed Llama 2 benchmark",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2485.404899925925,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://github.com/XiongjieDai/GPU-Benchmarks-on-LLM-Inference",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 843.9999999245629,
+          "results": 19344
+        },
+        {
+          "tool": "fetch",
+          "input": "https://singhajit.com/llm-inference-speed-comparison/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 218.99999992456287,
+          "results": 22734
+        },
+        {
+          "tool": "fetch",
+          "input": "https://docs.bswen.com/blog/2026-03-15-llamacpp-optimization-speed/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 655.9999999590218,
+          "results": 24090
+        },
+        {
+          "tool": "fetch",
+          "input": "https://github.com/LambdaLabsML/vllm-benchmark/blob/main/benchmark_v0.md",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 952.9999999795109,
+          "results": 12443
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.localmaxxing.com/",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 0.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 2316,
+          "output_tokens": 45,
+          "usd": 0.0,
+          "cached": true,
+          "latency_ms": 0.0,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2361,
+      "usd": 0.0,
+      "pid": 34668,
+      "tokens_used_total": 9132,
+      "elapsed_s_total": 21.34
+    },
+    {
+      "step": 17,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq4:0",
+      "started_at": "2026-10-17T01:45:43.243880+00:00",
+      "latency_ms": 0.0,
+      "input": "sq4: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='Llama 3 hardware efficiency compared to Llama 2'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 9132,
+      "elapsed_s_total": 21.34
+    },
+    {
+      "step": 18,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:17",
+      "started_at": "2026-10-17T01:45:43.245972+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:unanswered, sq4:reviewed",
+      "output": "next=researcher subq=sq4",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 9132,
+      "elapsed_s_total": 21.34
+    },
+    {
+      "step": 19,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq4:1",
+      "started_at": "2026-10-17T01:45:43.248581+00:00",
+      "latency_ms": 15687.0,
+      "input": "sq4: What are the reported inference latency and hardware efficiency improvements of Llama 3 over Llama 2? queries=['Llama 3 hardware efficiency compared to Llama 2']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Llama 3 hardware efficiency compared to Llama 2",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2044.5941999787465,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.hardware-corner.net/guides/computer-to-run-llama-ai-model/",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://insiderllm.com/guides/llama-3-guide-every-size/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 452.9999999795109,
+          "results": 21320
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.reddit.com/r/LocalLLaMA/comments/18tsmza/will_llama_3_be_equivalent_in_terms_of_hardware/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://apxml.com/posts/ultimate-system-requirements-llama-3-models",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 13312.000000034459,
+          "results": 64
+        },
+        {
+          "tool": "fetch",
+          "input": "https://dasroot.net/posts/2026/04/benchmarking-local-llms-speed-quality-resource-usage/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 467.99999999348074,
+          "results": 17265
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1602,
+          "output_tokens": 45,
+          "usd": 0.00013364999999999997,
+          "cached": false,
+          "latency_ms": 311.3598000491038,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1647,
+      "usd": 0.000134,
+      "pid": 34668,
+      "tokens_used_total": 10779,
+      "elapsed_s_total": 37.03
+    },
+    {
+      "step": 20,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq4:1",
+      "started_at": "2026-10-17T01:45:58.934856+00:00",
+      "latency_ms": 0.0,
+      "input": "sq4: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='Llama 3 inference speed Llama 2 benchmark'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 10779,
+      "elapsed_s_total": 37.03
+    },
+    {
+      "step": 21,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:20",
+      "started_at": "2026-10-17T01:45:58.939066+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:unanswered, sq4:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 10779,
+      "elapsed_s_total": 37.03
+    },
+    {
+      "step": 22,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:45:58.944916+00:00",
+      "latency_ms": 735.0,
+      "input": "findings=4 subqs=4",
+      "output": "fallback=False attempts=1 citations_final=5/5 first_draft=6/6",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 115s"
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 936,
+          "output_tokens": 354,
+          "usd": 0.0001764,
+          "cached": false,
+          "latency_ms": 602.4387000361457,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1290,
+      "usd": 0.000176,
+      "pid": 34668,
+      "tokens_used_total": 12069,
+      "elapsed_s_total": 37.77
+    }
+  ]
+}

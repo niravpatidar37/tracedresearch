@@ -1,0 +1,73 @@
+{
+  "run_id": "4ec75c9502704a9f",
+  "status": "failed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T02:03:11.999611+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T02:03:12.001759+00:00",
+      "latency_ms": 172.0,
+      "input": "question='How have James Webb Space Telescope observations changed our understanding of the earliest galaxies?'",
+      "output": "planner failed: groq openai/gpt-oss-20b rate limited; retry-after 24s",
+      "status": "error",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 115s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 41048,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.17
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T02:03:12.172932+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=end",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.17
+    }
+  ]
+}

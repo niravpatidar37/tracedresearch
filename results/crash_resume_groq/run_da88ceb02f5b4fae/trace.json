@@ -1,0 +1,457 @@
+{
+  "run_id": "da88ceb02f5b4fae",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T02:05:11.956872+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 35084,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T02:05:11.958988+00:00",
+      "latency_ms": 17640.0,
+      "input": "question='What are the main differences between the Raft and Paxos consensus algorithms in practice?'",
+      "output": "3 sub-questions (proposed 3): What are the typical performance metrics (throughput and latency) of Raft versus Paxos in real-world deployments? | How do Raft and Paxos differ in terms of implementation complexity and required components (leader election, log replication, safety guarantees) as described in open-source projects? | What practical deployment scenarios (e.g., distributed databases, key-value stores) use Raft versus Paxos and why?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 322,
+          "output_tokens": 238,
+          "usd": 0.00019109999999999996,
+          "cached": false,
+          "latency_ms": 869.2080000182614,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 560,
+      "usd": 0.000191,
+      "pid": 35084,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 17.64
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T02:05:29.602149+00:00",
+      "latency_ms": 16.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 35084,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 17.66
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T02:05:29.605419+00:00",
+      "latency_ms": 15703.0,
+      "input": "sq1: What are the typical performance metrics (throughput and latency) of Raft versus Paxos in real-world deployments? queries=['Raft vs Paxos throughput latency benchmarks', 'Raft Paxos performance comparison production']",
+      "output": "status=budget_exhausted findings=0 rate limited for 655s past deadline",
+      "status": "budget",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Raft vs Paxos throughput latency benchmarks",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "search",
+          "input": "Raft Paxos performance comparison production",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2358.7172999978065,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.systutorials.com/comparing-paxos-and-raft/",
+          "status": "timeout",
+          "detail": "timeout",
+          "latency_ms": 10032.00000000652,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://systeminternals.dev/paxos-vs-raft/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 391.0000000614673,
+          "results": 11092
+        },
+        {
+          "tool": "fetch",
+          "input": "https://thecodeforge.io/system-design/consensus-paxos-raft/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 547.0000000204891,
+          "results": 3381
+        },
+        {
+          "tool": "fetch",
+          "input": "https://blog.lbenicio.dev/post/2025/02/21/the-paxos-vs.-raft-debate-a-practical-implementation-and-performance-comparison/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 797.0000000204891,
+          "results": 32062
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nanotechinsight.com/post/raft-vs-paxos-practical-consensus-guide",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2062.999999965541,
+          "results": 13962
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 655s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 35084,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 33.36
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T02:05:45.316594+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=budget_exhausted findings=0",
+      "output": "answered=False by_llm=False missing='research status: budget_exhausted' follow_up='Raft vs Paxos throughput latency benchmarks'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 35084,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 33.36
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T02:05:45.318775+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2 budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 35084,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 33.36
+    },
+    {
+      "step": 7,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:6",
+      "started_at": "2026-10-17T02:05:57.191959+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2 budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 33.36
+    },
+    {
+      "step": 8,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T02:05:57.194594+00:00",
+      "latency_ms": 6578.0,
+      "input": "sq2: How do Raft and Paxos differ in terms of implementation complexity and required components (leader election, log replication, safety guarantees) as described in open-source projects? queries=['Raft implementation complexity compared to Paxos', 'Raft Paxos leader election log replication differences']",
+      "output": "status=budget_exhausted findings=0 rate limited for 669s past deadline",
+      "status": "budget",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Raft implementation complexity compared to Paxos",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1930.4546000203118,
+          "results": 8
+        },
+        {
+          "tool": "search",
+          "input": "Raft Paxos leader election log replication differences",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.geeksforgeeks.org/system-design/paxos-vs-raft-algorithm-in-distributed-systems/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 391.0000000614673,
+          "results": 6034
+        },
+        {
+          "tool": "fetch",
+          "input": "https://codelit.io/blog/distributed-systems-consensus-comparison",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 204.00000002700835,
+          "results": 10378
+        },
+        {
+          "tool": "fetch",
+          "input": "https://rahulsuryawanshi.com/distributed-systems/replication-consistency-consensus/paxos-vs-raft/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1422.000000020489,
+          "results": 22180
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 669s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 39.94
+    },
+    {
+      "step": 9,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T02:06:03.766418+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=budget_exhausted findings=0",
+      "output": "answered=False by_llm=False missing='research status: budget_exhausted' follow_up='Raft implementation complexity compared to Paxos'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 39.94
+    },
+    {
+      "step": 10,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:9",
+      "started_at": "2026-10-17T02:06:03.769005+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3 budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 39.94
+    },
+    {
+      "step": 11,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T02:06:03.771619+00:00",
+      "latency_ms": 8657.0,
+      "input": "sq3: What practical deployment scenarios (e.g., distributed databases, key-value stores) use Raft versus Paxos and why? queries=['systems using Raft vs Paxos in production', 'distributed databases Raft Paxos adoption reasons']",
+      "output": "status=budget_exhausted findings=0 rate limited for 542s past deadline",
+      "status": "budget",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "systems using Raft vs Paxos in production",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "search",
+          "input": "distributed databases Raft Paxos adoption reasons",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2988.1357999984175,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://martinuke0.github.io/posts/2026-03-04-understanding-distributed-consensus-algorithms-a-deep-dive-into-paxos-and-raft-architecture/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 344.0000000409782,
+          "results": 25796
+        },
+        {
+          "tool": "fetch",
+          "input": "https://sachinsharma.dev/blogs/distributed-consensus-raft-vs-paxos-vs-zab-2026",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1422.000000020489,
+          "results": 878
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.geeksforgeeks.org/operating-systems/consensus-algorithms-in-distributed-system/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 312.99999996554106,
+          "results": 14855
+        },
+        {
+          "tool": "fetch",
+          "input": "https://codelucky.com/distributed-consensus-raft-paxos/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1797.000000020489,
+          "results": 10246
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 542s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 48.59
+    },
+    {
+      "step": 12,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T02:06:12.431056+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=budget_exhausted findings=0",
+      "output": "answered=False by_llm=False missing='research status: budget_exhausted' follow_up='systems using Raft vs Paxos in production'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 48.59
+    },
+    {
+      "step": 13,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:12",
+      "started_at": "2026-10-17T02:06:12.434242+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:unanswered, sq3:reviewed",
+      "output": "next=writer budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 48.59
+    },
+    {
+      "step": 14,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T02:06:12.439027+00:00",
+      "latency_ms": 0.0,
+      "input": "findings=0 subqs=3",
+      "output": "fallback=True attempts=0 citations_final=0/0",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 33908,
+      "tokens_used_total": 560,
+      "elapsed_s_total": 48.59
+    }
+  ]
+}

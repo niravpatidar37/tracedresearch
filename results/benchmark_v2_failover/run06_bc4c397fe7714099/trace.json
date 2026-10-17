@@ -1,0 +1,527 @@
+{
+  "run_id": "bc4c397fe7714099",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:47:33.769789+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:47:33.771400+00:00",
+      "latency_ms": 16969.0,
+      "input": "question='What is the current schedule and cost estimate for the ITER fusion reactor?'",
+      "output": "2 sub-questions (proposed 2): What is the current construction schedule for the ITER fusion reactor, including key milestones and projected completion date? | What is the latest cost estimate for the ITER project, including total budget and any recent cost overruns?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 26s"
+        },
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 319,
+          "output_tokens": 105,
+          "usd": 5.5425e-05,
+          "cached": false,
+          "latency_ms": 340.80400003585964,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 424,
+      "usd": 5.5e-05,
+      "pid": 34668,
+      "tokens_used_total": 424,
+      "elapsed_s_total": 16.97
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:47:50.735539+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 424,
+      "elapsed_s_total": 16.97
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:47:50.737666+00:00",
+      "latency_ms": 32375.0,
+      "input": "sq1: What is the current construction schedule for the ITER fusion reactor, including key milestones and projected completion date? queries=['ITER construction schedule milestones']",
+      "output": "status=ok findings=3 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "ITER construction schedule milestones",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1530.091100023128,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.iter.org/project/road-iter",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 1266.0000000614673,
+          "results": 71
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.fusionenergynews.com/kb/iter-timeline",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1750.0,
+          "results": 1287
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.iter.org/node/20687/managing-iters-progress",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1000.0,
+          "results": 3424
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0920379625001905",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.fusionenergynews.com/kb/iter-construction-history",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2266.0000000614673,
+          "results": 1404
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1502,
+          "output_tokens": 367,
+          "usd": 0.00022275,
+          "cached": false,
+          "latency_ms": 1394.4059000350535,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1869,
+      "usd": 0.000223,
+      "pid": 34668,
+      "tokens_used_total": 2293,
+      "elapsed_s_total": 49.34
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:48:23.127706+00:00",
+      "latency_ms": 6859.0,
+      "input": "sq1: result=ok findings=3",
+      "output": "answered=False by_llm=True missing='Projected completion date of ITER construction' follow_up='ITER construction projected completion date 2026'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 437,
+          "output_tokens": 82,
+          "usd": 5.7375e-05,
+          "cached": false,
+          "latency_ms": 236.8134999414906,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 519,
+      "usd": 5.7e-05,
+      "pid": 34668,
+      "tokens_used_total": 2812,
+      "elapsed_s_total": 56.2
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:48:29.986843+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 2812,
+      "elapsed_s_total": 56.2
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:1",
+      "started_at": "2026-10-17T01:48:29.997238+00:00",
+      "latency_ms": 13484.0,
+      "input": "sq1: What is the current construction schedule for the ITER fusion reactor, including key milestones and projected completion date? queries=['ITER construction projected completion date 2026']",
+      "output": "status=ok findings=1 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "ITER construction projected completion date 2026",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2931.394600076601,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/ITER",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1062.000000034459,
+          "results": 99751
+        },
+        {
+          "tool": "fetch",
+          "input": "https://usiter.ornl.gov/wp-content/uploads/2026/02/PROJECT_UPDATE_fact_sheet2026_02_17.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 217.99999999348074,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.iter.org/sites/default/files/media/2026-07/260626-ic-38-press-release.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 545.9999999729916,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://usiter.ornl.gov/iter-project/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 312.00000003445894,
+          "results": 954
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nuclearnewsnetwork.com/industry-trackers/fusion-energy-companies/iter",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 812.9999999655411,
+          "results": 3470
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1748,
+          "output_tokens": 332,
+          "usd": 0.0002307,
+          "cached": false,
+          "latency_ms": 903.5508999368176,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2080,
+      "usd": 0.000231,
+      "pid": 34668,
+      "tokens_used_total": 4892,
+      "elapsed_s_total": 69.69
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:1",
+      "started_at": "2026-10-17T01:48:43.486954+00:00",
+      "latency_ms": 3781.0,
+      "input": "sq1: result=ok findings=1",
+      "output": "answered=False by_llm=True missing='Projected completion date of ITER construction not provided.' follow_up='ITER construction completion date 2026'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 477,
+          "output_tokens": 74,
+          "usd": 5.797499999999999e-05,
+          "cached": false,
+          "latency_ms": 279.2664000298828,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 551,
+      "usd": 5.8e-05,
+      "pid": 34668,
+      "tokens_used_total": 5443,
+      "elapsed_s_total": 73.47
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:48:47.265822+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 5443,
+      "elapsed_s_total": 73.47
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:48:47.268559+00:00",
+      "latency_ms": 11360.0,
+      "input": "sq2: What is the latest cost estimate for the ITER project, including total budget and any recent cost overruns? queries=['ITER cost estimate latest']",
+      "output": "status=ok findings=1 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "ITER cost estimate latest",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2959.090300020762,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.iter.org/sites/default/files/media/2025-11/rapport-financier-iter-2024-web.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 640.999999945052,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.energy-reporters.com/news/nuclear-fusion-dream-in-crisis-iter-faces-billions-in-extra-costs-and-an-8-year-delay-shaking-global-hopes-for-clean-energy/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1297.000000020489,
+          "results": 4818
+        },
+        {
+          "tool": "fetch",
+          "input": "https://physicsworld.com/a/iter-fusion-reactor-hit-by-massive-decade-long-delay-and-e5bn-price-hike/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1125.0,
+          "results": 6017
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.europarl.europa.eu/RegData/etudes/BRIE/2023/756469/IPOL_BRI(2023)756469_EN.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 483.9999999385327,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://commission.europa.eu/strategy-and-policy/eu-budget/performance-and-reporting/programme-performance-statements/iter-performance_en",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 234.99999998603016,
+          "results": 20
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1356,
+          "output_tokens": 147,
+          "usd": 0.00014580000000000002,
+          "cached": false,
+          "latency_ms": 402.01790002174675,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1503,
+      "usd": 0.000146,
+      "pid": 34668,
+      "tokens_used_total": 6946,
+      "elapsed_s_total": 84.83
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:48:58.629426+00:00",
+      "latency_ms": 3953.0,
+      "input": "sq2: result=ok findings=1",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 350,
+          "output_tokens": 65,
+          "usd": 4.575e-05,
+          "cached": false,
+          "latency_ms": 441.72090000938624,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 415,
+      "usd": 4.6e-05,
+      "pid": 34668,
+      "tokens_used_total": 7361,
+      "elapsed_s_total": 88.78
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:49:02.580867+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 7361,
+      "elapsed_s_total": 88.78
+    },
+    {
+      "step": 13,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:49:02.584635+00:00",
+      "latency_ms": 18984.0,
+      "input": "findings=5 subqs=2",
+      "output": "fallback=False attempts=1 citations_final=8/8 first_draft=9/9",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 258s"
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 880,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "provider schema validation failed: Generated JSON does not match the expected schema. Please adjust your prompt. See 'failed_generation' for more details. Error: jsonschema: '' does not validate with "
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1049,
+          "output_tokens": 317,
+          "usd": 0.00017377499999999998,
+          "cached": false,
+          "latency_ms": 601.0384999681264,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2246,
+      "usd": 0.000174,
+      "pid": 34668,
+      "tokens_used_total": 9607,
+      "elapsed_s_total": 107.77
+    }
+  ]
+}

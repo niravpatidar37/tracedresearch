@@ -1,0 +1,94 @@
+INFO:     Started server process [34668]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8102 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59237 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59242 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:59243 - "GET /research/181e973054144db5/events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61712 - "GET /research/181e973054144db5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61713 - "GET /research/181e973054144db5/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61714 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:61715 - "GET /research/e5fe4835fefc406e/events HTTP/1.1" 200 OK
+2026-10-16 21:44:11,941 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.2s (attempt 1)
+2026-10-16 21:44:21,779 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.3s (attempt 1)
+2026-10-16 21:44:26,249 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.4s (attempt 1)
+2026-10-16 21:44:36,542 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.4s (attempt 1)
+2026-10-16 21:44:40,290 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.0s (attempt 1)
+2026-10-16 21:44:46,058 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.4s (attempt 1)
+INFO:     127.0.0.1:61903 - "GET /research/e5fe4835fefc406e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61904 - "GET /research/e5fe4835fefc406e/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61905 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:61906 - "GET /research/f0c8295807144cce/events HTTP/1.1" 200 OK
+2026-10-16 21:45:01,176 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.2s (attempt 1)
+INFO:     127.0.0.1:62056 - "GET /research/f0c8295807144cce HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62057 - "GET /research/f0c8295807144cce/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62058 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:62059 - "GET /research/25f041ee06904231/events HTTP/1.1" 200 OK
+2026-10-16 21:45:45,365 WARNING trafilatura.core pid=34668 discarding data: https://www.reddit.com/r/LocalLLaMA/comments/18tsmza/will_llama_3_be_equivalent_in_terms_of_hardware/
+INFO:     127.0.0.1:62339 - "GET /research/25f041ee06904231 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62341 - "GET /research/25f041ee06904231/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62343 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:62344 - "GET /research/fa57571018ed4d02/events HTTP/1.1" 200 OK
+2026-10-16 21:46:07,185 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 7.0s (attempt 1)
+2026-10-16 21:46:19,501 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.2s (attempt 1)
+2026-10-16 21:46:23,709 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.1s (attempt 2)
+2026-10-16 21:46:25,381 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.2s (attempt 1)
+2026-10-16 21:46:29,890 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.3s (attempt 1)
+2026-10-16 21:46:34,813 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.4s (attempt 1)
+2026-10-16 21:46:38,235 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.3s (attempt 2)
+2026-10-16 21:46:44,011 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 8.0s (attempt 1)
+2026-10-16 21:46:52,166 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 14.2s (attempt 2)
+2026-10-16 21:47:11,183 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.3s (attempt 1)
+2026-10-16 21:47:16,594 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.0s (attempt 2)
+2026-10-16 21:47:21,661 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.1s (attempt 3)
+2026-10-16 21:47:26,168 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.2s (attempt 1)
+2026-10-16 21:47:29,375 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.3s (attempt 2)
+2026-10-16 21:47:31,730 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.2s (attempt 3)
+INFO:     127.0.0.1:51313 - "GET /research/fa57571018ed4d02 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51314 - "GET /research/fa57571018ed4d02/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51315 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:51316 - "GET /research/bc4c397fe7714099/events HTTP/1.1" 200 OK
+2026-10-16 21:47:33,827 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 16.5s (attempt 1)
+2026-10-16 21:47:54,657 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 10.5s (attempt 1)
+2026-10-16 21:48:05,230 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.1s (attempt 2)
+2026-10-16 21:48:10,435 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.5s (attempt 3)
+2026-10-16 21:48:15,050 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.1s (attempt 4)
+2026-10-16 21:48:17,240 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.2s (attempt 5)
+2026-10-16 21:48:19,547 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.2s (attempt 6)
+2026-10-16 21:48:23,206 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.3s (attempt 1)
+2026-10-16 21:48:25,590 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.1s (attempt 2)
+2026-10-16 21:48:27,727 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.0s (attempt 3)
+2026-10-16 21:48:34,325 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.4s (attempt 1)
+2026-10-16 21:48:36,829 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.4s (attempt 2)
+2026-10-16 21:48:39,281 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.3s (attempt 3)
+2026-10-16 21:48:43,547 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.4s (attempt 1)
+2026-10-16 21:48:51,632 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.1s (attempt 1)
+2026-10-16 21:48:56,818 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.4s (attempt 2)
+2026-10-16 21:48:58,691 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.4s (attempt 1)
+2026-10-16 21:49:02,726 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.0s (attempt 1)
+2026-10-16 21:49:12,410 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 6.1s (attempt 1)
+2026-10-16 21:49:18,565 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.4s (attempt 2)
+INFO:     127.0.0.1:65188 - "GET /research/bc4c397fe7714099 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65191 - "GET /research/bc4c397fe7714099/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65193 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:65194 - "GET /research/360bf4046fe14171/events HTTP/1.1" 200 OK
+2026-10-16 21:49:33,285 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.2s (attempt 1)
+2026-10-16 21:49:37,511 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.2s (attempt 2)
+2026-10-16 21:49:51,775 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.1s (attempt 1)
+INFO:     127.0.0.1:65381 - "GET /research/360bf4046fe14171 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65382 - "GET /research/360bf4046fe14171/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65384 - "POST /research HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:65385 - "GET /research/68efd57457b54b7d/events HTTP/1.1" 200 OK
+2026-10-16 21:49:55,666 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 1.4s (attempt 1)
+2026-10-16 21:50:04,104 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 6.1s (attempt 1)
+2026-10-16 21:50:10,387 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.3s (attempt 2)
+2026-10-16 21:50:16,459 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 6.5s (attempt 1)
+2026-10-16 21:50:29,108 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 5.3s (attempt 1)
+2026-10-16 21:50:35,254 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 3.1s (attempt 1)
+2026-10-16 21:50:41,288 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.1s (attempt 1)
+2026-10-16 21:50:53,482 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 12.2s (attempt 1)
+2026-10-16 21:51:06,395 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 2.3s (attempt 1)
+2026-10-16 21:51:09,202 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 4.3s (attempt 1)
+2026-10-16 21:51:14,410 INFO research_assistant.llm.openai_compat pid=34668 llm retry in 9.4s (attempt 1)
+INFO:     127.0.0.1:64232 - "GET /research/68efd57457b54b7d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64233 - "GET /research/68efd57457b54b7d/trace HTTP/1.1" 200 OK

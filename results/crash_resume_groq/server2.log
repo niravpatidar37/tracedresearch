@@ -1,0 +1,31 @@
+INFO:     Started server process [33908]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8102 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49585 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49591 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49593 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49595 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49601 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49606 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62567 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+2026-10-16 22:05:57,183 INFO research_assistant.api pid=33908 resuming orphaned run da88ceb02f5b4fae
+2026-10-16 22:05:57,187 INFO research_assistant.graph pid=33908 run da88ceb02f5b4fae resumed at step 6 (pid 33908); completed nodes: ['supervisor:0', 'planner', 'supervisor:2', 'research:sq1:0', 'review:sq1:0', 'supervisor:5']
+INFO:     127.0.0.1:62597 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62603 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62614 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62616 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62621 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62636 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62654 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62658 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62667 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62670 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62674 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59832 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59835 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59844 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63215 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63224 - "GET /research/da88ceb02f5b4fae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63225 - "GET /research/da88ceb02f5b4fae/trace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63226 - "GET /research/da88ceb02f5b4fae/events HTTP/1.1" 200 OK

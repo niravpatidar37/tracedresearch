@@ -1,0 +1,657 @@
+{
+  "run_id": "5505a7afe5af4717",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T02:01:33.437868+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T02:01:33.439985+00:00",
+      "latency_ms": 1172.0,
+      "input": "question='What is known about microplastics in human tissue and their health effects?'",
+      "output": "3 sub-questions (proposed 3): Which peer\u2011reviewed studies have detected microplastics in specific human tissues and what detection methods were used? | What concentrations of microplastics have been reported in those tissues (e.g., particles per gram) and in which population groups? | What health outcomes or biological effects have been associated with microplastic exposure in humans according to epidemiological or experimental research up to 2024?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 320,
+          "output_tokens": 227,
+          "usd": 0.00018419999999999998,
+          "cached": false,
+          "latency_ms": 1161.2867000512779,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 547,
+      "usd": 0.000184,
+      "pid": 41048,
+      "tokens_used_total": 547,
+      "elapsed_s_total": 1.17
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T02:01:34.607803+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 547,
+      "elapsed_s_total": 1.17
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T02:01:34.609939+00:00",
+      "latency_ms": 2453.0,
+      "input": "sq1: Which peer\u2011reviewed studies have detected microplastics in specific human tissues and what detection methods were used? queries=['microplastics detected human tissue study', 'microplastic detection methods human samples']",
+      "output": "status=error findings=0 no usable pages (error)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "microplastics detected human tissue study",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2242.0508000068367,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11342020/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 140.99999994505197,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S2666831926000081",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 125.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0160412025000674",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 125.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11545399/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 155.9999999590218,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.mdpi.com/2673-8929/5/3/157",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 547,
+      "elapsed_s_total": 3.62
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T02:01:37.068250+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=error findings=0",
+      "output": "answered=False by_llm=False missing='research status: error' follow_up='microplastic detection methods human samples'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 547,
+      "elapsed_s_total": 3.62
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T02:01:37.070370+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 547,
+      "elapsed_s_total": 3.62
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:1",
+      "started_at": "2026-10-17T02:01:37.072484+00:00",
+      "latency_ms": 84750.0,
+      "input": "sq1: Which peer\u2011reviewed studies have detected microplastics in specific human tissues and what detection methods were used? queries=['microplastic detection methods human samples']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "microplastic detection methods human samples",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1378.41030000709,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0304389425010489",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 94.0000000409782,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S1382668923001461",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 109.00000005494803,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13454007/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 78.00000009592623,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://link.springer.com/article/10.1007/s00204-026-04392-1",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 125.0,
+          "results": 209
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.mdpi.com/2039-4713/15/5/154",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 83s"
+        },
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 454,
+          "output_tokens": 24,
+          "usd": 4.125e-05,
+          "cached": false,
+          "latency_ms": 150.9146000025794,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 478,
+      "usd": 4.1e-05,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 88.38
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:1",
+      "started_at": "2026-10-17T02:03:01.834894+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='microplastics detected human tissue study'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 88.38
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T02:03:01.837507+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 88.38
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T02:03:01.839593+00:00",
+      "latency_ms": 4766.0,
+      "input": "sq2: What concentrations of microplastics have been reported in those tissues (e.g., particles per gram) and in which population groups? queries=['microplastic concentration human tissue ng per gram', 'microplastics levels in human blood study']",
+      "output": "status=budget_exhausted findings=0 rate limited for 267s past deadline",
+      "status": "budget",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "microplastic concentration human tissue ng per gram",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1982.4603999732062,
+          "results": 8
+        },
+        {
+          "tool": "search",
+          "input": "microplastics levels in human blood study",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0048969724043638",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 79.00000002700835,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.mdpi.com/2673-8929/5/3/131",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 63.00000008195639,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://getplasticproof.com/blog/microplastics-statistics",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 329.00000002700835,
+          "results": 10071
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.researchgate.net/publication/391147828_Microplastics_in_the_Human_Body_A_Comprehensive_Review_of_Exposure_Detection_and_Health_Risks",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 32.00000000651926,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 267s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 93.14
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T02:03:06.619180+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=budget_exhausted findings=0",
+      "output": "answered=False by_llm=False missing='research status: budget_exhausted' follow_up='microplastic concentration human tissue ng per gram'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 93.14
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T02:03:06.622853+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3 budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 93.14
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T02:03:06.624984+00:00",
+      "latency_ms": 2062.0,
+      "input": "sq3: What health outcomes or biological effects have been associated with microplastic exposure in humans according to epidemiological or experimental research up to 2024? queries=['microplastics health effects humans review', 'microplastic exposure toxicity human studies']",
+      "output": "status=error findings=0 no usable pages (error)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "microplastics health effects humans review",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1234.2838998883963,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12848325/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 827.9999999795109,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.mdpi.com/2673-8929/4/2/23",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.999999965541065,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.mdpi.com/2673-8929/5/1/8",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.999999965541065,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12213550/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 483.9999999385327,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0013935124004390",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 77.9999999795109,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 95.2
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T02:03:08.685851+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=error findings=0",
+      "output": "answered=False by_llm=False missing='research status: error' follow_up='microplastic exposure toxicity human studies'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 95.2
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T02:03:08.687937+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:unanswered, sq3:reviewed",
+      "output": "next=researcher subq=sq3 budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 95.2
+    },
+    {
+      "step": 16,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:1",
+      "started_at": "2026-10-17T02:03:08.690595+00:00",
+      "latency_ms": 3219.0,
+      "input": "sq3: What health outcomes or biological effects have been associated with microplastic exposure in humans according to epidemiological or experimental research up to 2024? queries=['microplastic exposure toxicity human studies']",
+      "output": "status=budget_exhausted findings=0 rate limited for 262s past deadline",
+      "status": "budget",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "microplastic exposure toxicity human studies",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2363.2178000407293,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0048969723053913",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.000000034458935,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.frontiersin.org/journals/toxicology/articles/10.3389/ftox.2026.1766103/full",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 734.000000054948,
+          "results": 79546
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubs.acs.org/doi/pdf/10.1021/envhealth.3c00052?ref=article_openPDF",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 45.999999972991645,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://link.springer.com/article/10.1007/s13530-025-00249-9",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 155.9999999590218,
+          "results": 209
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubs.acs.org/esthag/article/58/52/22843/152872/Effects-of-Microplastic-Exposure-on-Human",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 16.00000006146729,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 262s"
+        }
+      ],
+      "tokens": 0,
+      "usd": 0.0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 98.42
+    },
+    {
+      "step": 17,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:1",
+      "started_at": "2026-10-17T02:03:11.911573+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=budget_exhausted findings=0",
+      "output": "answered=False by_llm=False missing='research status: budget_exhausted' follow_up='microplastics health effects humans review'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 98.42
+    },
+    {
+      "step": 18,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:17",
+      "started_at": "2026-10-17T02:03:11.914366+00:00",
+      "latency_ms": 16.0,
+      "input": "sq1:unanswered, sq2:unanswered, sq3:reviewed",
+      "output": "next=writer budget_tripped=['wall_clock']",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 98.44
+    },
+    {
+      "step": 19,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T02:03:11.916977+00:00",
+      "latency_ms": 0.0,
+      "input": "findings=0 subqs=3",
+      "output": "fallback=True attempts=0 citations_final=0/0",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 1025,
+      "elapsed_s_total": 98.44
+    }
+  ]
+}

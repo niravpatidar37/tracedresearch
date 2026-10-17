@@ -1,0 +1,47 @@
+{
+  "run_id": "d3edb52959d14b9c",
+  "final_status": "completed",
+  "steps_committed_before_kill": 4,
+  "steps_total": 14,
+  "distinct_node_keys": 14,
+  "duplicate_node_keys": [],
+  "pids_in_trace": [
+    14440,
+    29304
+  ],
+  "server1_pid": 20808,
+  "server2_pid": 33408,
+  "steps_by_pid": {
+    "14440": [
+      "supervisor:4",
+      "review:sq1:0",
+      "supervisor:6",
+      "research:sq2:0",
+      "review:sq2:0",
+      "supervisor:9",
+      "research:sq3:0",
+      "review:sq3:0",
+      "supervisor:12",
+      "writer"
+    ],
+    "29304": [
+      "supervisor:0",
+      "planner",
+      "supervisor:2",
+      "research:sq1:0"
+    ]
+  },
+  "resumed_event": {
+    "type": "resumed",
+    "step": 4,
+    "pid": 14440,
+    "completed_nodes": [
+      "supervisor:0",
+      "planner",
+      "supervisor:2",
+      "research:sq1:0"
+    ]
+  },
+  "planner_runs": 1,
+  "verdict": "RESUMED (no replay)"
+}

@@ -1,0 +1,4 @@
+{"i": 1, "status": "completed", "wall_s": 25.1, "tokens": 11022, "usd": 0.001612, "searches": 5, "findings": 5, "final_citations_valid": 5, "final_citations_total": 5}
+{"i": 2, "status": "completed", "wall_s": 112.7, "tokens": 11947, "usd": 0.001837, "searches": 5, "findings": 7, "final_citations_valid": 10, "final_citations_total": 10}
+{"i": 3, "status": "completed", "wall_s": 249.6, "tokens": 3961, "usd": 0.000635, "searches": 7, "findings": 4, "final_citations_valid": 5, "final_citations_total": 5}
+{"i": 4, "status": "completed", "wall_s": 236.2, "tokens": 18345, "usd": 0.002006, "searches": 8, "findings": 6, "final_citations_valid": 7, "final_citations_total": 7}

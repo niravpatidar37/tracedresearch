@@ -1,0 +1,122 @@
+{
+  "run_id": "25f041ee06904231",
+  "status": "completed",
+  "question": "What changed technically between Llama 2 and Llama 3?",
+  "error": "",
+  "progress": {
+    "step": 22,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): research status: no_results"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: no_results"
+      },
+      "sq4": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      }
+    },
+    "findings": 4,
+    "tokens_used": 12069,
+    "usd_spent": 0.00071,
+    "searches_used": 7,
+    "elapsed_s": 37.77,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** What changed technically between Llama 2 and Llama 3?\n\n## Summary\n\nLlama 3 introduces several technical changes over Llama 2, notably a new attention mechanism and larger tokenizer, while also expanding context windows for its models. [^1]\n\n## Architectural Differences\n\nLlama 3 adopts Grouped Query Attention \\(GQA\\), a design that groups queries to reduce computational load during inference, a feature absent in Llama 2. [^1]\n\nThe tokenizer in Llama 3 is more efficient, supporting 128,000 tokens, whereas Llama 2\u2019s tokenizer size is not specified in the available data. [^1]\n\n## Parameter Count and Context Window\n\nThe 8 B Llama 3 model uses an 8,192\u2011token context window, double the 4,096\u2011token window of the 8 B Llama 2 model. [^2]\n\nSimilarly, the 70 B Llama 3 model also uses an 8,192\u2011token context window, whereas the 70 B Llama 2 model uses 4,096 tokens. [^2]\n\n## Limitations\n\n- No data on training dataset size changes for Llama 3 versus Llama 2.\n- No data on reported inference latency or hardware efficiency improvements for Llama 3 versus Llama 2.\n- Unanswered: What changes were made to the training dataset size and composition for Llama 3 compared to Llama 2? (search budget reached: research status: no\\_results)\n- Unanswered: What are the reported inference latency and hardware efficiency improvements of Llama 3 over Llama 2? (send-back limit reached: research status: no\\_results)\n\n## Sources\n\n[^1]: [LLAMA 2 Vs LLAMA 3 - Blockchain Council](https://www.blockchain-council.org/ai/llama-2-vs-llama-3/) (blockchain-council.org, retrieved 2026-10-17). Findings F1, F2: \u201c- Model Architecture: LLAMA 3 incorporates enhancements like Grouped Query Attention \\(GQA\\) to improve inference efficiency.\u201d\n[^2]: [Llama 3 vs Llama 2](https://www.apps4rent.com/blog/llama-3-vs-llama-2/) (apps4rent.com, retrieved 2026-10-17). Findings F3, F4: \u201c\\| Context Length \\| 8192 tokens \\| 4096 tokens \\|\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://www.blockchain-council.org/ai/llama-2-vs-llama-3/",
+        "title": "LLAMA 2 Vs LLAMA 3 - Blockchain Council",
+        "finding_ids": [
+          "F1",
+          "F2"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.apps4rent.com/blog/llama-3-vs-llama-2/",
+        "title": "Llama 3 vs Llama 2",
+        "finding_ids": [
+          "F3",
+          "F4"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 5,
+      "valid": 5,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "Llama 3\u2019s architecture incorporates Grouped Query Attention (GQA) to improve inference efficiency, whereas Llama 2 does not include GQA.",
+      "url": "https://www.blockchain-council.org/ai/llama-2-vs-llama-3/",
+      "title": "LLAMA 2 Vs LLAMA 3 - Blockchain Council",
+      "snippet": "- Model Architecture: LLAMA 3 incorporates enhancements like Grouped Query Attention (GQA) to improve inference efficiency.",
+      "retrieved_at": "2026-10-17T01:45:26.386358Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "Llama 3\u2019s tokenizer is more efficient with 128,000 tokens, a detail not mentioned for Llama 2.",
+      "url": "https://www.blockchain-council.org/ai/llama-2-vs-llama-3/",
+      "title": "LLAMA 2 Vs LLAMA 3 - Blockchain Council",
+      "snippet": "Architecture: LLAMA 3 includes advanced features like Grouped Query Attention (GQA) and a more efficient tokenizer with 128,000 tokens.",
+      "retrieved_at": "2026-10-17T01:45:26.390363Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "Llama 3\u2019s 8 billion\u2011parameter model uses an 8,192\u2011token context window, double the 4,096\u2011token window of Llama 2.",
+      "url": "https://www.apps4rent.com/blog/llama-3-vs-llama-2/",
+      "title": "Llama 3 vs Llama 2",
+      "snippet": "| Context Length | 8192 tokens | 4096 tokens |",
+      "retrieved_at": "2026-10-17T01:45:33.796235Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq2",
+      "claim": "Llama 3\u2019s 70 billion\u2011parameter model also uses an 8,192\u2011token context window, whereas Llama 2\u2019s 70 billion\u2011parameter model uses 4,096 tokens.",
+      "url": "https://www.apps4rent.com/blog/llama-3-vs-llama-2/",
+      "title": "Llama 3 vs Llama 2",
+      "snippet": "Llama 3 8B contains 8 billion parameters and Llama 3 70B contains 70 billion parameters. Both can be considered big leaps in performance when compared to Llama 2 due to the training Llama 3 received using custom-built 24,000 GPU clusters.",
+      "retrieved_at": "2026-10-17T01:45:33.797236Z"
+    }
+  ]
+}

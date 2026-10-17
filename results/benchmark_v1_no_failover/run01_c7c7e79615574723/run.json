@@ -1,0 +1,123 @@
+{
+  "run_id": "c7c7e79615574723",
+  "status": "completed",
+  "question": "What caused the collapse of Silicon Valley Bank in March 2023?",
+  "error": "",
+  "progress": {
+    "step": 19,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): Deposit base and interest rate risk details are missing."
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): research status: no_results"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 5,
+    "tokens_used": 11022,
+    "usd_spent": 0.001612,
+    "searches_used": 5,
+    "elapsed_s": 24.94,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** What caused the collapse of Silicon Valley Bank in March 2023?\n\n## Summary\n\nThe collapse of Silicon Valley Bank in March 2023 was precipitated by a large\u2011loss sale of its Treasury bond portfolio, which sparked a rapid and massive withdrawal of deposits, ultimately leading to a bank run and the bank\u2019s failure. [^1]\n\n## Triggering Event: Loss\u2011Making Bond Sale\n\nOn March 8, 2023 SVB announced it had sold more than $21 billion of securities at a substantial loss and was borrowing $15 billion while also planning a $2.25 billion treasury\u2011stock sale to raise cash. [^1]\n\nThe disclosure of this loss\u2011making bond sale immediately raised concerns about the bank\u2019s liquidity and prompted depositors to withdraw funds. [^1]\n\n## Rapid Deposit Withdrawals and Bank Run\n\nFollowing the announcement, customers withdrew $42 billion in a single day, overwhelming the bank\u2019s cash reserves and triggering a classic bank run. [^1]\n\n## Contextual Risk Factors\n\nRegulatory data showed that 89 % of SVB\u2019s deposits were uninsured as of December 31, 2022, creating a heightened liquidity vulnerability that amplified the impact of the bond\u2011sale announcement. [^2]\n\n## Limitations\n\n- The findings do not detail the precise timing of the bond\u2011sale loss relative to market conditions.\n- No direct evidence is provided on internal risk\u2011management decisions preceding the sale.\n\n## Sources\n\n[^1]: [2023 United States banking crisis - Wikipedia](https://en.wikipedia.org/wiki/2023_United_States_banking_crisis) (en.wikipedia.org, retrieved 2026-10-17). Findings F4, F5: \u201cSilicon Valley Bank \\(SVB\\) failed when a bank run was triggered after it sold its Treasury bond portfolio at a large loss, causing depositor concerns about the bank's liquidity.\u201d\n[^2]: [Collapse of Silicon Valley Bank - Wikipedia](https://en.wikipedia.org/wiki/Collapse_of_Silicon_Valley_Bank) (en.wikipedia.org, retrieved 2026-10-17). Findings F3: \u201cAccording to regulatory reports as of December 31, 2022, uninsured deposits were estimated to represent 89 percent of total deposits at the bank.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+        "title": "2023 United States banking crisis - Wikipedia",
+        "finding_ids": [
+          "F4",
+          "F5"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://en.wikipedia.org/wiki/Collapse_of_Silicon_Valley_Bank",
+        "title": "Collapse of Silicon Valley Bank - Wikipedia",
+        "finding_ids": [
+          "F3"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 5,
+      "valid": 5,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "Silicon Valley Bank had about $6.7 billion of loans to early\u2011 and growth\u2011stage companies that were likely to be repaid only on an exit event.",
+      "url": "https://financialpost.com/fp-finance/banking/credit-funds-silicon-valley-bank-loan-book",
+      "title": "Credit funds scrutinize 'mythical, enormous' Silicon Valley Bank loan book",
+      "snippet": "SVB also has about US$6.7 billion of loans to early- and growth-stage companies that it had previously warned in securities filings would likely only be repaid on a so-called exit event, such as an initial public offering or sale of the company.",
+      "retrieved_at": "2026-10-17T01:32:13.954197Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "Prior to its failure, Silicon Valley Bank Financial Group had approximately $212 billion in total assets, with its principal subsidiary Silicon Valley Bank holding about $209 billion in assets.",
+      "url": "https://www.federalreserve.gov/publications/2023-April-SVB-Evolution-of-Silicon-Valley-Bank.htm",
+      "title": "Evolution of Silicon Valley Bank",
+      "snippet": "Silicon Valley Bank Financial Group (SVBFG) was founded in 1983 and was headquartered in Santa Clara, California. Prior to its failure, SVBFG was a financial services company, financial holding company, and bank holding company with approximately $212 billion in total assets.27 SVBFG's principal subsidiary was Silicon Valley Bank (SVB), a California state-chartered bank with approximately $209 billion in assets (figure 2)",
+      "retrieved_at": "2026-10-17T01:32:13.954197Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "Regulatory reports as of December 31 2022 noted that uninsured deposits represented 89 % of Silicon Valley Bank\u2019s total deposits, indicating a significant liquidity risk.",
+      "url": "https://en.wikipedia.org/wiki/Collapse_of_Silicon_Valley_Bank",
+      "title": "Collapse of Silicon Valley Bank - Wikipedia",
+      "snippet": "According to regulatory reports as of December 31, 2022, uninsured deposits were estimated to represent 89 percent of total deposits at the bank.",
+      "retrieved_at": "2026-10-17T01:32:20.644481Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq3",
+      "claim": "SVB\u2019s bank run was triggered by the sale of its Treasury bond portfolio at a large loss, which raised depositor concerns about liquidity.",
+      "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+      "title": "2023 United States banking crisis - Wikipedia",
+      "snippet": "Silicon Valley Bank (SVB) failed when a bank run was triggered after it sold its Treasury bond portfolio at a large loss, causing depositor concerns about the bank's liquidity.",
+      "retrieved_at": "2026-10-17T01:32:28.097605Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq3",
+      "claim": "The announcement of selling $21 billion of securities, borrowing $15 billion, and selling treasury stock to raise $2.25 billion sparked withdrawals of $42 billion the next day.",
+      "url": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+      "title": "2023 United States banking crisis - Wikipedia",
+      "snippet": "To raise cash to pay withdrawals by its depositors, SVB announced on March 8 that it had sold over US$21 billion worth of securities, borrowed US$15 billion, and would hold an emergency sale of some of its treasury stock to raise US$2.25 billion. The announcement, coupled with warnings from prominent Silicon Valley investors, caused a bank run as customers withdrew funds totaling US$42 billion by the following day.",
+      "retrieved_at": "2026-10-17T01:32:28.097605Z"
+    }
+  ]
+}

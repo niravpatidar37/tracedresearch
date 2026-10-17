@@ -1,0 +1,55 @@
+{
+  "run_id": "5505a7afe5af4717",
+  "status": "completed",
+  "question": "What is known about microplastics in human tissue and their health effects?",
+  "error": "",
+  "progress": {
+    "step": 19,
+    "sub_questions": {
+      "sq1": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      },
+      "sq2": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: budget_exhausted"
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: budget_exhausted"
+      }
+    },
+    "findings": 0,
+    "tokens_used": 1025,
+    "usd_spent": 0.000225,
+    "searches_used": 6,
+    "elapsed_s": 98.44,
+    "budget_tripped": [
+      "wall_clock"
+    ]
+  },
+  "report": {
+    "title": "Partial findings",
+    "markdown": "# Partial findings\n\n**Question:** What is known about microplastics in human tissue and their health effects?\n\n## Summary\n\n_Summary omitted: it had no valid citation._\n\n## Limitations\n\n- Report generated without the writer model because of: no findings were collected.\n- Unanswered: Which peer\u2011reviewed studies have detected microplastics in specific human tissues and what detection methods were used? (send-back limit reached: research status: no\\_results)\n- Unanswered: What concentrations of microplastics have been reported in those tissues \\(e.g., particles per gram\\) and in which population groups? (search budget reached: research status: budget\\_exhausted)\n- Unanswered: What health outcomes or biological effects have been associated with microplastic exposure in humans according to epidemiological or experimental research up to 2024? (send-back limit reached: research status: budget\\_exhausted)\n- 1 paragraph(s) removed because they had no valid citation.\n\n## Sources\n",
+    "citations": [],
+    "citation_check": {
+      "total": 0,
+      "valid": 0,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": null,
+    "fallback": true
+  },
+  "findings": []
+}

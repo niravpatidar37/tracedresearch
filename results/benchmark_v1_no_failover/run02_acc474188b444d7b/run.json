@@ -1,0 +1,158 @@
+{
+  "run_id": "acc474188b444d7b",
+  "status": "completed",
+  "question": "How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?",
+  "error": "",
+  "progress": {
+    "step": 16,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): research status: no_results"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 7,
+    "tokens_used": 11947,
+    "usd_spent": 0.001837,
+    "searches_used": 5,
+    "elapsed_s": 112.62,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** How does the EU AI Act classify high-risk AI systems, and when do its obligations take effect?\n\n## Summary\n\nThe EU AI Act defines high\u2011risk AI systems based on their role as safety components of regulated products or their inclusion in Annex III, with specific exemptions, and lists eight sector categories; the compliance obligations for these systems become legally binding on 2 August 2026. [^1][^2][^3][^4]\n\n## Classification Criteria for High\u2011Risk AI\n\nAn AI system is classified as high\u2011risk if it is intended to be used as a safety component of a product, or is itself a product covered by the EU legislation listed in Annex I and therefore requires a third\u2011party conformity assessment. [^1]\n\nAdditionally, any AI system listed in Annex III is deemed high\u2011risk unless it can demonstrate that it does not pose a significant risk to health, safety or fundamental rights, or that it does not materially influence decision\u2011making outcomes. [^1]\n\nAnnex III AI systems that perform profiling of natural persons are automatically classified as high\u2011risk, regardless of other considerations. [^1]\n\n## Specific High\u2011Risk Applications and Sectors\n\nAnnex III identifies eight high\u2011risk categories: biometrics, critical infrastructure, education, employment, essential services \\(including credit scoring and insurance\\), law enforcement, migration, and justice. [^3]\n\nThese sectors are reinforced by the Act\u2019s broader list of high\u2011risk areas, which also mentions migration, asylum and border control alongside the categories above. [^2]\n\n## Effective Date of High\u2011Risk Obligations\n\nThe compliance obligations for high\u2011risk AI systems become legally binding on 2 August 2026, when the Act\u2019s general application date and the Article 50 transparency duties take effect. [^4]\n\n## Limitations\n\n- The findings do not specify how the exemption assessment for Annex III systems is verified in practice.\n- No information is provided on transitional provisions for systems already on the market before the 2 August 2026 date.\n\n## Sources\n\n[^1]: [AI Act Service Desk - Article 6: Classification rules for high-risk AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6) (ai-act-service-desk.ec.europa.eu, retrieved 2026-10-17). Findings F1, F2, F3: \u201cAn AI system is considered high-risk under the AI Act if it meets one of these criteria: \\(i\\) is intended to be used as a safety component of a product, or is itself a product, covered by the EU legislation listed in Annex I, and that produc\u201d\n[^2]: [Guidelines for providers and deployers of AI high-risk systems](https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-high-risk-systems) (digital-strategy.ec.europa.eu, retrieved 2026-10-17). Findings F5: \u201cRules for systems used in certain high-risk areas - including biometrics, critical infrastructure, education, employment, migration, asylum and border control - apply from 2 December 2027.\u201d\n[^3]: [High-Risk AI Systems Under the EU AI Act: The Complete List](https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list) (matproof.com, retrieved 2026-10-17). Findings F6: \u201cThe EU AI Act defines high-risk AI systems across 8 categories in Annex III -- covering biometrics, critical infrastructure, education, employment, essential services \\(including credit scoring and insurance\\), law enforcement, migration, and\u201d\n[^4]: [EU AI Act Effective Dates: Compliance Phases 2024-2027](https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html) (legiscope.com, retrieved 2026-10-17). Findings F7: \u201cThe next date that binds everyone is 2 August 2026: general application of the Act and the Article 50 transparency duties, which catch any organisation running a chatbot or publishing synthetic content.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+        "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+        "finding_ids": [
+          "F1",
+          "F2",
+          "F3"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-high-risk-systems",
+        "title": "Guidelines for providers and deployers of AI high-risk systems",
+        "finding_ids": [
+          "F5"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list",
+        "title": "High-Risk AI Systems Under the EU AI Act: The Complete List",
+        "finding_ids": [
+          "F6"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html",
+        "title": "EU AI Act Effective Dates: Compliance Phases 2024-2027",
+        "finding_ids": [
+          "F7"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 10,
+      "valid": 10,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 12,
+      "valid": 12,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "An AI system is classified as high\u2011risk if it is intended as a safety component of a product or is itself a product covered by Annex I and requires a third\u2011party conformity assessment, or if it is listed in Annex III.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+      "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+      "snippet": "An AI system is considered high-risk under the AI Act if it meets one of these criteria: (i) is intended to be used as a safety component of a product, or is itself a product, covered by the EU legislation listed in Annex I, and that product is required to undergo a third-party conformity assessment; (ii) it is listed in Annex III.",
+      "retrieved_at": "2026-10-17T01:32:35.160751Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "AI systems in Annex III are high\u2011risk unless they do not pose a significant risk of harm to health, safety or fundamental rights, or unless they do not materially influence decision\u2011making outcomes.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+      "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+      "snippet": "By derogation from paragraph 2, an AI system referred to in Annex III shall not be considered to be high-risk where it does not pose a significant risk of harm to the health, safety or fundamental rights of natural persons, including by not materially influencing the outcome of decision making.",
+      "retrieved_at": "2026-10-17T01:32:35.160751Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq1",
+      "claim": "Any AI system in Annex III that performs profiling of natural persons is automatically high\u2011risk.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+      "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+      "snippet": "Notwithstanding the first subparagraph, an AI system referred to in Annex III shall always be considered to be high-risk where the AI system performs profiling of natural persons.",
+      "retrieved_at": "2026-10-17T01:32:35.161753Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq1",
+      "claim": "A provider must document the assessment that an Annex III AI system is not high\u2011risk before placing it on the market or putting it into service.",
+      "url": "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6",
+      "title": "AI Act Service Desk - Article 6: Classification rules for high-risk AI systems",
+      "snippet": "A provider who considers that an AI system referred to in Annex III is not high-risk shall document its assessment before that system is placed on the market or put into service.",
+      "retrieved_at": "2026-10-17T01:32:35.161753Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq2",
+      "claim": "The EU AI Act lists high\u2011risk areas such as biometrics, critical infrastructure, education, employment, migration, asylum and border control.",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/guidelines-ai-high-risk-systems",
+      "title": "Guidelines for providers and deployers of AI high-risk systems",
+      "snippet": "Rules for systems used in certain high-risk areas - including biometrics, critical infrastructure, education, employment, migration, asylum and border control - apply from 2 December 2027.",
+      "retrieved_at": "2026-10-17T01:33:05.365584Z"
+    },
+    {
+      "id": "F6",
+      "sub_question_id": "sq2",
+      "claim": "Annex III of the EU AI Act identifies high\u2011risk AI systems in eight categories: biometrics, critical infrastructure, education, employment, essential services (credit scoring and insurance), law enforcement, migration, and justice.",
+      "url": "https://matproof.com/blog/eu-ai-act-high-risk-systems-complete-list",
+      "title": "High-Risk AI Systems Under the EU AI Act: The Complete List",
+      "snippet": "The EU AI Act defines high-risk AI systems across 8 categories in Annex III -- covering biometrics, critical infrastructure, education, employment, essential services (including credit scoring and insurance), law enforcement, migration, and justice -- plus AI safety components in products listed in Annex I.",
+      "retrieved_at": "2026-10-17T01:33:05.365584Z"
+    },
+    {
+      "id": "F7",
+      "sub_question_id": "sq3",
+      "claim": "The compliance obligations for high\u2011risk AI systems become legally binding on 2 August 2026, when the Act\u2019s general application date and Article 50 transparency duties take effect.",
+      "url": "https://www.legiscope.com/blog/eu-ai-act-effective-dates-phases-2024-2027.html",
+      "title": "EU AI Act Effective Dates: Compliance Phases 2024-2027",
+      "snippet": "The next date that binds everyone is 2 August 2026: general application of the Act and the Article 50 transparency duties, which catch any organisation running a chatbot or publishing synthetic content.",
+      "retrieved_at": "2026-10-17T01:33:31.766618Z"
+    }
+  ]
+}

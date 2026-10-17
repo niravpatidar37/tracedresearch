@@ -1,0 +1,204 @@
+{
+  "run_id": "d3edb52959d14b9c",
+  "status": "completed",
+  "question": "What are the main differences between the Raft and Paxos consensus algorithms in practice?",
+  "error": "",
+  "progress": {
+    "step": 14,
+    "sub_questions": {
+      "sq1": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      },
+      "sq3": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 1,
+        "send_backs": 0,
+        "reason": "reviewer accepted"
+      }
+    },
+    "findings": 10,
+    "tokens_used": 12204,
+    "usd_spent": 0.0,
+    "searches_used": 3,
+    "elapsed_s": 280.61,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Partial findings",
+    "markdown": "# Partial findings\n\n**Question:** What are the main differences between the Raft and Paxos consensus algorithms in practice?\n\n## Summary\n\nWriter not run \\(writer output invalid\\); listing extracted findings per sub-question. [^1]\n\n## What are the key components and design principles of Raft?\n\nRaft offers a generic way to distribute a state machine across a cluster of computing systems, ensuring that each node in the cluster agrees upon the same series of state transitions. [^1]\n\nRaft divides the consensus process into clear components such as leader election, log replication, and safety, making the algorithm simpler to reason about. [^2]\n\n## What are the key components and design principles of Paxos?\n\nPaxos guarantees safety \\(consistency\\), and the conditions that could prevent it from making progress are difficult to provoke. [^3]\n\nPAXOS operates below the belief that the network is asynchronous. [^4]\n\nPaxos deliberately sacrifices guaranteed liveness to keep absolute safety. [^5]\n\nIn general, a consensus algorithm can make progress using processors, despite the simultaneous failure of any processors. [^3]\n\n## How do Raft and Paxos compare in terms of fault tolerance and performance in real-world applications?\n\nRaft was designed to be more understandable than Paxos while providing equivalent fault tolerance guarantees. [^6]\n\nPaxos has been proven correct and widely implemented in production systems. [^6]\n\nRaft is more understandable and can be easily implemented compared to Paxos. [^7]\n\nRaft uses a strong leader approach where one node acts as the leader, handling all client requests and log replication. [^6]\n\n## Limitations\n\n- Report generated without the writer model because of: writer output invalid.\n\n## Sources\n\n[^1]: [Raft \\(algorithm\\) - Wikipedia](https://en.wikipedia.org/wiki/Raft_%28algorithm%29) (en.wikipedia.org, retrieved 2026-10-17). Findings F1: \u201cRaft offers a generic way to distribute a state machine across a cluster of computing systems, ensuring that each node in the cluster agrees upon the same series of state transitions.\u201d\n[^2]: [Raft Consensus Algorithm - GeeksforGeeks](https://www.geeksforgeeks.org/system-design/raft-consensus-algorithm/) (geeksforgeeks.org, retrieved 2026-10-17). Findings F2: \u201cIt divides the consensus process into clear components such as leader election, log replication, and safety, making the algorithm simpler to reason about.\u201d\n[^3]: [Paxos \\(computer science\\) - Wikipedia](https://en.wikipedia.org/wiki/Paxos_%28computer_science%29) (en.wikipedia.org, retrieved 2026-10-17). Findings F3, F6: \u201cAlthough no deterministic fault-tolerant consensus protocol can guarantee progress in an asynchronous network \\(a result proved in a paper by Fischer, Lynch and Paterson\\[6\\]\\), Paxos guarantees safety \\(consistency\\), and the conditions that cou\u201d\n[^4]: [PAXOS Consensus Algorithm - GeeksforGeeks](https://www.geeksforgeeks.org/computer-networks/paxos-consensus-algorithm/) (geeksforgeeks.org, retrieved 2026-10-17). Findings F4: \u201cAsynchronous Network: PAXOS operates below the belief that the network is asynchronous. In this approach messages among nodes can be delivered in any order, or maybe not at all.\u201d\n[^5]: [Paxos Consensus Algorithm Explained Simply \u00b7 Penluma](https://penluma.com/blog/distributed-systems/06-paxos-the-original-consensus-algorithm/) (penluma.com, retrieved 2026-10-17). Findings F5: \u201cThis is not a bug. It is the FLP impossibility result showing up in real life: in a fully asynchronous system, with no bound on message delays and no perfect way to detect failures, no consensus algorithm can guarantee it always terminates.\u201d\n[^6]: [Distributed Consensus: Raft and Paxos Algorithms Explained with Examples - CodeLucky](https://codelucky.com/distributed-consensus-raft-paxos/) (codelucky.com, retrieved 2026-10-17). Findings F7, F8, F10: \u201cRaft, introduced by Diego Ongaro and John Ousterhout in 2014, was designed to be more understandable than Paxos while providing equivalent fault tolerance guarantees.\u201d\n[^7]: [Which is Better for production: Paxos or Raft?](https://thescalabilitydigest.substack.com/p/which-is-better-for-production-paxos) (thescalabilitydigest.substack.com, retrieved 2026-10-17). Findings F9: \u201cPaxos is considered for its theoretical elegance, but it is also criticised for being notoriously difficult to understand and implement. On the other hand, Raft is much more understandable and can be easily implemented and thus can be more\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://en.wikipedia.org/wiki/Raft_(algorithm)",
+        "title": "Raft (algorithm) - Wikipedia",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.geeksforgeeks.org/system-design/raft-consensus-algorithm/",
+        "title": "Raft Consensus Algorithm - GeeksforGeeks",
+        "finding_ids": [
+          "F2"
+        ]
+      },
+      {
+        "number": 3,
+        "url": "https://en.wikipedia.org/wiki/Paxos_(computer_science)",
+        "title": "Paxos (computer science) - Wikipedia",
+        "finding_ids": [
+          "F3",
+          "F6"
+        ]
+      },
+      {
+        "number": 4,
+        "url": "https://www.geeksforgeeks.org/computer-networks/paxos-consensus-algorithm/",
+        "title": "PAXOS Consensus Algorithm - GeeksforGeeks",
+        "finding_ids": [
+          "F4"
+        ]
+      },
+      {
+        "number": 5,
+        "url": "https://penluma.com/blog/distributed-systems/06-paxos-the-original-consensus-algorithm/",
+        "title": "Paxos Consensus Algorithm Explained Simply \u00b7 Penluma",
+        "finding_ids": [
+          "F5"
+        ]
+      },
+      {
+        "number": 6,
+        "url": "https://codelucky.com/distributed-consensus-raft-paxos/",
+        "title": "Distributed Consensus: Raft and Paxos Algorithms Explained with Examples - CodeLucky",
+        "finding_ids": [
+          "F7",
+          "F8",
+          "F10"
+        ]
+      },
+      {
+        "number": 7,
+        "url": "https://thescalabilitydigest.substack.com/p/which-is-better-for-production-paxos",
+        "title": "Which is Better for production: Paxos or Raft?",
+        "finding_ids": [
+          "F9"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 11,
+      "valid": 11,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": null,
+    "fallback": true
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq1",
+      "claim": "Raft offers a generic way to distribute a state machine across a cluster of computing systems, ensuring that each node in the cluster agrees upon the same series of state transitions.",
+      "url": "https://en.wikipedia.org/wiki/Raft_(algorithm)",
+      "title": "Raft (algorithm) - Wikipedia",
+      "snippet": "Raft offers a generic way to distribute a state machine across a cluster of computing systems, ensuring that each node in the cluster agrees upon the same series of state transitions.",
+      "retrieved_at": "2026-10-17T02:07:34.857066Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq1",
+      "claim": "Raft divides the consensus process into clear components such as leader election, log replication, and safety, making the algorithm simpler to reason about.",
+      "url": "https://www.geeksforgeeks.org/system-design/raft-consensus-algorithm/",
+      "title": "Raft Consensus Algorithm - GeeksforGeeks",
+      "snippet": "It divides the consensus process into clear components such as leader election, log replication, and safety, making the algorithm simpler to reason about.",
+      "retrieved_at": "2026-10-17T02:07:34.857582Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "Paxos guarantees safety (consistency), and the conditions that could prevent it from making progress are difficult to provoke.",
+      "url": "https://en.wikipedia.org/wiki/Paxos_(computer_science)",
+      "title": "Paxos (computer science) - Wikipedia",
+      "snippet": "Although no deterministic fault-tolerant consensus protocol can guarantee progress in an asynchronous network (a result proved in a paper by Fischer, Lynch and Paterson[6]), Paxos guarantees safety (consistency), and the conditions that could prevent it from making progress are difficult to provoke.",
+      "retrieved_at": "2026-10-17T02:08:27.791874Z"
+    },
+    {
+      "id": "F4",
+      "sub_question_id": "sq2",
+      "claim": "PAXOS operates below the belief that the network is asynchronous.",
+      "url": "https://www.geeksforgeeks.org/computer-networks/paxos-consensus-algorithm/",
+      "title": "PAXOS Consensus Algorithm - GeeksforGeeks",
+      "snippet": "Asynchronous Network: PAXOS operates below the belief that the network is asynchronous. In this approach messages among nodes can be delivered in any order, or maybe not at all.",
+      "retrieved_at": "2026-10-17T02:08:27.792402Z"
+    },
+    {
+      "id": "F5",
+      "sub_question_id": "sq2",
+      "claim": "Paxos deliberately sacrifices guaranteed liveness to keep absolute safety.",
+      "url": "https://penluma.com/blog/distributed-systems/06-paxos-the-original-consensus-algorithm/",
+      "title": "Paxos Consensus Algorithm Explained Simply \u00b7 Penluma",
+      "snippet": "This is not a bug. It is the FLP impossibility result showing up in real life: in a fully asynchronous system, with no bound on message delays and no perfect way to detect failures, no consensus algorithm can guarantee it always terminates. Paxos deliberately sacrifices guaranteed liveness to keep absolute safety.",
+      "retrieved_at": "2026-10-17T02:08:27.792937Z"
+    },
+    {
+      "id": "F6",
+      "sub_question_id": "sq2",
+      "claim": "In general, a consensus algorithm can make progress using processors, despite the simultaneous failure of any processors.",
+      "url": "https://en.wikipedia.org/wiki/Paxos_(computer_science)",
+      "title": "Paxos (computer science) - Wikipedia",
+      "snippet": "In general, a consensus algorithm can make progress using processors, despite the simultaneous failure of any processors:[13] in other words, the number of non-faulty processes must be strictly greater than the number of faulty processes.",
+      "retrieved_at": "2026-10-17T02:08:27.792937Z"
+    },
+    {
+      "id": "F7",
+      "sub_question_id": "sq3",
+      "claim": "Raft was designed to be more understandable than Paxos while providing equivalent fault tolerance guarantees.",
+      "url": "https://codelucky.com/distributed-consensus-raft-paxos/",
+      "title": "Distributed Consensus: Raft and Paxos Algorithms Explained with Examples - CodeLucky",
+      "snippet": "Raft, introduced by Diego Ongaro and John Ousterhout in 2014, was designed to be more understandable than Paxos while providing equivalent fault tolerance guarantees.",
+      "retrieved_at": "2026-10-17T02:08:59.136063Z"
+    },
+    {
+      "id": "F8",
+      "sub_question_id": "sq3",
+      "claim": "Paxos has been proven correct and widely implemented in production systems.",
+      "url": "https://codelucky.com/distributed-consensus-raft-paxos/",
+      "title": "Distributed Consensus: Raft and Paxos Algorithms Explained with Examples - CodeLucky",
+      "snippet": "Paxos, developed by Leslie Lamport in the 1980s, is a family of protocols for solving consensus in a network of unreliable processors. While more complex than Raft, Paxos has been proven correct and widely implemented in production systems.",
+      "retrieved_at": "2026-10-17T02:08:59.136601Z"
+    },
+    {
+      "id": "F9",
+      "sub_question_id": "sq3",
+      "claim": "Raft is more understandable and can be easily implemented compared to Paxos.",
+      "url": "https://thescalabilitydigest.substack.com/p/which-is-better-for-production-paxos",
+      "title": "Which is Better for production: Paxos or Raft?",
+      "snippet": "Paxos is considered for its theoretical elegance, but it is also criticised for being notoriously difficult to understand and implement. On the other hand, Raft is much more understandable and can be easily implemented and thus can be more suited for new production systems.",
+      "retrieved_at": "2026-10-17T02:08:59.137144Z"
+    },
+    {
+      "id": "F10",
+      "sub_question_id": "sq3",
+      "claim": "Raft uses a strong leader approach where one node acts as the leader, handling all client requests and log replication.",
+      "url": "https://codelucky.com/distributed-consensus-raft-paxos/",
+      "title": "Distributed Consensus: Raft and Paxos Algorithms Explained with Examples - CodeLucky",
+      "snippet": "Raft uses a strong leader approach where one node acts as the leader, handling all client requests and log replication. When the system starts or the current leader fails, nodes elect a new leader through a voting process.",
+      "retrieved_at": "2026-10-17T02:08:59.137144Z"
+    }
+  ]
+}

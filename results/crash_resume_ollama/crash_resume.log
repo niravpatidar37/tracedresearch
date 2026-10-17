@@ -1,0 +1,9 @@
+2026-10-16T22:06:56 server #1 started pid=20808
+2026-10-16T22:06:56 POST /research -> run_id=d3edb52959d14b9c
+2026-10-16T22:07:34 server #1 KILLED (hard) pid=20808 after 4 committed steps: ['supervisor:0', 'planner', 'supervisor:2', 'research:sq1:0']
+2026-10-16T22:07:37 port 8102 free after kill (nothing left listening, incl. the venv launcher's child): True
+2026-10-16T22:07:42 server #2 started pid=33408; waiting for orphaned-run resume (lease TTL 10s)
+2026-10-16T22:11:47 server #2 stopped pid=33408
+2026-10-16T22:11:47 worker pids recorded in trace (real interpreter pids behind the venv launcher): [14440, 29304]
+2026-10-16T22:11:47 resumed event: {'type': 'resumed', 'step': 4, 'pid': 14440, 'completed_nodes': ['supervisor:0', 'planner', 'supervisor:2', 'research:sq1:0']}
+2026-10-16T22:11:47 verdict: RESUMED (no replay)

@@ -1,0 +1,95 @@
+{
+  "run_id": "fa57571018ed4d02",
+  "status": "completed",
+  "question": "How do sodium-ion batteries compare with lithium-ion batteries on cost, energy density and commercial deployment?",
+  "error": "",
+  "progress": {
+    "step": 22,
+    "sub_questions": {
+      "sq1": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "partial (send-back limit reached): Lithium\u2011ion gravimetric energy density data for 2024 is missing."
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      }
+    },
+    "findings": 2,
+    "tokens_used": 11783,
+    "usd_spent": 0.001326,
+    "searches_used": 6,
+    "elapsed_s": 93.88,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** How do sodium-ion batteries compare with lithium-ion batteries on cost, energy density and commercial deployment?\n\n## Summary\n\nCommercial sodium\u2011ion batteries in 2024 exhibit gravimetric energy densities ranging from 100\u2013150 Wh/kg to 458 Wh/kg, while lithium\u2011ion cells typically achieve 396 Wh/kg or higher, indicating a wide variance in sodium\u2011ion performance. [^1][^2]\n\n## Energy Density Comparison\n\nCommercial sodium\u2011ion cells reported by one source achieve a gravimetric energy density of about 458 Wh/kg, approaching the 396 Wh/kg of older sodium\u2011ion designs and nearing lithium\u2011ion levels. [^1]\n\nAnother source reports typical sodium\u2011ion gravimetric energy densities in the 100\u2013150 Wh/kg range, with prismatic cells reaching 130\u2013160 Wh/kg, which is substantially lower than most lithium\u2011ion chemistries. [^2]\n\n## Limitations\n\n- Cost per kilowatt\u2011hour data for sodium\u2011ion versus lithium\u2011ion batteries in 2023\u20112024 is not provided.\n- Commercial deployment figures \\(products or gigawatt capacity\\) for sodium\u2011ion batteries by end\u20112024 are missing.\n- Unanswered: What is the average cost per kilowatt-hour for sodium\u2011ion batteries versus lithium\u2011ion batteries in 2023\u20112024? (send-back limit reached: research status: no\\_results)\n- Unanswered: How many commercial sodium\u2011ion battery products or gigawatts of capacity have been launched worldwide by the end of 2024 compared to lithium\u2011ion battery deployments? (send-back limit reached: research status: no\\_results)\n\n## Sources\n\n[^1]: [Sodium batteries hit 458 Wh/kg: New material closes gap with lithium](https://interestingengineering.com/energy/sodium-batteries-breakthrough-material) (interestingengineering.com, retrieved 2026-10-17). Findings F1: \u201cWith a higher energy density of 458 watt-hours per kilogram \\(Wh/kg\\) compared to the 396 Wh/kg in older sodium-ion batteries, this material brings sodium technology closer to competing with lithium-ion batteries.\u201d\n[^2]: [Lithium-Ion Battery Weight and Energy Density: Formulas, Data &amp; Chemistry Comparison](https://www.lifepo4batteryshop.com/blogs/lithium-ion-battery-weight-and-energy-density.html) (lifepo4batteryshop.com, retrieved 2026-10-17). Findings F2: \u201cLFP cells range from 90-205 Wh/kg gravimetrically at the cell level. Standard commercial prismatic cells \\(100-314Ah\\) typically achieve 130-160 Wh/kg.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://interestingengineering.com/energy/sodium-batteries-breakthrough-material",
+        "title": "Sodium batteries hit 458 Wh/kg: New material closes gap with lithium",
+        "finding_ids": [
+          "F1"
+        ]
+      },
+      {
+        "number": 2,
+        "url": "https://www.lifepo4batteryshop.com/blogs/lithium-ion-battery-weight-and-energy-density.html",
+        "title": "Lithium-Ion Battery Weight and Energy Density: Formulas, Data & Chemistry Comparison",
+        "finding_ids": [
+          "F2"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 4,
+      "valid": 4,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 4,
+      "valid": 4,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq2",
+      "claim": "Commercial sodium\u2011ion cells have a gravimetric energy density of about 458 Wh/kg as of 2024.",
+      "url": "https://interestingengineering.com/energy/sodium-batteries-breakthrough-material",
+      "title": "Sodium batteries hit 458 Wh/kg: New material closes gap with lithium",
+      "snippet": "With a higher energy density of 458 watt-hours per kilogram (Wh/kg) compared to the 396 Wh/kg in older sodium-ion batteries, this material brings sodium technology closer to competing with lithium-ion batteries.",
+      "retrieved_at": "2026-10-17T01:46:25.320512Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq2",
+      "claim": "Commercial sodium\u2011ion cells typically have gravimetric energy densities around 100\u2013150 Wh/kg as of 2024.",
+      "url": "https://www.lifepo4batteryshop.com/blogs/lithium-ion-battery-weight-and-energy-density.html",
+      "title": "Lithium-Ion Battery Weight and Energy Density: Formulas, Data & Chemistry Comparison",
+      "snippet": "LFP cells range from 90-205 Wh/kg gravimetrically at the cell level. Standard commercial prismatic cells (100-314Ah) typically achieve 130-160 Wh/kg.",
+      "retrieved_at": "2026-10-17T01:46:34.752729Z"
+    }
+  ]
+}

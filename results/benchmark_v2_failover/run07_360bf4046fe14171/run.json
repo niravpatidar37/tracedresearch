@@ -1,0 +1,98 @@
+{
+  "run_id": "360bf4046fe14171",
+  "status": "completed",
+  "question": "What is known about microplastics in human tissue and their health effects?",
+  "error": "",
+  "progress": {
+    "step": 16,
+    "sub_questions": {
+      "sq1": {
+        "status": "unanswered",
+        "attempts": 2,
+        "searches": 2,
+        "send_backs": 1,
+        "reason": "send-back limit reached: research status: no_results"
+      },
+      "sq2": {
+        "status": "answered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "partial (search budget reached): Population groups for each tissue concentration not provided"
+      },
+      "sq3": {
+        "status": "unanswered",
+        "attempts": 1,
+        "searches": 2,
+        "send_backs": 0,
+        "reason": "search budget reached: research status: no_results"
+      }
+    },
+    "findings": 3,
+    "tokens_used": 5265,
+    "usd_spent": 0.000625,
+    "searches_used": 6,
+    "elapsed_s": 33.67,
+    "budget_tripped": []
+  },
+  "report": {
+    "title": "Research report",
+    "markdown": "# Research report\n\n**Question:** What is known about microplastics in human tissue and their health effects?\n\n## Summary\n\nMicroplastic concentrations have been quantified in several human tissues, with blood, lung, and stool showing measurable levels. [^1]\n\n## Concentrations in Human Tissues\n\nBlood contains about 1.6 micrograms of plastic per milliliter, based on a 2022 study of 22 healthy volunteers. [^1]\n\nLung tissue shows a median of 2.19 particles per gram, with diseased lungs averaging 4.31 particles per gram versus 0.47 in controls; 12 plastic types were identified among 108 particles. [^1]\n\nStool samples reveal a median of 3.5 microplastic particles per gram, ranging from 50 to 500 micrometers and comprising up to nine plastic types. [^1]\n\n## Limitations\n\n- No peer\u2011reviewed studies reporting detection methods for microplastics in specific human tissues are available in the provided findings.\n- No data on health outcomes or biological effects linked to microplastic exposure are present in the findings.\n- Unanswered: Which peer\u2011reviewed studies have detected microplastics in specific human tissues and what detection methods were used? (send-back limit reached: research status: no\\_results)\n- Unanswered: What health outcomes or biological effects have been associated with microplastic exposure in humans according to epidemiological or experimental research up to 2024? (search budget reached: research status: no\\_results)\n\n## Sources\n\n[^1]: [How Many Microplastics Are in the Human Body?](https://scienceinsights.org/how-many-microplastics-are-in-the-human-body/) (scienceinsights.org, retrieved 2026-10-17). Findings F1, F2, F3: \u201cA 2022 study analyzing blood from 22 healthy volunteers found a mean concentration of 1.6 micrograms of plastic per milliliter of whole blood.\u201d\n",
+    "citations": [
+      {
+        "number": 1,
+        "url": "https://scienceinsights.org/how-many-microplastics-are-in-the-human-body/",
+        "title": "How Many Microplastics Are in the Human Body?",
+        "finding_ids": [
+          "F1",
+          "F2",
+          "F3"
+        ]
+      }
+    ],
+    "citation_check": {
+      "total": 4,
+      "valid": 4,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "first_draft_citation_check": {
+      "total": 6,
+      "valid": 6,
+      "invalid_ids": [],
+      "uncited_paragraphs": 0,
+      "rate": 1.0
+    },
+    "fallback": false
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "sub_question_id": "sq2",
+      "claim": "Blood contains about 1.6 micrograms of plastic per milliliter.",
+      "url": "https://scienceinsights.org/how-many-microplastics-are-in-the-human-body/",
+      "title": "How Many Microplastics Are in the Human Body?",
+      "snippet": "A 2022 study analyzing blood from 22 healthy volunteers found a mean concentration of 1.6 micrograms of plastic per milliliter of whole blood.",
+      "retrieved_at": "2026-10-17T01:49:41.633853Z"
+    },
+    {
+      "id": "F2",
+      "sub_question_id": "sq2",
+      "claim": "Lung tissue median concentration is roughly 2 particles per gram, higher in diseased lungs.",
+      "url": "https://scienceinsights.org/how-many-microplastics-are-in-the-human-body/",
+      "title": "How Many Microplastics Are in the Human Body?",
+      "snippet": "Lung tissue from surgical patients showed a median concentration of about 2.19 particles per gram, with 12 different plastic types identified across 108 particles. People with lung disease had significantly higher concentrations, averaging 4.31 particles per gram compared to 0.47 in control samples.",
+      "retrieved_at": "2026-10-17T01:49:41.633853Z"
+    },
+    {
+      "id": "F3",
+      "sub_question_id": "sq2",
+      "claim": "Stool samples show a median of 3.5 microplastic particles per gram of stool.",
+      "url": "https://scienceinsights.org/how-many-microplastics-are-in-the-human-body/",
+      "title": "How Many Microplastics Are in the Human Body?",
+      "snippet": "That said, the lower estimate still means you're steadily ingesting plastic particles through food, water, and air. Stool samples confirm this: a pilot study found a median of 3.5 microplastic particles per gram of stool in the 50 to 500 micrometer size range, with up to nine different plastic types detected.",
+      "retrieved_at": "2026-10-17T01:49:41.634875Z"
+    }
+  ]
+}

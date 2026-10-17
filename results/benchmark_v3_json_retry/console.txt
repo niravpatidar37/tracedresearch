@@ -1,0 +1,51 @@
+{"i": 1, "status": "completed", "wall_s": 38.0, "tokens": 11206, "usd": 0.001415, "searches": 4, "findings": 8, "final_citations_valid": 9, "final_citations_total": 9, "budget_tripped": []}
+{"i": 2, "status": "completed", "wall_s": 94.0, "tokens": 9821, "usd": 0.001161, "searches": 3, "findings": 5, "final_citations_valid": 6, "final_citations_total": 6, "budget_tripped": []}
+{"i": 3, "status": "completed", "wall_s": 64.8, "tokens": 7612, "usd": 0.000859, "searches": 5, "findings": 2, "final_citations_valid": 2, "final_citations_total": 2, "budget_tripped": []}
+{"i": 4, "status": "completed", "wall_s": 111.7, "tokens": 12698, "usd": 0.001518, "searches": 8, "findings": 4, "final_citations_valid": 6, "final_citations_total": 6, "budget_tripped": []}
+{"i": 5, "status": "completed", "wall_s": 127.6, "tokens": 13665, "usd": 0.001367, "searches": 5, "findings": 6, "final_citations_valid": 7, "final_citations_total": 7, "budget_tripped": []}
+{"i": 6, "status": "completed", "wall_s": 30.8, "tokens": 2812, "usd": 0.000336, "searches": 4, "findings": 3, "final_citations_valid": 4, "final_citations_total": 4, "budget_tripped": ["wall_clock"]}
+{"i": 7, "status": "completed", "wall_s": 98.5, "tokens": 1025, "usd": 0.000225, "searches": 6, "findings": 0, "final_citations_valid": 0, "final_citations_total": 0, "budget_tripped": ["wall_clock"]}
+{"i": 8, "status": "failed", "wall_s": 0.2, "tokens": 0, "usd": 0.0, "searches": 0, "findings": 0, "final_citations_valid": null, "final_citations_total": null, "budget_tripped": []}
+{
+  "runs": 8,
+  "completed": 7,
+  "wall_s_p50": 94.0,
+  "wall_s_p95": 122.8,
+  "wall_s_max": 127.6,
+  "active_s_p50": 93.8,
+  "tokens_mean": 8406,
+  "tokens_p95": 13375,
+  "usd_per_run_mean": 0.000983,
+  "usd_per_run_max": 0.001518,
+  "usd_total_runs": 0.006881,
+  "ledger_delta_usd": 0.006882,
+  "searches_per_run_mean": 5,
+  "fetches_per_run_mean": 20,
+  "findings_per_run_mean": 4,
+  "first_draft_citation_validity": 1.0,
+  "first_draft_citations": "24/24",
+  "final_citation_validity": 1.0,
+  "final_citations": "34/34",
+  "subq_answered": "13/21",
+  "send_backs_total": 10,
+  "fallback_reports": 3,
+  "runs_with_budget_tripped": 2,
+  "budget_trips": {
+    "wall_clock": 2
+  },
+  "rate_limit_failovers": 17,
+  "cached_llm_calls": 0,
+  "llm_calls": 50,
+  "search_status_counts": {
+    "ok": 29,
+    "no_results": 6
+  },
+  "fetch_status_counts": {
+    "blocked": 42,
+    "ok": 80,
+    "unsupported": 6,
+    "rate_limited": 1,
+    "empty": 11
+  },
+  "runs_under_5_min": 7
+}

@@ -1,0 +1,45 @@
+{
+  "runs": 16,
+  "completed": 15,
+  "wall_s_p50": 64.8,
+  "wall_s_p95": 116.5,
+  "wall_s_max": 127.6,
+  "active_s_p50": 64.7,
+  "tokens_mean": 8825,
+  "tokens_p95": 12988,
+  "usd_per_run_mean": 0.000892,
+  "usd_per_run_max": 0.001518,
+  "usd_total_runs": 0.013377,
+  "ledger_delta_usd": null,
+  "searches_per_run_mean": 5.27,
+  "fetches_per_run_mean": 19.53,
+  "findings_per_run_mean": 3.87,
+  "first_draft_citation_validity": 1.0,
+  "first_draft_citations": "59/59",
+  "final_citation_validity": 1.0,
+  "final_citations": "72/72",
+  "subq_answered": "27/46",
+  "send_backs_total": 21,
+  "fallback_reports": 6,
+  "runs_with_budget_tripped": 2,
+  "budget_trips": {
+    "wall_clock": 2
+  },
+  "rate_limit_failovers": 26,
+  "cached_llm_calls": 10,
+  "llm_calls": 113,
+  "search_status_counts": {
+    "ok": 62,
+    "no_results": 17
+  },
+  "fetch_status_counts": {
+    "blocked": 85,
+    "ok": 164,
+    "unsupported": 15,
+    "rate_limited": 3,
+    "empty": 23,
+    "error": 2,
+    "too_large": 1
+  },
+  "runs_under_5_min": 15
+}

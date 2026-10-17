@@ -1,0 +1,738 @@
+{
+  "run_id": "68efd57457b54b7d",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:49:55.462658+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:49:55.464244+00:00",
+      "latency_ms": 2266.0,
+      "input": "question='How have James Webb Space Telescope observations changed our understanding of the earliest galaxies?'",
+      "output": "3 sub-questions (proposed 3): What new high-redshift galaxy populations were first detected by JWST and how many were identified in its early surveys? | How did JWST\u2019s spectroscopic measurements refine the estimated ages and star-formation rates of the earliest galaxies? | What evidence from JWST imaging has altered theories about the formation of the first massive galaxies?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 113s"
+        },
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 320,
+          "output_tokens": 177,
+          "usd": 7.709999999999999e-05,
+          "cached": false,
+          "latency_ms": 700.9928999468684,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 497,
+      "usd": 7.7e-05,
+      "pid": 34668,
+      "tokens_used_total": 497,
+      "elapsed_s_total": 2.27
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:49:57.738546+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 497,
+      "elapsed_s_total": 2.27
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:49:57.741217+00:00",
+      "latency_ms": 15438.0,
+      "input": "sq1: What new high-redshift galaxy populations were first detected by JWST and how many were identified in its early surveys? queries=['JWST first high-redshift galaxies 2023 count', 'JWST early survey high-z galaxy discovery']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "JWST first high-redshift galaxies 2023 count",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 4023.9753999048844,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ui.adsabs.harvard.edu/abs/2023AAS...24115307C/abstract",
+          "status": "error",
+          "detail": "http_405",
+          "latency_ms": 250.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://conference-indico.kek.jp/event/218/contributions/4791/attachments/3103/4212/harikane_v1+Yuichi+Harikane.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 2047.000000020489,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://arxiv.org/html/2507.23742v1",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 532.0000000065193,
+          "results": 72929
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ui.adsabs.harvard.edu/abs/2021ApJ...923....8S/abstract",
+          "status": "error",
+          "detail": "http_405",
+          "latency_ms": 297.0000000204891,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://iopscience.iop.org/article/10.3847/1538-4357/acecfe",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1937.999999965541,
+          "results": 51237
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1596,
+          "output_tokens": 62,
+          "usd": 0.00013829999999999997,
+          "cached": false,
+          "latency_ms": 505.4973999504,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1658,
+      "usd": 0.000138,
+      "pid": 34668,
+      "tokens_used_total": 2155,
+      "elapsed_s_total": 17.7
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:50:13.182466+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='JWST early survey high-z galaxy discovery'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 2155,
+      "elapsed_s_total": 17.7
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:50:13.185076+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 2155,
+      "elapsed_s_total": 17.7
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:1",
+      "started_at": "2026-10-17T01:50:13.188241+00:00",
+      "latency_ms": 10344.0,
+      "input": "sq1: What new high-redshift galaxy populations were first detected by JWST and how many were identified in its early surveys? queries=['JWST early survey high-z galaxy discovery']",
+      "output": "status=no_results findings=0 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "JWST early survey high-z galaxy discovery",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2607.7911999309435,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://arxiv.org/abs/2511.07542",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 109.00000005494803,
+          "results": 2644
+        },
+        {
+          "tool": "fetch",
+          "input": "https://link.springer.com/article/10.1007/s10509-025-04467-y",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 140.00000001396984,
+          "results": 209
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.jameswebbdiscovery.com/discoveries/james-webb-space-telescope-confirms-mom-z14-farthest-galaxy-ever-seen",
+          "status": "too_large",
+          "detail": "stream",
+          "latency_ms": 484.00000005494803,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://jades-survey.github.io/high-redshift/new-redshift-record/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 92.99999999348074,
+          "results": 5614
+        },
+        {
+          "tool": "fetch",
+          "input": "https://academic.oup.com/mnras/article/524/3/3385/7221343",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 141.0000000614673,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1525,
+          "output_tokens": 188,
+          "usd": 0.00017077500000000002,
+          "cached": false,
+          "latency_ms": 584.7024000249803,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1713,
+      "usd": 0.000171,
+      "pid": 34668,
+      "tokens_used_total": 3868,
+      "elapsed_s_total": 28.05
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:1",
+      "started_at": "2026-10-17T01:50:23.533091+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='JWST first high-redshift galaxies 2023 count'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3868,
+      "elapsed_s_total": 28.05
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:50:23.536261+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 3868,
+      "elapsed_s_total": 28.05
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:50:23.538863+00:00",
+      "latency_ms": 11656.0,
+      "input": "sq2: How did JWST\u2019s spectroscopic measurements refine the estimated ages and star-formation rates of the earliest galaxies? queries=['JWST spectroscopy early galaxy ages 2024', 'JWST star formation rate high-redshift galaxies']",
+      "output": "status=ok findings=1 2 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "JWST spectroscopy early galaxy ages 2024",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2677.224399987608,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.europhysicsnews.org/articles/epn/pdf/2024/05/epn2024555p24.pdf",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 234.99999998603016,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41550-025-02726-0",
+          "status": "blocked",
+          "detail": "too_many_redirects",
+          "latency_ms": 1375.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41550-025-02726-0.pdf",
+          "status": "blocked",
+          "detail": "too_many_redirects",
+          "latency_ms": 1344.0000000409782,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://iopscience.iop.org/article/10.3847/1538-4357/ada95c",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2734.99999998603,
+          "results": 144188
+        },
+        {
+          "tool": "fetch",
+          "input": "https://astronoo.com/en/articles/early-galaxies.html",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 250.0,
+          "results": 10320
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1455,
+          "output_tokens": 363,
+          "usd": 0.00021802499999999997,
+          "cached": false,
+          "latency_ms": 743.7505000270903,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1818,
+      "usd": 0.000218,
+      "pid": 34668,
+      "tokens_used_total": 5686,
+      "elapsed_s_total": 39.7
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:50:35.194327+00:00",
+      "latency_ms": 3594.0,
+      "input": "sq2: result=ok findings=1",
+      "output": "answered=False by_llm=True missing='No star\u2011formation rate values or discussion of how the spectroscopic data improved age and SFR estimates.' follow_up='JWST NIRSpec early galaxy age star\u2011formation rate refinement'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 356,
+          "output_tokens": 156,
+          "usd": 7.35e-05,
+          "cached": false,
+          "latency_ms": 415.480799973011,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 512,
+      "usd": 7.3e-05,
+      "pid": 34668,
+      "tokens_used_total": 6198,
+      "elapsed_s_total": 43.3
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:50:38.779153+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 6198,
+      "elapsed_s_total": 43.3
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:1",
+      "started_at": "2026-10-17T01:50:38.782444+00:00",
+      "latency_ms": 12297.0,
+      "input": "sq2: How did JWST\u2019s spectroscopic measurements refine the estimated ages and star-formation rates of the earliest galaxies? queries=['JWST NIRSpec early galaxy age star\u2011formation rate refinement']",
+      "output": "status=no_results findings=0 2 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "JWST NIRSpec early galaxy age star\u2011formation rate refinement",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1835.4764999821782,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://academic.oup.com/mnras/article/522/4/6236/7159739",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 30.999999959021807,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://academic.oup.com/mnras/article/537/2/1826/7973012",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 31.00000007543713,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ar5iv.labs.arxiv.org/html/2208.03281",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 452.9999999795109,
+          "results": 63967
+        },
+        {
+          "tool": "fetch",
+          "input": "https://spacetelescope.app/blog/jwst-nirspec-xmm-vid1-2075-galaxy-8",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 592.9999999934807,
+          "results": 3268
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1439,
+          "output_tokens": 360,
+          "usd": 0.000215925,
+          "cached": false,
+          "latency_ms": 657.9355000285432,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1799,
+      "usd": 0.000216,
+      "pid": 34668,
+      "tokens_used_total": 7997,
+      "elapsed_s_total": 55.59
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:1",
+      "started_at": "2026-10-17T01:50:51.075671+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='JWST spectroscopy early galaxy ages 2024'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 7997,
+      "elapsed_s_total": 55.59
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T01:50:51.078339+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 7997,
+      "elapsed_s_total": 55.59
+    },
+    {
+      "step": 16,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T01:50:51.081004+00:00",
+      "latency_ms": 15250.0,
+      "input": "sq3: What evidence from JWST imaging has altered theories about the formation of the first massive galaxies? queries=['JWST imaging first massive galaxies 2023 theory change', 'JWST early massive galaxy formation evidence']",
+      "output": "status=ok findings=4 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "JWST imaging first massive galaxies 2023 theory change",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1107.7786000678316,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.universetoday.com/articles/whoa-the-jwsts-ancient-galaxies-are-much-more-massive-than-thought",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 155.9999999590218,
+          "results": 6769
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41550-026-02947-x",
+          "status": "blocked",
+          "detail": "too_many_redirects",
+          "latency_ms": 1234.9999999860302,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedaily.com/releases/2026/08/260822015141.htm",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 234.99999998603016,
+          "results": 6411
+        },
+        {
+          "tool": "fetch",
+          "input": "https://phys.org/news/2023-10-jwst-early-massive-galaxies.html",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 125.0,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.universetoday.com/articles/the-jwst-and-the-mystery-of-massive-quenched-galaxies-in-the-early-universe",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 109.99999998603016,
+          "results": 8150
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1850,
+          "output_tokens": 256,
+          "usd": 0.00021555,
+          "cached": false,
+          "latency_ms": 590.7656999770552,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2106,
+      "usd": 0.000216,
+      "pid": 34668,
+      "tokens_used_total": 10103,
+      "elapsed_s_total": 70.84
+    },
+    {
+      "step": 17,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T01:51:06.327957+00:00",
+      "latency_ms": 2765.0,
+      "input": "sq3: result=ok findings=4",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 444,
+          "output_tokens": 73,
+          "usd": 5.519999999999999e-05,
+          "cached": false,
+          "latency_ms": 385.85969991981983,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 517,
+      "usd": 5.5e-05,
+      "pid": 34668,
+      "tokens_used_total": 10620,
+      "elapsed_s_total": 73.61
+    },
+    {
+      "step": 18,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:17",
+      "started_at": "2026-10-17T01:51:09.090367+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:unanswered, sq2:answered, sq3:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 34668,
+      "tokens_used_total": 10620,
+      "elapsed_s_total": 73.61
+    },
+    {
+      "step": 19,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:51:09.092983+00:00",
+      "latency_ms": 15547.0,
+      "input": "findings=5 subqs=3",
+      "output": "fallback=True attempts=0 citations_final=6/6",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 302s"
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 846,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "provider schema validation failed: Generated JSON does not match the expected schema. Please adjust your prompt. See 'failed_generation' for more details. Error: jsonschema: '' does not validate with "
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 936,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "provider schema validation failed: Generated JSON does not match the expected schema. Please adjust your prompt. See 'failed_generation' for more details. Error: jsonschema: '' does not validate with "
+        }
+      ],
+      "tokens": 1782,
+      "usd": 0.0,
+      "pid": 34668,
+      "tokens_used_total": 12402,
+      "elapsed_s_total": 89.16
+    }
+  ]
+}

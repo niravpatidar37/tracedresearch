@@ -1,0 +1,521 @@
+{
+  "run_id": "d3edb52959d14b9c",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T02:06:56.994540+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29304,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T02:06:56.997174+00:00",
+      "latency_ms": 10500.0,
+      "input": "question='What are the main differences between the Raft and Paxos consensus algorithms in practice?'",
+      "output": "3 sub-questions (proposed 3): What are the key components and design principles of Raft? | What are the key components and design principles of Paxos? | How do Raft and Paxos compare in terms of fault tolerance and performance in real-world applications?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 153,
+          "output_tokens": 218,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 10503.304000012577,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 371,
+      "usd": 0.0,
+      "pid": 29304,
+      "tokens_used_total": 371,
+      "elapsed_s_total": 10.5
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T02:07:07.507447+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29304,
+      "tokens_used_total": 371,
+      "elapsed_s_total": 10.5
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T02:07:07.511141+00:00",
+      "latency_ms": 27344.0,
+      "input": "sq1: What are the key components and design principles of Raft? queries=['raft consensus algorithm components', 'raft design principles']",
+      "output": "status=ok findings=2 2 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "raft consensus algorithm components",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 3238.545500091277,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/Raft_(algorithm)",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 467.99999999348074,
+          "results": 16153
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.geeksforgeeks.org/system-design/raft-consensus-algorithm/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 312.00000003445894,
+          "results": 10811
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.systemdesignhandbook.com/guides/raft-consensus-algorithm/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 5765.00000001397,
+          "results": 31523
+        },
+        {
+          "tool": "fetch",
+          "input": "https://raft.github.io/raft.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 156.00000007543713,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://raft.github.io/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 311.9999999180436,
+          "results": 5872
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 1604,
+          "output_tokens": 312,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 18327.41230004467,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1916,
+      "usd": 0.0,
+      "pid": 29304,
+      "tokens_used_total": 2287,
+      "elapsed_s_total": 37.84
+    },
+    {
+      "step": 5,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:4",
+      "started_at": "2026-10-17T02:07:44.916796+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:researched, sq2:pending, sq3:pending",
+      "output": "next=reviewer subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 14440,
+      "tokens_used_total": 2287,
+      "elapsed_s_total": 37.84
+    },
+    {
+      "step": 6,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T02:07:44.919402+00:00",
+      "latency_ms": 10906.0,
+      "input": "sq1: result=ok findings=2",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 215,
+          "output_tokens": 21,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 10908.430099952966,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 236,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 2523,
+      "elapsed_s_total": 48.75
+    },
+    {
+      "step": 7,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:6",
+      "started_at": "2026-10-17T02:07:55.836853+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 14440,
+      "tokens_used_total": 2523,
+      "elapsed_s_total": 48.75
+    },
+    {
+      "step": 8,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T02:07:55.842293+00:00",
+      "latency_ms": 31954.0,
+      "input": "sq2: What are the key components and design principles of Paxos? queries=['paxos consensus algorithm components', 'paxos design principles']",
+      "output": "status=ok findings=4 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "paxos consensus algorithm components",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1103.2906000036746,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/Paxos_(computer_science)",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 875.0,
+          "results": 52228
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.geeksforgeeks.org/computer-networks/paxos-consensus-algorithm/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 875.0,
+          "results": 16251
+        },
+        {
+          "tool": "fetch",
+          "input": "https://penluma.com/blog/distributed-systems/06-paxos-the-original-consensus-algorithm/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 547.0000000204891,
+          "results": 19206
+        },
+        {
+          "tool": "fetch",
+          "input": "https://hackernoon.com/understanding-the-paxos-consensus-algorithm-part-i-how-distributed-systems-reach-consensus",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 500.0,
+          "results": 6183
+        },
+        {
+          "tool": "fetch",
+          "input": "https://singhajit.com/distributed-systems/paxos/",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 31.00000007543713,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 1627,
+          "output_tokens": 371,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 29949.471800005995,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1998,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 4521,
+      "elapsed_s_total": 80.7
+    },
+    {
+      "step": 9,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T02:08:27.798886+00:00",
+      "latency_ms": 7687.0,
+      "input": "sq2: result=ok findings=4",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 236,
+          "output_tokens": 21,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 7683.7481000693515,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 257,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 4778,
+      "elapsed_s_total": 88.39
+    },
+    {
+      "step": 10,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:9",
+      "started_at": "2026-10-17T02:08:35.490809+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 14440,
+      "tokens_used_total": 4778,
+      "elapsed_s_total": 88.39
+    },
+    {
+      "step": 11,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T02:08:35.496211+00:00",
+      "latency_ms": 23640.0,
+      "input": "sq3: How do Raft and Paxos compare in terms of fault tolerance and performance in real-world applications? queries=['raft vs paxos fault tolerance', 'raft vs paxos performance comparison']",
+      "output": "status=ok findings=4 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "raft vs paxos fault tolerance",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 3521.4239000342786,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://medium.com/@mani.saksham12/raft-and-paxos-consensus-algorithms-for-distributed-systems-138cd7c2d35a",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 47.0000000204891,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://thecodeforge.io/system-design/consensus-paxos-raft/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 687.9999999655411,
+          "results": 3381
+        },
+        {
+          "tool": "fetch",
+          "input": "https://codelucky.com/distributed-consensus-raft-paxos/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1609.9999999860302,
+          "results": 10246
+        },
+        {
+          "tool": "fetch",
+          "input": "https://thescalabilitydigest.substack.com/p/which-is-better-for-production-paxos",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 282.00000000651926,
+          "results": 9084
+        },
+        {
+          "tool": "fetch",
+          "input": "https://arxiv.org/pdf/2004.05074",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 47.0000000204891,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 1630,
+          "output_tokens": 354,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 18510.26540005114,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1984,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 6762,
+      "elapsed_s_total": 112.03
+    },
+    {
+      "step": 12,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T02:08:59.145707+00:00",
+      "latency_ms": 8891.0,
+      "input": "sq3: result=ok findings=4",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 249,
+          "output_tokens": 21,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 8877.988299936987,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 270,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 7032,
+      "elapsed_s_total": 120.92
+    },
+    {
+      "step": 13,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:12",
+      "started_at": "2026-10-17T02:09:08.037784+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 14440,
+      "tokens_used_total": 7032,
+      "elapsed_s_total": 120.92
+    },
+    {
+      "step": 14,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T02:09:08.047356+00:00",
+      "latency_ms": 159687.0,
+      "input": "findings=10 subqs=3",
+      "output": "fallback=True attempts=0 citations_final=11/11",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 1081,
+          "output_tokens": 1439,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 79698.25799996033,
+          "ok": false,
+          "error": "ValidationError"
+        },
+        {
+          "role": "writer",
+          "model": "llama3.1:8b",
+          "provider": "ollama",
+          "input_tokens": 1165,
+          "output_tokens": 1487,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 79973.4173999168,
+          "ok": false,
+          "error": "ValidationError"
+        }
+      ],
+      "tokens": 5172,
+      "usd": 0.0,
+      "pid": 14440,
+      "tokens_used_total": 12204,
+      "elapsed_s_total": 280.61
+    }
+  ]
+}

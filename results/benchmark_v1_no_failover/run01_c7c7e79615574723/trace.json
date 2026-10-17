@@ -1,0 +1,723 @@
+{
+  "run_id": "c7c7e79615574723",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:32:04.789208+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:32:04.794127+00:00",
+      "latency_ms": 875.0,
+      "input": "question='What caused the collapse of Silicon Valley Bank in March 2023?'",
+      "output": "3 sub-questions (proposed 3): What were the key financial metrics (e.g., loan portfolio composition, deposit base, interest rate risk) of Silicon Valley Bank before March 2023? | Which regulatory filings or supervisory reports highlighted risk factors at Silicon Valley Bank in the months leading up to March 2023? | What specific events (e.g., bond sale, deposit withdrawals, market reaction) triggered the bank run that led to SVB's collapse in March 2023?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 319,
+          "output_tokens": 253,
+          "usd": 0.00019964999999999997,
+          "cached": false,
+          "latency_ms": 870.0213000411168,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 572,
+      "usd": 0.0002,
+      "pid": 29908,
+      "tokens_used_total": 572,
+      "elapsed_s_total": 0.88
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:32:05.684256+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 572,
+      "elapsed_s_total": 0.88
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:32:05.689259+00:00",
+      "latency_ms": 4547.0,
+      "input": "sq1: What were the key financial metrics (e.g., loan portfolio composition, deposit base, interest rate risk) of Silicon Valley Bank before March 2023? queries=['Silicon Valley Bank financial metrics 2022', 'SVB loan portfolio composition 2023']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Silicon Valley Bank financial metrics 2022",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2427.243600017391,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sec.gov/Archives/edgar/data/719739/000071973923000021/sivb-20221231.htm",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.000000034458935,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.scribd.com/document/631661982/SVB-Report-2022",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 217.99999999348074,
+          "results": 209
+        },
+        {
+          "tool": "fetch",
+          "input": "https://elischolar.library.yale.edu/ypfs-documents2/5447/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 577.9999999795109,
+          "results": 448
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.annualreports.com/Company/svb-financial-group",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1875.0,
+          "results": 729
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ir.svb.com/news-and-research/news/news-details/2022/SVB-Announces-Availability-of-Financial-Results/default.aspx",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1422.000000020489,
+          "results": 1996
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 692,
+          "output_tokens": 42,
+          "usd": 6.45e-05,
+          "cached": false,
+          "latency_ms": 234.74310000892729,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 734,
+      "usd": 6.4e-05,
+      "pid": 29908,
+      "tokens_used_total": 1306,
+      "elapsed_s_total": 5.42
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:32:10.245442+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='SVB loan portfolio composition 2023'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 1306,
+      "elapsed_s_total": 5.42
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:32:10.248576+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 1306,
+      "elapsed_s_total": 5.42
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:1",
+      "started_at": "2026-10-17T01:32:10.252238+00:00",
+      "latency_ms": 3703.0,
+      "input": "sq1: What were the key financial metrics (e.g., loan portfolio composition, deposit base, interest rate risk) of Silicon Valley Bank before March 2023? queries=['SVB loan portfolio composition 2023']",
+      "output": "status=ok findings=2 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "SVB loan portfolio composition 2023",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2576.016700011678,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/insights/eye-on-the-market/silicon-valley-bank-failure-amv.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 406.00000007543713,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://financialpost.com/fp-finance/banking/credit-funds-silicon-valley-bank-loan-book",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 484.00000005494803,
+          "results": 5416
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ir.svb.com/financials/annual-reports-and-proxies/default.aspx",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 125.0,
+          "results": 845
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.federalreserve.gov/publications/2023-April-SVB-Evolution-of-Silicon-Valley-Bank.htm",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 187.00000003445894,
+          "results": 14902
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.ft.com/content/0db9092d-9f19-43a1-be52-03e375e59eb6",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.000000034458935,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1644,
+          "output_tokens": 353,
+          "usd": 0.0002292,
+          "cached": false,
+          "latency_ms": 625.4273999948055,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1997,
+      "usd": 0.000229,
+      "pid": 29908,
+      "tokens_used_total": 3303,
+      "elapsed_s_total": 9.12
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:1",
+      "started_at": "2026-10-17T01:32:13.958728+00:00",
+      "latency_ms": 437.0,
+      "input": "sq1: result=ok findings=2",
+      "output": "answered=False by_llm=True missing='Deposit base and interest rate risk details are missing.' follow_up='Silicon Valley Bank deposit base interest rate risk 2023'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 396,
+          "output_tokens": 124,
+          "usd": 6.689999999999999e-05,
+          "cached": false,
+          "latency_ms": 416.22749995440245,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 520,
+      "usd": 6.7e-05,
+      "pid": 29908,
+      "tokens_used_total": 3823,
+      "elapsed_s_total": 9.56
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:32:14.391624+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 3823,
+      "elapsed_s_total": 9.56
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:32:14.394219+00:00",
+      "latency_ms": 6266.0,
+      "input": "sq2: Which regulatory filings or supervisory reports highlighted risk factors at Silicon Valley Bank in the months leading up to March 2023? queries=['SVB FDIC report March 2023', 'Silicon Valley Bank regulator filing 2022']",
+      "output": "status=ok findings=1 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "SVB FDIC report March 2023",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 4212.622700026259,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/Collapse_of_Silicon_Valley_Bank",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 875.0,
+          "results": 72205
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.fdic.gov/resources/resolutions/bank-failures/failed-bank-list/silicon-valley.html",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 547.0000000204891,
+          "results": 9107
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.fdic.gov/news/speeches/2023/spmar2723.html",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 593.9999999245629,
+          "results": 42173
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.gao.gov/assets/gao-23-106736.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 358.9999999385327,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://oig.federalreserve.gov/reports/board-material-loss-review-silicon-valley-bank-sep2023.htm",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 234.99999998603016,
+          "results": 1687
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1976,
+          "output_tokens": 311,
+          "usd": 0.0002415,
+          "cached": false,
+          "latency_ms": 1141.6900999611244,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 2287,
+      "usd": 0.000241,
+      "pid": 29908,
+      "tokens_used_total": 6110,
+      "elapsed_s_total": 15.83
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:32:20.679733+00:00",
+      "latency_ms": 515.0,
+      "input": "sq2: result=ok findings=1",
+      "output": "answered=False by_llm=True missing='Need specific regulatory filings or supervisory reports (e.g., FDIC, OCC, SEC) that highlighted risk factors for SVB in ' follow_up='SVB regulatory filings risk factors 2023'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 346,
+          "output_tokens": 143,
+          "usd": 6.884999999999999e-05,
+          "cached": false,
+          "latency_ms": 506.46289996802807,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 489,
+      "usd": 6.9e-05,
+      "pid": 29908,
+      "tokens_used_total": 6599,
+      "elapsed_s_total": 16.34
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:32:21.200016+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 6599,
+      "elapsed_s_total": 16.34
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:1",
+      "started_at": "2026-10-17T01:32:21.202168+00:00",
+      "latency_ms": 2984.0,
+      "input": "sq2: Which regulatory filings or supervisory reports highlighted risk factors at Silicon Valley Bank in the months leading up to March 2023? queries=['SVB regulatory filings risk factors 2023']",
+      "output": "status=no_results findings=0 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "SVB regulatory filings risk factors 2023",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2118.402999942191,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.ecmi.eu/sites/default/files/no_81_-_the_collapse_of_svb_-_a_mix_of_poor_risk_management_and_regulatory_failure_formatted_0.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 453.0000000959262,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://ir.svb.com/financials/sec-filings/default.aspx",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 140.00000001396984,
+          "results": 1037
+        },
+        {
+          "tool": "fetch",
+          "input": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4411102",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 47.0000000204891,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.federalreserve.gov/publications/files/svb-review-20230428.pdf",
+          "status": "error",
+          "detail": "http_406",
+          "latency_ms": 78.00000009592623,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://oig.federalreserve.gov/reports/board-material-loss-review-silicon-valley-bank-sep2023.pdf",
+          "status": "error",
+          "detail": "http_406",
+          "latency_ms": 125.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 602,
+          "output_tokens": 24,
+          "usd": 5.234999999999999e-05,
+          "cached": false,
+          "latency_ms": 395.4615000402555,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 626,
+      "usd": 5.2e-05,
+      "pid": 29908,
+      "tokens_used_total": 7225,
+      "elapsed_s_total": 19.33
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:1",
+      "started_at": "2026-10-17T01:32:24.198970+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='SVB FDIC report March 2023'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 7225,
+      "elapsed_s_total": 19.33
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T01:32:24.201649+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 7225,
+      "elapsed_s_total": 19.33
+    },
+    {
+      "step": 16,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T01:32:24.203827+00:00",
+      "latency_ms": 3890.0,
+      "input": "sq3: What specific events (e.g., bond sale, deposit withdrawals, market reaction) triggered the bank run that led to SVB's collapse in March 2023? queries=['Silicon Valley Bank March 2023 bank run timeline', 'SVB bond sale deposit withdrawals March 2023']",
+      "output": "status=ok findings=2 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "Silicon Valley Bank March 2023 bank run timeline",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2407.7505000168458,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://en.wikipedia.org/wiki/2023_United_States_banking_crisis",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 858.9999999385327,
+          "results": 64263
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nytimes.com/article/svb-silicon-valley-bank-collapse-timeline.html",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 108.99999993853271,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.lowenstein.com/media/12156/20230313-debt-finance-silicon-valley-bank-a-timeline-and-summary-of-events.pdf",
+          "status": "unsupported",
+          "detail": "application/pdf",
+          "latency_ms": 187.99999996554106,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.lowenstein.com/news-insights/publications/client-alerts/silicon-valley-bank-a-timeline-and-summary-of-events-debt-finance",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 562.9999999655411,
+          "results": 7967
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.investopedia.com/what-happened-to-silicon-valley-bank-7368676",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 391.0000000614673,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1509,
+          "output_tokens": 246,
+          "usd": 0.000186975,
+          "cached": false,
+          "latency_ms": 613.0032000364736,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1755,
+      "usd": 0.000187,
+      "pid": 29908,
+      "tokens_used_total": 8980,
+      "elapsed_s_total": 23.22
+    },
+    {
+      "step": 17,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T01:32:28.102176+00:00",
+      "latency_ms": 297.0,
+      "input": "sq3: result=ok findings=2",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 394,
+          "output_tokens": 97,
+          "usd": 5.864999999999999e-05,
+          "cached": false,
+          "latency_ms": 284.08130002208054,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 491,
+      "usd": 5.9e-05,
+      "pid": 29908,
+      "tokens_used_total": 9471,
+      "elapsed_s_total": 23.51
+    },
+    {
+      "step": 18,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:17",
+      "started_at": "2026-10-17T01:32:28.399377+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 29908,
+      "tokens_used_total": 9471,
+      "elapsed_s_total": 23.51
+    },
+    {
+      "step": 19,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:32:28.402011+00:00",
+      "latency_ms": 1422.0,
+      "input": "findings=5 subqs=3",
+      "output": "fallback=False attempts=1 citations_final=5/5 first_draft=6/6",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 1083,
+          "output_tokens": 468,
+          "usd": 0.00044325,
+          "cached": false,
+          "latency_ms": 1414.8327000439167,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1551,
+      "usd": 0.000443,
+      "pid": 29908,
+      "tokens_used_total": 11022,
+      "elapsed_s_total": 24.94
+    }
+  ]
+}

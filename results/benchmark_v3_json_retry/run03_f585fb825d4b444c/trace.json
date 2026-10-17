@@ -1,0 +1,680 @@
+{
+  "run_id": "f585fb825d4b444c",
+  "status": "completed",
+  "steps": [
+    {
+      "step": 1,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:0",
+      "started_at": "2026-10-17T01:55:58.198235+00:00",
+      "latency_ms": 0.0,
+      "input": "no plan",
+      "output": "next=planner",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 0,
+      "elapsed_s_total": 0.0
+    },
+    {
+      "step": 2,
+      "node": "planner",
+      "agent": "planner",
+      "node_key": "planner",
+      "started_at": "2026-10-17T01:55:58.200950+00:00",
+      "latency_ms": 1953.0,
+      "input": "question='What does clinical trial evidence show about semaglutide for weight loss in adults without diabetes?'",
+      "output": "3 sub-questions (proposed 3): What is the average percent weight loss reported in randomized controlled trials of semaglutide 2.4 mg for adults without diabetes over 68 weeks? | What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials? | How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adults without diabetes?",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 79s"
+        },
+        {
+          "role": "planner",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 324,
+          "output_tokens": 190,
+          "usd": 8.13e-05,
+          "cached": false,
+          "latency_ms": 525.5386999342591,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 514,
+      "usd": 8.1e-05,
+      "pid": 41048,
+      "tokens_used_total": 514,
+      "elapsed_s_total": 1.95
+    },
+    {
+      "step": 3,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:2",
+      "started_at": "2026-10-17T01:56:00.169874+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:pending, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 514,
+      "elapsed_s_total": 1.95
+    },
+    {
+      "step": 4,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq1:0",
+      "started_at": "2026-10-17T01:56:00.174612+00:00",
+      "latency_ms": 27828.0,
+      "input": "sq1: What is the average percent weight loss reported in randomized controlled trials of semaglutide 2.4 mg for adults without diabetes over 68 weeks? queries=['semaglutide 2.4 mg weight loss 68 weeks trial']",
+      "output": "status=ok findings=1 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide 2.4 mg weight loss 68 weeks trial",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2305.663499981165,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nejm.org/doi/full/10.1056/NEJMoa2032183",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 108.99999993853271,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.weightlossrankings.org/research/trials/step-1",
+          "status": "rate_limited",
+          "detail": "",
+          "latency_ms": 140.99999994505197,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.glp1check.in/knowledge-center/step-1-once-weekly-semaglutide-in-adults-with-overweight-or-obesity-nejm-2021",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 4202.999999979511,
+          "results": 800
+        },
+        {
+          "tool": "fetch",
+          "input": "https://glponereview.com/clinical/step-trial-results.html",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 312.99999996554106,
+          "results": 2271
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nature.com/articles/s41591-026-04416-4",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1532.0000000065193,
+          "results": 68777
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1667,
+          "output_tokens": 296,
+          "usd": 0.00021382499999999998,
+          "cached": false,
+          "latency_ms": 558.7639000732452,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1963,
+      "usd": 0.000214,
+      "pid": 41048,
+      "tokens_used_total": 2477,
+      "elapsed_s_total": 29.78
+    },
+    {
+      "step": 5,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq1:0",
+      "started_at": "2026-10-17T01:56:28.002055+00:00",
+      "latency_ms": 1953.0,
+      "input": "sq1: result=ok findings=1",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 364,
+          "output_tokens": 97,
+          "usd": 5.6399999999999995e-05,
+          "cached": false,
+          "latency_ms": 349.4043000973761,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 461,
+      "usd": 5.6e-05,
+      "pid": 41048,
+      "tokens_used_total": 2938,
+      "elapsed_s_total": 31.73
+    },
+    {
+      "step": 6,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:5",
+      "started_at": "2026-10-17T01:56:29.967841+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:reviewed, sq2:pending, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 2938,
+      "elapsed_s_total": 31.73
+    },
+    {
+      "step": 7,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:0",
+      "started_at": "2026-10-17T01:56:29.974340+00:00",
+      "latency_ms": 9219.0,
+      "input": "sq2: What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials? queries=['semaglutide 2.4 mg adverse events adults without diabetes']",
+      "output": "status=no_results findings=0 1 extracted finding(s) rejected (no verbatim provenance)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide 2.4 mg adverse events adults without diabetes",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2163.295399979688,
+          "results": 7
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.sciencedirect.com/science/article/pii/S0014299926000695",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 141.0000000614673,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13433015/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 141.0000000614673,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://healthymealsincentives.org/semaglutide-side-effects/",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 375.0,
+          "results": 29249
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.nejm.org/doi/full/10.1056/NEJMoa2307563",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 47.0000000204891,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubmed.ncbi.nlm.nih.gov/38679221/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 125.0,
+          "results": 76
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 999,
+          "output_tokens": 127,
+          "usd": 0.00011302500000000001,
+          "cached": false,
+          "latency_ms": 580.3951000561938,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1126,
+      "usd": 0.000113,
+      "pid": 41048,
+      "tokens_used_total": 4064,
+      "elapsed_s_total": 40.95
+    },
+    {
+      "step": 8,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:0",
+      "started_at": "2026-10-17T01:56:39.186639+00:00",
+      "latency_ms": 0.0,
+      "input": "sq2: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials?'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 4064,
+      "elapsed_s_total": 40.95
+    },
+    {
+      "step": 9,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:8",
+      "started_at": "2026-10-17T01:56:39.190407+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq2",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 4064,
+      "elapsed_s_total": 40.95
+    },
+    {
+      "step": 10,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq2:1",
+      "started_at": "2026-10-17T01:56:39.193585+00:00",
+      "latency_ms": 10172.0,
+      "input": "sq2: What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials? queries=['What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials?']",
+      "output": "status=ok findings=1 ",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "What adverse events were most common in adults without diabetes receiving semaglutide 2.4 mg in phase 3 trials?",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 2614.4221998983994,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9293236/?utm",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 77.9999999795109,
+          "results": 73
+        },
+        {
+          "tool": "fetch",
+          "input": "https://dom-pubs.onlinelibrary.wiley.com/doi/10.1111/dom.15386",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 47.0000000204891,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.thelancet.com/journals/landia/article/PIIS2213-8587(24)00182-7/fulltext",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 1719.0000000409782,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://healthrx.com/wegovy/safety-signals-fda",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 547.0000000204891,
+          "results": 20033
+        },
+        {
+          "tool": "fetch",
+          "input": "https://dom-pubs.onlinelibrary.wiley.com/doi/epdf/10.1111/dom.15386",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 62.999999965541065,
+          "results": 0
+        }
+      ],
+      "llm_calls": [
+        {
+          "role": "researcher",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 1051,
+          "output_tokens": 105,
+          "usd": 0.000110325,
+          "cached": false,
+          "latency_ms": 379.47299994993955,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1156,
+      "usd": 0.00011,
+      "pid": 41048,
+      "tokens_used_total": 5220,
+      "elapsed_s_total": 51.13
+    },
+    {
+      "step": 11,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq2:1",
+      "started_at": "2026-10-17T01:56:49.358492+00:00",
+      "latency_ms": 359.0,
+      "input": "sq2: result=ok findings=1",
+      "output": "answered=True by_llm=True missing='' follow_up=''",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "supervisor",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 347,
+          "output_tokens": 65,
+          "usd": 4.5524999999999995e-05,
+          "cached": false,
+          "latency_ms": 359.3461000127718,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 412,
+      "usd": 4.6e-05,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 51.48
+    },
+    {
+      "step": 12,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:11",
+      "started_at": "2026-10-17T01:56:49.731406+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:reviewed, sq3:pending",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 51.48
+    },
+    {
+      "step": 13,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:0",
+      "started_at": "2026-10-17T01:56:49.734608+00:00",
+      "latency_ms": 2219.0,
+      "input": "sq3: How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adults without diabetes? queries=['semaglutide 2.4 mg vs placebo 5% weight loss adults']",
+      "output": "status=error findings=0 no usable pages (error)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "semaglutide 2.4 mg vs placebo 5% weight loss adults",
+          "status": "ok",
+          "detail": "",
+          "latency_ms": 1708.8025000412017,
+          "results": 8
+        },
+        {
+          "tool": "fetch",
+          "input": "https://www.bing.com/aclick?ld=e8xTIjjKUXxUA3vbCQPIYQFjVUCUw2XONskcXuBmBUwWGFWzzD1QUdk8Z02JiITREiiGsjQi4e-W8GmU4ePAjGbGadYVVkdaLxtVK_ZZb7YSBEptv38lneYOZHHfbML7pqVYu0CVekdwychgJOTkBwPWoV3b0BbDNplgLCOWsSvggIhteyhbX5wNyVJdsko656ten2XNnKje6RMKr1hvrZoVDLgk4&u=aHR0cHMlM2ElMmYlMmZ3d3cueWFob29oZWFsdGguY29tJTJmbWVkaWNhdGlvbnMlMmZjb21wb3VuZGVkLXdlaWdodC1sb3NzLW1lZHMlMmYlM2Z1dG1fc291cmNlJTNkYmluZyUyNnV0bV9tZWRpdW0lM2RjcGMlMjZ1dG1fY2FtcGFpZ24lM2Q1NzEyNDcxNjklMjZ1dG1fdGVybSUzZHNlbWFnbHV0aWRlJTI1MjB3ZWlnaHQlMjUyMGxvc3MlMjZ1dG1fY29udGVudCUzZDExODMwNzY3NjUxOTIzMTQlMjZ1dG1fY2FtcGFpZ25fbmFtZSUzZE5CJTI1MjAtJTI1MjBHTFAxJTI1MjAtJTI1MjBNZWRpY2F0aW9ucyUyNnV0bV9hY2NvdW50X2lkJTNkRzEwN0NaWFglMjZ1dG1fYWRfaWQlM2Q3Mzk0MjUyNDU2NzQyMyUyNnV0bV9tYXRjaF90eXBlJTNkcCUyNnV0bV9rZXl3b3JkX2lkJTNka3dkLTczOTQyOTUzMjQ1OTU3JTNhbG9jLTMyJTI2YWNjb3VudF9pZCUzZEcxMDdDWlhYJTI2bXNjbGtpZCUzZDk1NWY5ZTVlYzgwZDE3ZjUzYmY5ZjQ4YzFkZWU0NDk5&rlid=955f9e5ec80d17f53bf9f48c1dee4499",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 515.999999945052,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubmed.ncbi.nlm.nih.gov/36216945/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 125.0,
+          "results": 76
+        },
+        {
+          "tool": "fetch",
+          "input": "https://jamanetwork.com/journals/jama/fullarticle/2777886",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 109.99999998603016,
+          "results": 0
+        },
+        {
+          "tool": "fetch",
+          "input": "https://pubmed.ncbi.nlm.nih.gov/33755728/",
+          "status": "empty",
+          "detail": "little_text",
+          "latency_ms": 109.99999998603016,
+          "results": 76
+        },
+        {
+          "tool": "fetch",
+          "input": "https://onlinelibrary.wiley.com/doi/full/10.1002/oby.24222",
+          "status": "blocked",
+          "detail": "http_403",
+          "latency_ms": 45.999999972991645,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 53.7
+    },
+    {
+      "step": 14,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:0",
+      "started_at": "2026-10-17T01:56:51.954089+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=error findings=0",
+      "output": "answered=False by_llm=False missing='research status: error' follow_up='How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adult'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 53.7
+    },
+    {
+      "step": 15,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:14",
+      "started_at": "2026-10-17T01:56:51.957774+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:reviewed",
+      "output": "next=researcher subq=sq3",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 53.7
+    },
+    {
+      "step": 16,
+      "node": "researcher",
+      "agent": "researcher",
+      "node_key": "research:sq3:1",
+      "started_at": "2026-10-17T01:56:51.961444+00:00",
+      "latency_ms": 3313.0,
+      "input": "sq3: How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adults without diabetes? queries=['How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adult']",
+      "output": "status=no_results findings=0 no usable pages (no_results)",
+      "status": "ok",
+      "tool_calls": [
+        {
+          "tool": "search",
+          "input": "How does semaglutide 2.4 mg compare to placebo in terms of proportion of participants achieving \u22655% weight loss in adult",
+          "status": "no_results",
+          "detail": "No results found.",
+          "latency_ms": 0.0,
+          "results": 0
+        }
+      ],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 57.02
+    },
+    {
+      "step": 17,
+      "node": "reviewer",
+      "agent": "supervisor/reviewer",
+      "node_key": "review:sq3:1",
+      "started_at": "2026-10-17T01:56:55.289726+00:00",
+      "latency_ms": 0.0,
+      "input": "sq3: result=no_results findings=0",
+      "output": "answered=False by_llm=False missing='research status: no_results' follow_up='semaglutide 2.4 mg vs placebo 5% weight loss adults'",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 57.02
+    },
+    {
+      "step": 18,
+      "node": "supervisor",
+      "agent": "supervisor",
+      "node_key": "supervisor:17",
+      "started_at": "2026-10-17T01:56:55.291833+00:00",
+      "latency_ms": 0.0,
+      "input": "sq1:answered, sq2:answered, sq3:reviewed",
+      "output": "next=writer",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [],
+      "tokens": 0,
+      "usd": 0,
+      "pid": 41048,
+      "tokens_used_total": 5632,
+      "elapsed_s_total": 57.02
+    },
+    {
+      "step": 19,
+      "node": "writer",
+      "agent": "writer",
+      "node_key": "writer",
+      "started_at": "2026-10-17T01:56:55.294487+00:00",
+      "latency_ms": 7656.0,
+      "input": "findings=2 subqs=3",
+      "output": "fallback=False attempts=2 citations_final=2/2 first_draft=1/1",
+      "status": "ok",
+      "tool_calls": [],
+      "llm_calls": [
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-120b",
+          "provider": "groq",
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "usd": 0.0,
+          "cached": false,
+          "latency_ms": 0.0,
+          "ok": false,
+          "error": "rate_limited 214s"
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 773,
+          "output_tokens": 181,
+          "usd": 0.00011227499999999999,
+          "cached": false,
+          "latency_ms": 479.8004999756813,
+          "ok": true,
+          "error": ""
+        },
+        {
+          "role": "writer",
+          "model": "openai/gpt-oss-20b",
+          "provider": "groq",
+          "input_tokens": 805,
+          "output_tokens": 221,
+          "usd": 0.000126675,
+          "cached": false,
+          "latency_ms": 742.7654000930488,
+          "ok": true,
+          "error": ""
+        }
+      ],
+      "tokens": 1980,
+      "usd": 0.000239,
+      "pid": 41048,
+      "tokens_used_total": 7612,
+      "elapsed_s_total": 64.67
+    }
+  ]
+}
