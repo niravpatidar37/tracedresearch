@@ -81,7 +81,7 @@ class OpenAICompatClient:
         if self.provider == "groq" and req.model.startswith("openai/gpt-oss"):
             body["reasoning_effort"] = req.reasoning_effort
         if req.json_schema is not None:
-            if req.model in self._json_object_only or self.provider == "ollama":
+            if not req.strict or req.model in self._json_object_only or self.provider == "ollama":
                 body["response_format"] = {"type": "json_object"}
             else:
                 body["response_format"] = {

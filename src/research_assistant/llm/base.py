@@ -36,6 +36,7 @@ class LLMRequest:
     schema_name: str = "output"
     temperature: float = 0.0
     reasoning_effort: str = "low"
+    strict: bool = True  # False -> plain JSON mode; the caller validates with Pydantic
 
     def cache_payload(self, provider: str) -> dict[str, Any]:
         return {
@@ -47,6 +48,7 @@ class LLMRequest:
             "schema": self.json_schema,
             "temperature": self.temperature,
             "effort": self.reasoning_effort,
+            "strict": self.strict,
         }
 
 

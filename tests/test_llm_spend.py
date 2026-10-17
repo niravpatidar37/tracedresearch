@@ -182,3 +182,37 @@ def test_big_model_rate_limit_fails_over_to_small_model() -> None:
     assert plan.sub_questions[0].question == "What is X?"
     assert llm.models == ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
     assert ctx.llm_calls[0].error.startswith("rate_limited") and ctx.llm_calls[1].model == "openai/gpt-oss-20b"
+
+
+def test_strict_schema_rejection_retries_in_json_mode() -> None:
+    import time as _t
+
+    from research_assistant.config import Budgets, Models
+    from research_assistant.runtime import AgentContext
+    from research_assistant.schemas import ReportDraft
+
+    seen: list[LLMRequest] = []
+
+    class StrictRejects:
+        provider = "fake"
+
+        def complete(self, req: LLMRequest, *, deadline: float | None = None) -> LLMResponse:
+            seen.append(req)
+            if req.strict:
+                raise LLMBadOutput("provider schema validation failed")
+            # omits optional 'title' and 'limitations': Pydantic defaults accept it
+            text = json.dumps({"summary": {"text": "s", "citations": ["F1"]}, "sections": []})
+            return LLMResponse(text, req.model, "fake", 10, 10, 1.0)
+
+    ctx = AgentContext(
+        llm=StrictRejects(),
+        models=Models(),
+        budgets=Budgets(),
+        tokens_used=0,
+        usd_spent=0.0,
+        deadline=_t.monotonic() + 60,
+    )
+    out = ctx.structured(role="writer", model="m", system="sys", user="u", schema=ReportDraft, max_tokens=100)
+    assert out.title == "Research report"
+    assert [r.strict for r in seen] == [True, False]
+    assert "JSON Schema of the required output" in seen[1].system

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import time
 from collections.abc import Callable
@@ -91,15 +92,7 @@ class AgentContext:
             )
             if fallback_model and fallback_model != req.model:
                 self.failover[req.model] = fallback_model  # stick to the fallback for the rest of this node
-                alt = LLMRequest(
-                    model=fallback_model,
-                    system=req.system,
-                    user=req.user,
-                    max_tokens=req.max_tokens,
-                    json_schema=req.json_schema,
-                    schema_name=req.schema_name,
-                )
-                return self.llm.complete(alt, deadline=self.deadline)
+                return self.llm.complete(dataclasses.replace(req, model=fallback_model), deadline=self.deadline)
             if self.clock() + exc.retry_after > self.deadline:
                 raise BudgetExceeded("wall_clock", f"rate limited for {exc.retry_after:.0f}s past deadline") from exc
             self.sleep(exc.retry_after)
@@ -121,6 +114,7 @@ class AgentContext:
         json_schema = strict_schema(schema.model_json_schema())
         prompt = user
         last_error = ""
+        strict = True
         for attempt in range(2):
             if attempt == 1:
                 prompt = (
@@ -130,7 +124,10 @@ class AgentContext:
             self._guard(model, system, prompt, max_tokens, limit)
             req = LLMRequest(
                 model=self._active_model(model),
-                system=system,
+                system=system
+                if strict
+                else system + "\nJSON Schema of the required output:\n" + json.dumps(json_schema),
+                strict=strict,
                 user=prompt,
                 max_tokens=max_tokens,
                 json_schema=json_schema,
@@ -141,12 +138,14 @@ class AgentContext:
             except DeadlineExceeded as exc:
                 raise BudgetExceeded("wall_clock", str(exc)) from exc
             except LLMBadOutput as exc:
-                # provider-side schema failure: count the worst case so budgets stay conservative
+                # Provider-side strict-schema rejection: retry once in plain JSON mode and let Pydantic
+                # (which tolerates omitted optional keys) validate. Count the worst case for budgets.
+                strict = False
                 self.tokens_used += estimate_tokens(system + prompt)
                 self.llm_calls.append(
                     LLMCall(
                         role=role,
-                        model=model,
+                        model=req.model,
                         provider=self.llm.provider,
                         input_tokens=estimate_tokens(system + prompt),
                         output_tokens=0,
