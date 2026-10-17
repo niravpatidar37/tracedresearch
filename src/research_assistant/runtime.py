@@ -32,6 +32,23 @@ class StructuredOutputError(LLMError):
     """The model failed to produce schema-valid output after one repair attempt."""
 
 
+class Preempted(Exception):
+    """Stop the run *now*, before the next LLM or tool call, without failing it.
+
+    Raised when the instance is draining (SIGTERM) or the kill switch is engaged. Deliberately not an
+    LLMError or BudgetExceeded, so no node body catches it: it unwinds to Runner.execute, which leaves
+    the last committed checkpoint intact and puts the run back on the queue.
+    """
+
+    def __init__(self, reason: str) -> None:
+        super().__init__(reason)
+        self.reason = reason
+
+
+def _never() -> str | None:
+    return None
+
+
 @dataclass
 class AgentContext:
     llm: LLMClient
@@ -45,11 +62,16 @@ class AgentContext:
     llm_calls: list[LLMCall] = field(default_factory=list)
     failover: dict[str, str] = field(default_factory=dict)
     tool_calls: list[ToolCall] = field(default_factory=list)
+    stop_reason: Callable[[], str | None] = _never  # "draining" / "kill_switch" -> Preempted
 
     def remaining_s(self) -> float:
         return self.deadline - self.clock()
 
     def check_deadline(self) -> None:
+        """Called before every LLM call (via _guard), every search and every fetch batch."""
+        reason = self.stop_reason()
+        if reason:
+            raise Preempted(reason)
         if self.clock() > self.deadline:
             raise BudgetExceeded("wall_clock", "wall-clock ceiling reached")
 

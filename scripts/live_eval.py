@@ -48,7 +48,7 @@ def ledger_total(project: str = "p2-research") -> float:
 
 
 def start_server(log_path: Path) -> subprocess.Popen[bytes]:
-    env = dict(os.environ, RESEARCH_API_KEYS=API_KEY, RATE_LIMIT_PER_MIN="30", RUN_LEASE_TTL_S="10")
+    env = dict(os.environ, RESEARCH_API_KEYS=API_KEY, RATE_LIMIT_PER_MIN="30", RUN_LEASE_TTL_S="10", LOG_FORMAT="text")
     log = log_path.open("ab")
     proc = subprocess.Popen(
         [

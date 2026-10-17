@@ -4,16 +4,29 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from research_assistant.config import PROJECT, Models, Settings
 from research_assistant.llm.anthropic_client import PLACEHOLDER_MODEL, AnthropicClient
 from research_assistant.llm.base import LLMClient, LLMError
-from research_assistant.llm.cache import DiskCache
+from research_assistant.llm.cache import Cache, DiskCache, RedisCache
 from research_assistant.llm.openai_compat import OpenAICompatClient
-from research_assistant.spend import SpendLedger
+from research_assistant.spend import Ledger, RedisSpendLedger, SpendLedger
+
+if TYPE_CHECKING:
+    import redis
 
 
-def make_ledger(settings: Settings) -> SpendLedger:
+def make_ledger(settings: Settings, client: redis.Redis | None = None) -> Ledger:
+    if settings.spend_backend == "redis":
+        if client is None:
+            raise LLMError("LLM_SPEND_BACKEND=redis needs a Redis client")
+        return RedisSpendLedger(
+            client=client,
+            project=PROJECT,
+            global_cap_usd=settings.spend_cap_usd,
+            project_cap_usd=settings.project_cap_usd,
+        )
     return SpendLedger(
         path=Path(settings.ledger_path),
         project=PROJECT,
@@ -22,9 +35,20 @@ def make_ledger(settings: Settings) -> SpendLedger:
     )
 
 
-def make_llm(settings: Settings) -> tuple[LLMClient, Models]:
-    ledger = make_ledger(settings)
-    cache = DiskCache(settings.cache_dir)
+def make_cache(settings: Settings, client: redis.Redis | None = None) -> Cache | None:
+    if settings.cache_backend == "off":
+        return None
+    if settings.cache_backend == "redis":
+        if client is None:
+            raise LLMError("LLM_CACHE_BACKEND=redis needs a Redis client")
+        return RedisCache(client, ttl_s=settings.cache_ttl_s)
+    return DiskCache(settings.cache_dir)
+
+
+def make_llm(settings: Settings, redis_client: redis.Redis | None = None) -> tuple[LLMClient, Models]:
+    """`client` is the run store's Redis connection (used by the redis spend/cache backends)."""
+    ledger = make_ledger(settings, redis_client)
+    cache = make_cache(settings, redis_client)
     provider = settings.llm_provider
     if provider == "anthropic" or (provider == "auto" and os.environ.get("ANTHROPIC_API_KEY")):
         key = os.environ.get("ANTHROPIC_API_KEY")

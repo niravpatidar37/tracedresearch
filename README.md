@@ -47,9 +47,9 @@ The evidence logs are `crash_resume.log`, `server1.log` and `server2.log`. The l
 Caveat on the Groq run: by then the shared free-tier key was close to its limits. All of the resumed researcher steps hit `rate limited for 542-669 s past deadline`, so that run finished with 0 findings and a fallback report. Durability still holds. The Ollama run shows a resumed run that does real research. Its 8B writer produced invalid JSON twice, which also led to a fallback report.
 
 ### Tests and security checks
-- **127 pytest tests**, run in CI with no secrets. Every LLM call in them uses recorded/fake responses. Each specialist is tested alone, every budget is tested to trip, and there are tests for the SSRF guard, the citation validator, injection handling, crash/resume, and API auth, rate limiting and ownership.
-- **Mutation check**: [`results/mutation_check.txt`](results/mutation_check.txt). Each security or budget control is disabled one at a time and the suite must fail for every mutant. The first round left 2 survivors (an IP check shadowed by the deny list, and the undefined-footnote check). Both were fixed with new tests. Current result: **21/21 mutants killed**.
-- CI runs ruff, mypy (strict), pytest, bandit, pip-audit, gitleaks, a Docker build, and a Trivy image scan.
+- **153 pytest tests**, run in CI with no secrets. Every LLM call in them uses recorded/fake responses. Each specialist is tested alone, every budget is tested to trip, and there are tests for the SSRF guard (including the GCP metadata server), the citation validator, injection handling, crash/resume, API auth, rate limiting and ownership, and the deployment controls (readiness, migrations, kill switch, graceful drain, api/worker queue, Redis spend ledger).
+- **Mutation check**: [`results/mutation_check.txt`](results/mutation_check.txt). Each security or budget control is disabled one at a time and the suite must fail for every mutant. The first round left 2 survivors (an IP check shadowed by the deny list, and the undefined-footnote check). Both were fixed with new tests. Current result: **21/21 mutants killed**. A second set for the deployment controls ([`results/mutation_check_deploy.txt`](results/mutation_check_deploy.txt), `scripts/mutation_check.py deploy`) killed **13/13** after one round. The first round had 2 survivors and 1 broken mutant; each fix added a test.
+- CI runs ruff, mypy (strict), pytest, bandit, pip-audit, gitleaks, a Docker build, a Trivy image scan, and for the infrastructure: `terraform fmt -check`, `init -backend=false` + `validate` (both envs), tflint (terraform + google rulesets), and checkov (Terraform + workflows).
 
 ## Architecture
 
@@ -169,6 +169,7 @@ flowchart LR
 - DNS pinning relies on the TLS SNI and hostname check in httpx/httpcore.
 - The spend-cap check and the ledger record are not atomic across processes. A concurrent call can overshoot by at most one call's worst-case cost.
 - There is no robots.txt handling.
+- Deployment (not applied yet): with AUTH enabled, the provider stores the Memorystore AUTH string in Terraform state (`auth_string`), so the state bucket has to stay private. The API is public at the Cloud Run layer (`invoker_iam_disabled`) and relies on app-level API keys plus per-key rate limits. There is no Cloud Armor/WAF in front of it.
 
 **OWASP LLM Top 10 (2025) mapping**
 
@@ -206,7 +207,60 @@ TODO (human): record a 90 s demo. Shot list:
 - **Claude API replaced by Groq `gpt-oss`.** This was the owner's decision. A Claude adapter exists, but it is dormant unless `ANTHROPIC_API_KEY` is set, it stays behind the same spend cap, and its model IDs are placeholders to be verified via `GET /v1/models`.
 - **Tavily replaced by DuckDuckGo (`ddgs`) by default.** The Tavily adapter is auto-selected when `TAVILY_API_KEY` is set. It is unit-tested with a mock transport but has not been run live, because no key is available.
 - **Own Redis state store instead of the official checkpointer** (reason above).
-- Local docker compose only; cloud IaC not yet built.
+- Cloud: Terraform for Google Cloud Run and a CD workflow are **deploy-ready but not applied** (no cloud account connected). See [Deployment](#deployment).
+
+## Deployment
+
+**Status: deploy-ready; not applied (no cloud account connected).** Nothing has been deployed. The Terraform validates
+against hashicorp/google 8.7.0, CI lints and scans it, and the CD workflow skips every deploy job until a GCP
+project is connected.
+
+- **Target:** Google Cloud Run in one GCP project, with `staging` and `prod` environments
+  ([`infra/terraform/`](infra/terraform): one module plus `envs/staging` and `envs/prod`, GCS remote state via
+  `-backend-config`, pinned provider and a committed `.terraform.lock.hcl`).
+- **Topology:**
+  - The **API** is a Cloud Run service with `SERVICE_ROLE=api`. It only enqueues work on Redis and holds no LLM key.
+  - Research runs execute on a **Cloud Run worker pool** (`SERVICE_ROLE=worker`): CPU is always allocated and there
+    is no ingress. A request-billed service throttles CPU outside requests, so background runs can't live there.
+    The trade-off is in [RUNBOOK "Worker topology"](docs/RUNBOOK.md#worker-topology-why-a-worker-pool).
+  - Keyspace migrations run as a **Cloud Run job** before each deploy, not at startup.
+  - State lives in **Memorystore Redis 7.2**: private, AUTH, TLS in transit, RDB snapshots, `noeviction`. Cloud Run
+    reaches it through **Direct VPC egress** (`PRIVATE_RANGES_ONLY`).
+  - **Secret Manager** holds the Groq key, the API keys and the Redis AUTH string. The secrets are created empty, and
+    each runtime service account can read only its own secrets and has no project roles.
+- **Egress:** the fetcher has to reach the open web, so a NAT or egress firewall can't allowlist it. The SSRF guard in
+  code is the control, and it blocks the metadata server and private ranges. A VPC firewall denies every private
+  destination except Memorystore on tcp/6378.
+- **App behaviour on Cloud Run:**
+  - `/healthz` is liveness only. `/readyz` checks Redis, the schema version and whether the instance is draining.
+  - On SIGTERM, runs in flight stop at the next node or LLM/tool call, keep their last checkpoint and are requeued
+    for another instance.
+  - Kill switch: `AGENT_KILL_SWITCH=1`, or the Redis flag via `research-assistant kill-switch on`.
+  - Logs are JSON with PII redaction.
+  - The spend cap and LLM cache move to Redis in the cloud, because there is no shared disk.
+- **CD** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)):
+  1. Build and push the image; it is deployed **by digest**.
+  2. Staging: migrate, deploy a no-traffic tagged revision, smoke `/healthz` + `/readyz`, then promote.
+  3. Prod waits for approval on the `production` environment, then: same-digest promotion, migrate, tagged smoke,
+     a 10% canary with repeated smoke, then 100%. If anything fails, it rolls back automatically to the recorded
+     previous revisions.
+  4. Auth uses keyless Workload Identity Federation, and `id-token: write` is granted only on deploy jobs.
+- **Docs:**
+  - [`docs/RUNBOOK.md`](docs/RUNBOOK.md): one-time bootstrap, first apply, deploy, verify, rollback, secret rotation,
+    kill switch, incidents.
+  - [`docs/SLO.md`](docs/SLO.md): SLIs/SLOs and a cited monthly cost **estimate**, roughly $55-58 for staging and at
+    least $82 for prod, plus about $4 per 1,000 runs.
+- **Local evidence (no cloud):** [`results/deploy_local_check.txt`](results/deploy_local_check.txt) shows the
+  api/worker split, migrations, kill switch and SIGTERM drain on docker compose with real Redis.
+
+One-time GCP bootstrap (exact commands in the RUNBOOK):
+1. Create a GCS state bucket.
+2. Create a `gh-deployer` service account with `run.developer` and `artifactregistry.writer`.
+3. Create a Workload Identity pool and an OIDC provider restricted to this repo and `main`.
+4. Set these repository **variables** (not secrets): `GCP_PROJECT_ID`, `GCP_REGION`, `GCP_WIF_PROVIDER`,
+   `GCP_DEPLOY_SA`.
+5. Create the `staging` and `production` environments, with required reviewers on `production`.
+6. Do the first `terraform apply` per env with a bootstrap image digest, then add the secret values.
 
 ## Setup and run
 
@@ -216,7 +270,8 @@ Requires Python 3.12 via uv, plus Docker. Secrets come from `F:/.secrets/portfol
 uv venv --python 3.12 .venv && uv sync --frozen --extra anthropic
 docker compose -p p2-research up -d redis                      # redis:7.4.7 on 127.0.0.1:16379
 export RESEARCH_API_KEYS="local-$(openssl rand -hex 16)"       # >= 16 chars
-uv run uvicorn research_assistant.api:app_factory --factory --host 127.0.0.1 --port 8102
+uv run research-assistant migrate                              # versioned keyspace migrations (once per Redis)
+LOG_FORMAT=text uv run uvicorn research_assistant.api:app_factory --factory --host 127.0.0.1 --port 8102
 
 curl -s -X POST localhost:8102/research -H "X-API-Key: $RESEARCH_API_KEYS" -H 'content-type: application/json' \
      -d '{"question":"How do sodium-ion batteries compare with lithium-ion on cost?"}'
@@ -227,7 +282,8 @@ curl -s localhost:8102/research/<run_id>/trace  -H "X-API-Key: $RESEARCH_API_KEY
 
 Other entry points:
 - CLI without the API: `uv run research-assistant run "question"`, then `resume <run_id>` or `show <run_id>`.
-- Container: `RESEARCH_API_KEYS=... docker compose -p p2-research --profile api up -d --build`.
+- Containers (api + worker split, like the cloud): `RESEARCH_API_KEYS=... docker compose -p p2-research --profile api up -d --build`. This runs `migrate` once, then starts the API on :8102 and the worker probes on :8112.
+- Ops: `uv run research-assistant kill-switch on|off|status` and `uv run research-assistant migrate --check`.
 - Offline/red-team mode: set `SEARCH_FIXTURE_FILE=fixtures/redteam_corpus.example.json` (see [`docs/REDTEAM.md`](docs/REDTEAM.md)).
 - Local model: `LLM_PROVIDER=ollama` (llama3.1:8b, $0).
 - Tests: `uv run pytest -q`. Live re-measurement: `python scripts/live_eval.py bench` or `python scripts/live_eval.py crash`.

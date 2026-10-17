@@ -1,0 +1,40 @@
+Local deploy-readiness check (docker compose, real Redis 7.4.7, no LLM calls), 2026-10-17
+==========================================================================================
+Image built from this branch's Dockerfile; services: redis, migrate (one-shot), api (SERVICE_ROLE=api),
+worker (SERVICE_ROLE=worker). Commands and the outputs observed:
+
+$ docker compose -p p2-research --profile api up -d redis migrate api
+migrate-1  | {"from": 0, "to": 1, "applied": ["m0001_baseline"]}
+
+$ bash scripts/smoke_test.sh http://127.0.0.1:8102 5
+smoke OK: http://127.0.0.1:8102 (attempt 1)
+$ curl -s 127.0.0.1:8102/readyz
+{"status":"ready","role":"api","schema_version":1,"kill_switch":false}
+
+$ curl -s -X POST 127.0.0.1:8102/research -H "X-API-Key: ..." -d '{"question":"How do sodium-ion batteries compare with lithium-ion on cost?"}'
+{"run_id":"620d1987eafa45de","status":"queued"}
+$ redis-cli LLEN ra:queue
+1                                   # api role enqueued, executed nothing
+
+$ docker compose exec -T api research-assistant kill-switch on --reason local-test
+{"kill_switch_redis": true, "kill_switch_env": false}
+POST 1.1 s after engaging: 202      # within the documented 2 s propagation window (KillSwitch.CACHE_S)
+POST 3 s later:            503 {"detail":"research is temporarily disabled (kill switch)"}
+$ curl -s 127.0.0.1:8102/readyz
+{"status":"ready","role":"api","schema_version":1,"kill_switch":true}
+
+$ docker compose create worker && docker compose start worker      # kill switch still on in Redis
+$ curl -s 127.0.0.1:8112/readyz
+{"status":"ready","role":"worker","schema_version":1,"kill_switch":true}
+$ curl -X POST 127.0.0.1:8112/research  -> 404                     # worker exposes probes only
+$ redis-cli LLEN ra:queue  (12 s after worker start)
+2                                   # worker did not consume while the kill switch was engaged
+
+$ docker compose stop worker        # SIGTERM; took 1 s
+{"severity": "INFO", "logger": "uvicorn.error", "message": "Shutting down", ...}
+{"severity": "INFO", "logger": "research_assistant.api", "message": "shutdown: drained cleanly (0 never-started run(s) requeued)", ...}
+{"severity": "INFO", "logger": "uvicorn.error", "message": "Finished server process [1]", ...}
+
+Cleanup: both test runs, ra:queue and ra:control:kill_switch deleted; all p2-research containers stopped.
+Not covered here (needs LLM calls): draining a run that is mid-node. That path is covered by
+tests/test_deploy.py (test_drain_*, test_service_shutdown_*) and results/mutation_check_deploy.txt.

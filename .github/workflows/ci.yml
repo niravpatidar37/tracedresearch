@@ -77,3 +77,40 @@ jobs:
           aquasec/trivy@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222
           image --scanners vuln --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --no-progress
           research-assistant:ci
+
+  terraform:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: "1.16.6"
+          terraform_wrapper: false
+      - name: terraform fmt
+        run: terraform fmt -check -recursive -diff infra/terraform
+      - name: terraform init (no backend) + validate, both envs
+        run: |
+          for env in staging prod; do
+            terraform -chdir="infra/terraform/envs/${env}" init -backend=false -input=false -lockfile=readonly
+            terraform -chdir="infra/terraform/envs/${env}" validate
+          done
+      - uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
+        with:
+          tflint_version: v0.64.0
+      - name: tflint (terraform + google rulesets)
+        working-directory: infra/terraform
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # read-only; avoids API rate limits when downloading the ruleset
+        run: |
+          tflint --init --config "$PWD/.tflint.hcl"
+          tflint --recursive --config "$PWD/.tflint.hcl" --format compact
+      - name: checkov (terraform + workflows)
+        run: |
+          docker run --rm -v "$PWD:/repo" \
+            bridgecrew/checkov@sha256:3cc125b5337717b7303dbddd4e79374c120687b5ff6a24f9abdad56b562469f3 \
+            -d /repo/infra/terraform --framework terraform --quiet --compact
+          docker run --rm -v "$PWD:/repo" \
+            bridgecrew/checkov@sha256:3cc125b5337717b7303dbddd4e79374c120687b5ff6a24f9abdad56b562469f3 \
+            -d /repo/.github/workflows --framework github_actions --quiet --compact

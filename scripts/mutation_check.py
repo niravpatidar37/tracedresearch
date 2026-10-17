@@ -1,7 +1,8 @@
 """Mutation check for the security controls and budgets.
 
 Each mutant disables one guarantee; at least one test must fail (KILLED). Results -> results/mutation_check.txt
-Run: .venv/Scripts/python.exe scripts/mutation_check.py
+Run: .venv/Scripts/python.exe scripts/mutation_check.py            (security + budgets -> mutation_check.txt)
+     .venv/Scripts/python.exe scripts/mutation_check.py deploy     (deploy controls -> mutation_check_deploy.txt)
 """
 
 from __future__ import annotations
@@ -95,8 +96,8 @@ MUTANTS = [
     (
         S + "spend.py",
         "ledger: no project cap",
-        "        if p + estimate_usd > self.project_cap_usd:",
-        "        if False:",
+        "    if p + estimate_usd > project_cap:",
+        "    if False:",
     ),
     (
         S + "graph.py",
@@ -113,16 +114,99 @@ MUTANTS = [
     (
         S + "api.py",
         "api: no rate limit",
-        "        if not svc.runner.store.hit_rate_limit(bucket, window, limit):",
+        "        if not svc.store.hit_rate_limit(bucket, window, limit):",
         "        if False:",
+    ),
+]
+
+
+DEPLOY_MUTANTS = [
+    (
+        S + "runtime.py",
+        "kill switch/drain: no preempt check before LLM/tool calls",
+        "        if reason:\n            raise Preempted(reason)\n        if self.clock() > self.deadline:",
+        "        if self.clock() > self.deadline:",
+    ),
+    (
+        S + "graph.py",
+        "kill switch/drain: no preempt check at node boundary",
+        "            if reason:  # node boundary: everything up to here is committed\n                raise Preempted(reason)",
+        "            pass",
+    ),
+    (
+        S + "graph.py",
+        "drain: preempted run not requeued",
+        "            self.store.requeue(run_id)\n",
+        "            pass\n",
+    ),
+    (
+        S + "api.py",
+        "kill switch: POST still accepted",
+        "        if svc.kill_switch():\n            raise HTTPException(503",
+        "        if False:\n            raise HTTPException(503",
+    ),
+    (
+        S + "api.py",
+        "kill switch: worker keeps consuming the queue",
+        "                if self.kill_switch() or not self.has_capacity():",
+        "                if not self.has_capacity():",
+    ),
+    (
+        S + "api.py",
+        "shutdown: unstarted runs not handed back",
+        "            if self.uses_queue:\n                self.store.requeue(rid)",
+        "            pass",
+    ),
+    (
+        S + "api.py",
+        "readyz: ignore schema version",
+        "        if version < migrations.REQUIRED_VERSION:",
+        "        if False:",
+    ),
+    (
+        S + "api.py",
+        "readyz: ready while draining",
+        '        if svc.draining.is_set():\n            raise HTTPException(503, "draining")',
+        "        pass",
+    ),
+    (
+        S + "api.py",
+        "resume loop: steals queued runs before the grace period",
+        '                if st.status == "queued" and age < self.settings.orphan_grace_s:',
+        "                if False:",
+    ),
+    (
+        S + "migrations/__init__.py",
+        "migrations: no lock",
+        "    if not r.set(LOCK_KEY, str(time.time()), nx=True, ex=lock_ttl_s):",
+        "    if False:",
+    ),
+    (
+        S + "logging_utils.py",
+        "logs: exception text not redacted",
+        '            entry["exception"] = redact(self.formatException(record.exc_info))',
+        '            entry["exception"] = self.formatException(record.exc_info)',
+    ),
+    (
+        S + "store.py",
+        "redis: TLS server cert not verified",
+        '        kwargs["ssl_cert_reqs"] = "required"',
+        '        kwargs["ssl_cert_reqs"] = "none"',
+    ),
+    (
+        S + "spend.py",
+        "redis ledger: per-instance (not shared) totals",
+        "        g, p = cast(list[str | None], self.client.mget(list(self._keys())))",
+        "        g, p = None, None",
     ),
 ]
 
 
 def main() -> int:
     env = {k: v for k, v in os.environ.items() if not k.startswith(("VIRTUAL_ENV", "PYTHONPATH", "UV_"))}
+    deploy_set = sys.argv[1:] == ["deploy"]
     rows = []
-    for rel, label, old, new in MUTANTS:
+    for rel, label, old, new in DEPLOY_MUTANTS if deploy_set else MUTANTS:
         p = ROOT / rel
         orig = p.read_text(encoding="utf-8")
         assert orig.count(old) == 1, f"{label}: old text found {orig.count(old)} times"
@@ -145,7 +229,8 @@ def main() -> int:
             p.write_text(orig, encoding="utf-8", newline="\n")
     killed = sum(r.startswith("KILLED") for r in rows)
     summary = f"{killed}/{len(rows)} mutants killed"
-    (ROOT / "results" / "mutation_check.txt").write_text("\n".join([*rows, summary]) + "\n", encoding="utf-8")
+    out_name = "mutation_check_deploy.txt" if deploy_set else "mutation_check.txt"
+    (ROOT / "results" / out_name).write_text("\n".join([*rows, summary]) + "\n", encoding="utf-8")
     print(summary)
     return 0 if killed == len(rows) else 1
 

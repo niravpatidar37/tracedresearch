@@ -6,6 +6,7 @@ import os
 
 from research_assistant.agents.researcher import ResearchEnv
 from research_assistant.config import Settings
+from research_assistant.control import KillSwitch
 from research_assistant.fetch.fetcher import Fetcher, SafeFetcher
 from research_assistant.graph import Runner
 from research_assistant.llm.factory import make_llm
@@ -20,14 +21,17 @@ def build_env() -> ResearchEnv:
 
 
 def build_runner(settings: Settings, store: RunStore | None = None) -> Runner:
-    llm, models = make_llm(settings)
+    store = store or RunStore.from_settings(settings)
+    llm, models = make_llm(settings, store.r)
     return Runner(
-        store=store or RunStore.from_url(settings.redis_url),
+        store=store,
         llm=llm,
         models=models,
         budgets=settings.budgets,
         env=build_env(),
         lease_ttl_s=settings.lease_ttl_s,
+        kill_switch=KillSwitch(settings, store),
+        use_queue=settings.role != "all",
     )
 
 

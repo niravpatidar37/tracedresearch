@@ -1,7 +1,11 @@
-"""Shared, append-only USD spend ledger with a hard cap (global across projects + per project).
+"""USD spend ledgers with a hard cap (global + per project), checked before every paid call.
 
-One JSONL line per paid call: {ts, project, provider, model, input_tokens, output_tokens, usd}.
-A file lock serialises concurrent writers from the six portfolio projects.
+SpendLedger (local default): append-only JSONL shared by the six portfolio projects, one line per paid call
+{ts, project, provider, model, input_tokens, output_tokens, usd}; a file lock serialises concurrent writers.
+
+RedisSpendLedger (deployed): Cloud Run instances have no shared disk, so a per-instance file would reset
+the cap on every new instance. The deployed service keeps monthly (UTC calendar month) counters in Redis
+plus an audit stream with the same record shape.
 """
 
 from __future__ import annotations
@@ -10,11 +14,15 @@ import json
 import math
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from importlib import resources
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, Protocol, cast
 
 import portalocker
+
+if TYPE_CHECKING:
+    import redis
 
 
 class BudgetExceeded(RuntimeError):
@@ -53,6 +61,26 @@ def estimate_tokens(text: str) -> int:
     return math.ceil(len(text) / 3.5) + 8
 
 
+def enforce_caps(
+    global_total: float,
+    project_total: float,
+    estimate_usd: float,
+    global_cap: float,
+    project_cap: float,
+    window: str = "",
+) -> None:
+    """Refuse (raise BudgetExceeded) if the worst-case estimate would breach either cap. Shared by both ledgers."""
+    g, p = global_total, project_total
+    if g + estimate_usd > global_cap:
+        raise BudgetExceeded(
+            "global_usd", f"global spend {g:.4f} + estimate {estimate_usd:.4f} > cap {global_cap:.2f} USD{window}"
+        )
+    if p + estimate_usd > project_cap:
+        raise BudgetExceeded(
+            "project_usd", f"project spend {p:.4f} + estimate {estimate_usd:.4f} > cap {project_cap:.2f} USD{window}"
+        )
+
+
 @dataclass
 class SpendLedger:
     path: Path
@@ -88,16 +116,7 @@ class SpendLedger:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with portalocker.Lock(str(self._lock_path()), timeout=30):
             g, p = self.totals()
-        if g + estimate_usd > self.global_cap_usd:
-            raise BudgetExceeded(
-                "global_usd",
-                f"global spend {g:.4f} + estimate {estimate_usd:.4f} > cap {self.global_cap_usd:.2f} USD",
-            )
-        if p + estimate_usd > self.project_cap_usd:
-            raise BudgetExceeded(
-                "project_usd",
-                f"project spend {p:.4f} + estimate {estimate_usd:.4f} > cap {self.project_cap_usd:.2f} USD",
-            )
+        enforce_caps(g, p, estimate_usd, self.global_cap_usd, self.project_cap_usd)
 
     def record(self, provider: str, model: str, input_tokens: int, output_tokens: int, usd: float) -> None:
         rec = {
@@ -115,3 +134,54 @@ class SpendLedger:
             self.path.open("a", encoding="utf-8") as fh,
         ):
             fh.write(json.dumps(rec) + "\n")
+
+
+class Ledger(Protocol):
+    def check(self, estimate_usd: float) -> None: ...
+
+    def record(self, provider: str, model: str, input_tokens: int, output_tokens: int, usd: float) -> None: ...
+
+
+@dataclass
+class RedisSpendLedger:
+    """Per-deployment ledger: caps apply per UTC calendar month (keys expire after ~2 months)."""
+
+    client: redis.Redis
+    project: str
+    global_cap_usd: float
+    project_cap_usd: float
+    clock: Any = time.time
+
+    def period(self) -> str:
+        return datetime.fromtimestamp(self.clock(), tz=UTC).strftime("%Y-%m")
+
+    def _keys(self) -> tuple[str, str]:
+        per = self.period()
+        return f"ra:spend:{per}:global", f"ra:spend:{per}:project:{self.project}"
+
+    def totals(self) -> tuple[float, float]:
+        g, p = cast(list[str | None], self.client.mget(list(self._keys())))
+        return float(g or 0.0), float(p or 0.0)
+
+    def check(self, estimate_usd: float) -> None:
+        g, p = self.totals()
+        enforce_caps(g, p, estimate_usd, self.global_cap_usd, self.project_cap_usd, window=f" in {self.period()}")
+
+    def record(self, provider: str, model: str, input_tokens: int, output_tokens: int, usd: float) -> None:
+        gk, pk = self._keys()
+        rec = {
+            "ts": self.clock(),
+            "project": self.project,
+            "provider": provider,
+            "model": model,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "usd": round(usd, 8),
+        }
+        pipe = self.client.pipeline(transaction=True)
+        pipe.incrbyfloat(gk, usd)
+        pipe.incrbyfloat(pk, usd)
+        pipe.expire(gk, 62 * 86_400)
+        pipe.expire(pk, 62 * 86_400)
+        pipe.xadd("ra:spend:ledger", {"data": json.dumps(rec)}, maxlen=100_000, approximate=True)
+        pipe.execute()

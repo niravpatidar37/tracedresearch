@@ -10,8 +10,8 @@ import time
 from typing import Any
 
 from research_assistant.llm.base import DeadlineExceeded, LLMError, LLMRequest, LLMResponse
-from research_assistant.llm.cache import DiskCache
-from research_assistant.spend import SpendLedger, cost_usd, estimate_tokens
+from research_assistant.llm.cache import Cache, DiskCache
+from research_assistant.spend import Ledger, cost_usd, estimate_tokens
 
 PLACEHOLDER_MODEL = "VERIFY-VIA-GET-v1-models"
 
@@ -19,7 +19,7 @@ PLACEHOLDER_MODEL = "VERIFY-VIA-GET-v1-models"
 class AnthropicClient:
     provider = "anthropic"
 
-    def __init__(self, *, api_key: str, ledger: SpendLedger, cache: DiskCache | None) -> None:
+    def __init__(self, *, api_key: str, ledger: Ledger, cache: Cache | None) -> None:
         try:
             import anthropic
         except ImportError as exc:  # pragma: no cover - optional extra

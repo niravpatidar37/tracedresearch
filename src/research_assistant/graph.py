@@ -19,7 +19,7 @@ from research_assistant.agents import writer as writer_agent
 from research_assistant.agents.researcher import ResearchEnv
 from research_assistant.config import Budgets, Models
 from research_assistant.llm.base import LLMClient, LLMError
-from research_assistant.runtime import AgentContext
+from research_assistant.runtime import AgentContext, Preempted
 from research_assistant.schemas import ResearchResult, Review, RunState, SubQState, utcnow
 from research_assistant.spend import BudgetExceeded
 from research_assistant.store import RunStore
@@ -151,6 +151,13 @@ def writer_node(state: RunState, ctx: AgentContext) -> tuple[RunState, str, str,
 
 
 # ---------------------------------------------------------------------------- runner
+def new_run(store: RunStore, question: str, owner: str = "", *, enqueue: bool = False) -> str:
+    """Create a run record (and optionally enqueue it for the worker pool). Needs no LLM client."""
+    run_id = uuid.uuid4().hex[:16]
+    store.create(RunState(run_id=run_id, question=question, owner=owner), enqueue=enqueue)
+    return run_id
+
+
 class Runner:
     def __init__(
         self,
@@ -164,6 +171,8 @@ class Runner:
         clock: Callable[[], float] = time.monotonic,
         sleep: Callable[[float], None] = time.sleep,
         fault: FaultHook | None = None,
+        kill_switch: Callable[[], bool] | None = None,
+        use_queue: bool = False,
     ) -> None:
         self.store = store
         self.llm = llm
@@ -174,7 +183,17 @@ class Runner:
         self.clock = clock
         self.sleep = sleep
         self.fault = fault
+        self.kill_switch: Callable[[], bool] = kill_switch or (lambda: False)
+        self.use_queue = use_queue  # preempted runs go back on the Redis queue (api/worker split)
+        self.draining = threading.Event()  # set on SIGTERM: checkpoint and hand runs to another instance
         self.graph = self._build()
+
+    def stop_reason(self) -> str | None:
+        if self.draining.is_set():
+            return "draining"
+        if self.kill_switch():
+            return "kill_switch"
+        return None
 
     # -- graph ---------------------------------------------------------------
     def _build(self) -> Any:
@@ -216,6 +235,9 @@ class Runner:
 
     def _durable(self, node: str, agent: str, fn: NodeFn) -> Callable[[RunState], dict[str, Any]]:
         def wrapped(state: RunState) -> dict[str, Any]:
+            reason = self.stop_reason()
+            if reason:  # node boundary: everything up to here is committed
+                raise Preempted(reason)
             key = self.node_key(node, state)
             cached = self.store.get_node(state.run_id, key)
             if cached is not None:  # idempotent re-entry: return the recorded result, do no work
@@ -234,6 +256,7 @@ class Runner:
                 deadline=self.clock() + max(0.0, limit - state.elapsed_s),
                 clock=self.clock,
                 sleep=self.sleep,
+                stop_reason=self.stop_reason,
             )
             started = utcnow()
             t0 = self.clock()
@@ -283,9 +306,18 @@ class Runner:
 
     # -- lifecycle -------------------------------------------------------------
     def create_run(self, question: str, owner: str = "") -> str:
-        run_id = uuid.uuid4().hex[:16]
-        self.store.create(RunState(run_id=run_id, question=question, owner=owner))
-        return run_id
+        return new_run(self.store, question, owner, enqueue=self.use_queue)
+
+    def _preempted(self, run_id: str, fallback: RunState, reason: str) -> RunState:
+        """Leave the last committed checkpoint as-is, mark the run queued and hand it to the next worker."""
+        cur = self.store.load(run_id) or fallback
+        cur.status = "queued"
+        self.store.save(cur)
+        self.store.event(run_id, {"type": "preempted", "reason": reason, "step": cur.step, "pid": os.getpid()})
+        if self.use_queue:
+            self.store.requeue(run_id)
+        log.info("run %s preempted at step %d (%s); checkpoint kept, run requeued", run_id, cur.step, reason)
+        return cur
 
     def execute(self, run_id: str) -> RunState | None:
         token = self.store.acquire_lease(run_id, self.lease_ttl_s)
@@ -306,6 +338,9 @@ class Runner:
             if state.status in ("completed", "failed"):
                 self.store.finish(state)
                 return state
+            reason = self.stop_reason()
+            if reason:
+                return self._preempted(run_id, state, reason)
             resumed = state.step > 0
             state.status = "running"
             self.store.save(state)
@@ -331,6 +366,8 @@ class Runner:
                 final = self.store.load(run_id) or state
                 if final.report is None and final.status != "failed":
                     final.status, final.error = "failed", "graph ended without a report"
+            except Preempted as exc:
+                return self._preempted(run_id, state, exc.reason)
             except BudgetExceeded as exc:
                 final = self.store.load(run_id) or state
                 final.status, final.error = "failed", f"budget: {exc}"
@@ -338,6 +375,18 @@ class Runner:
                 final = self.store.load(run_id) or state
                 final.status, final.error = "failed", f"{type(exc).__name__}: {str(exc)[:300]}"
             self.store.finish(final)
+            # One line per finished run: the source for the run-level SLIs in docs/SLO.md (log-based metrics).
+            log.info(
+                "run_finished run_id=%s status=%s elapsed_s=%.1f tokens=%d usd=%.6f findings=%d fallback=%s budget=%s",
+                run_id,
+                final.status,
+                final.elapsed_s,
+                final.tokens_used,
+                final.usd_spent,
+                len(final.findings),
+                bool(final.report and final.report.fallback),
+                ",".join(final.budget_tripped) or "-",
+            )
             self.store.event(
                 run_id,
                 {

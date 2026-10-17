@@ -1,4 +1,4 @@
-"""CLI: run / resume / show a research run without the API."""
+"""CLI: run / resume / show a research run without the API, plus ops commands (migrate, kill-switch)."""
 
 from __future__ import annotations
 
@@ -7,9 +7,28 @@ import json
 import logging
 import sys
 
+from research_assistant import migrations
 from research_assistant.config import Settings
 from research_assistant.logging_utils import setup_logging
-from research_assistant.wiring import build_runner
+from research_assistant.store import RunStore
+
+
+def _ops(args: argparse.Namespace, settings: Settings) -> int:
+    store = RunStore.from_settings(settings)  # ops commands never need an LLM key
+    if args.cmd == "migrate":
+        before = migrations.current_version(store.r)
+        if args.check:
+            todo = [m.name for m in migrations.pending(store.r)]
+            print(json.dumps({"schema_version": before, "required": migrations.REQUIRED_VERSION, "pending": todo}))
+            return 1 if todo else 0
+        applied = migrations.migrate(store.r)
+        after = migrations.current_version(store.r)
+        print(json.dumps({"from": before, "to": after, "applied": applied}))
+        return 0
+    if args.state != "status":
+        store.set_kill_switch(args.state == "on", reason=args.reason)
+    print(json.dumps({"kill_switch_redis": store.kill_switch_set(), "kill_switch_env": settings.kill_switch}))
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -22,9 +41,19 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("run_id")
     sh = sub.add_parser("show", help="print state summary + report")
     sh.add_argument("run_id")
+    mg = sub.add_parser("migrate", help="apply pending Redis keyspace migrations (deploy step, not app startup)")
+    mg.add_argument("--check", action="store_true", help="only report pending migrations; exit 1 if any")
+    ks = sub.add_parser("kill-switch", help="engage/release the runtime kill switch stored in Redis")
+    ks.add_argument("state", choices=["on", "off", "status"])
+    ks.add_argument("--reason", default="", help="free text stored with the switch (no secrets/PII)")
     args = ap.parse_args(argv)
 
     settings = Settings.from_env()
+    if args.cmd in ("migrate", "kill-switch"):
+        return _ops(args, settings)
+
+    from research_assistant.wiring import build_runner
+
     runner = build_runner(settings)
     if args.cmd == "run":
         rid = runner.create_run(args.question)

@@ -11,3 +11,6 @@ scripts
 .env
 .env.*
 *.env
+infra
+docs
+.github

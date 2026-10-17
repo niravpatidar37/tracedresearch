@@ -1,9 +1,11 @@
-# Local stack only (no cloud IaC). Start: docker compose -p p2-research up -d
+# Local stack (docker compose). Cloud deployment: infra/terraform + .github/workflows/deploy.yml (docs/RUNBOOK.md).
+# Start: docker compose -p p2-research up -d redis                      (dev: run uvicorn on the host)
+#        RESEARCH_API_KEYS=... docker compose -p p2-research --profile api up -d --build   (api + worker split)
 name: p2-research
 services:
   redis:
     image: redis:7.4.7-alpine@sha256:02f2cc4882f8bf87c79a220ac958f58c700bdec0dfb9b9ea61b62fb0e8f1bfcf
-    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1", "--maxmemory-policy", "noeviction"]
     ports:
       - "127.0.0.1:16379:6379"
     volumes:
@@ -14,23 +16,55 @@ services:
       timeout: 3s
       retries: 10
 
+  # Versioned keyspace migrations: a one-shot step, like the Cloud Run job in production.
+  migrate:
+    build: .
+    profiles: ["api"]
+    command: ["research-assistant", "migrate"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      PORTFOLIO_ENV_FILE: /nonexistent
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # HTTP only: enqueues runs. Holds no LLM key (no env_file).
   api:
+    build: .
+    profiles: ["api"]
+    environment:
+      SERVICE_ROLE: api
+      REDIS_URL: redis://redis:6379/0
+      PORTFOLIO_ENV_FILE: /nonexistent
+      RESEARCH_API_KEYS: ${RESEARCH_API_KEYS:-}
+      AGENT_KILL_SWITCH: ${AGENT_KILL_SWITCH:-0}
+    ports:
+      - "127.0.0.1:8102:8102"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # Queue consumer (Cloud Run worker pool in production). Only /healthz + /readyz are served.
+  worker:
     build: .
     profiles: ["api"]
     env_file:
       - ${PORTFOLIO_ENV_FILE:-F:/.secrets/portfolio.env}
     environment:
+      SERVICE_ROLE: worker
       REDIS_URL: redis://redis:6379/0
+      PORTFOLIO_ENV_FILE: /nonexistent
       LLM_SPEND_LEDGER: /ledger/ledger.jsonl
       LLM_CACHE_DIR: /app/.cache/llm
-      RESEARCH_API_KEYS: ${RESEARCH_API_KEYS:-}
+      AGENT_KILL_SWITCH: ${AGENT_KILL_SWITCH:-0}
     volumes:
       - ${LLM_SPEND_DIR:-F:/.llm-spend}:/ledger
     ports:
-      - "127.0.0.1:8102:8102"
+      - "127.0.0.1:8112:8102"
+    stop_grace_period: 10s
     depends_on:
-      redis:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
   redis-data:

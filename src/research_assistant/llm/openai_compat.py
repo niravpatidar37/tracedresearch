@@ -19,8 +19,8 @@ from research_assistant.llm.base import (
     LLMResponse,
     RateLimited,
 )
-from research_assistant.llm.cache import DiskCache
-from research_assistant.spend import SpendLedger, cost_usd, estimate_tokens
+from research_assistant.llm.cache import Cache, DiskCache
+from research_assistant.spend import Ledger, cost_usd, estimate_tokens
 
 log = logging.getLogger(__name__)
 
@@ -43,8 +43,8 @@ class OpenAICompatClient:
         provider: str,
         base_url: str,
         api_key: str | None,
-        ledger: SpendLedger | None,
-        cache: DiskCache | None,
+        ledger: Ledger | None,
+        cache: Cache | None,
         http: httpx.Client | None = None,
         max_retries: int = 6,
         max_backoff_s: float = 45.0,

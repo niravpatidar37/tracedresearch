@@ -27,6 +27,28 @@ def _float(name: str, default: float) -> float:
     return float(os.environ.get(name, str(default)))
 
 
+ROLES = ("all", "api", "worker")
+_TRUE = {"1", "true", "yes", "on"}
+
+
+def _bool(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in _TRUE
+
+
+def _choice(name: str, default: str, allowed: tuple[str, ...]) -> str:
+    """Fail fast on a typo'd enum env var instead of silently falling back."""
+    value = os.environ.get(name, default).strip().lower() or default
+    if value not in allowed:
+        raise ValueError(f"{name}={value!r} is not one of {allowed}")
+    return value
+
+
+def _secret(name: str) -> str:
+    """Secret-valued env var; placeholders such as '<unset>' count as unset."""
+    value = os.environ.get(name, "").strip()
+    return "" if value.startswith("<") else value
+
+
 @dataclass(frozen=True)
 class Budgets:
     """Hard limits enforced in graph code (never in prompts)."""
@@ -89,6 +111,18 @@ class Settings:
     lease_ttl_s: int = 15
     budgets: Budgets = field(default_factory=Budgets)
     models: Models = field(default_factory=Models)
+    # --- deployment (Cloud Run) ---------------------------------------------------------------
+    # all = API + in-process workers (local dev, tests); api = HTTP only, enqueues runs;
+    # worker = consumes the Redis queue, serves only /healthz + /readyz (Cloud Run worker pool).
+    role: str = "all"
+    redis_password: str = ""  # Memorystore AUTH string (Secret Manager); kept out of REDIS_URL
+    redis_ca_cert_pem: str = ""  # Memorystore server CA (public cert) for rediss:// verification
+    kill_switch: bool = False  # AGENT_KILL_SWITCH: refuse new runs, pause runs before any LLM/tool call
+    shutdown_grace_s: float = 6.0  # SIGTERM -> checkpoint/requeue window (Cloud Run gives 10 s)
+    orphan_grace_s: float = 30.0  # never-started runs are only "orphaned" after this long in the queue
+    spend_backend: str = "file"  # file = shared local JSONL ledger; redis = per-deployment monthly counters
+    cache_backend: str = "disk"  # disk | redis (shared, TTL) | off
+    cache_ttl_s: int = 86_400
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -110,4 +144,13 @@ class Settings:
             lease_ttl_s=_int("RUN_LEASE_TTL_S", cls.lease_ttl_s),
             budgets=Budgets.from_env(),
             models=Models.from_env(),
+            role=_choice("SERVICE_ROLE", cls.role, ROLES),
+            redis_password=_secret("REDIS_PASSWORD"),
+            redis_ca_cert_pem=_secret("REDIS_CA_CERT_PEM"),
+            kill_switch=_bool("AGENT_KILL_SWITCH"),
+            shutdown_grace_s=_float("SHUTDOWN_GRACE_S", cls.shutdown_grace_s),
+            orphan_grace_s=_float("ORPHAN_GRACE_S", cls.orphan_grace_s),
+            spend_backend=_choice("LLM_SPEND_BACKEND", cls.spend_backend, ("file", "redis")),
+            cache_backend=_choice("LLM_CACHE_BACKEND", cls.cache_backend, ("disk", "redis", "off")),
+            cache_ttl_s=_int("LLM_CACHE_TTL_S", cls.cache_ttl_s),
         )

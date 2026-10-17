@@ -1,0 +1,14 @@
+KILLED   kill switch/drain: no preempt check before LLM/tool calls :: tests/test_deploy.py::test_agent_context_preempts_before_llm_call - Fa...
+KILLED   kill switch/drain: no preempt check at node boundary :: tests/test_deploy.py::test_drain_stops_at_node_boundary_even_without_llm_calls
+KILLED   drain: preempted run not requeued :: tests/test_deploy.py::test_redis_kill_switch_pauses_inflight_run_before_next_llm_call_and_resumes_after
+KILLED   kill switch: POST still accepted :: tests/test_deploy.py::test_env_kill_switch_refuses_new_runs_but_reads_work
+KILLED   kill switch: worker keeps consuming the queue :: tests/test_deploy.py::test_kill_switch_stops_worker_from_consuming_queue
+KILLED   shutdown: unstarted runs not handed back :: tests/test_deploy.py::test_service_shutdown_requeues_unstarted_and_reports_stuck_runs
+KILLED   readyz: ignore schema version :: tests/test_deploy.py::test_readyz_requires_migrated_schema_then_ready
+KILLED   readyz: ready while draining :: tests/test_deploy.py::test_readyz_reports_not_ready_while_draining - A...
+KILLED   resume loop: steals queued runs before the grace period :: tests/test_deploy.py::test_queued_runs_are_not_stolen_by_resume_loop_until_grace
+KILLED   migrations: no lock :: tests/test_deploy.py::test_migration_lock_blocks_concurrent_runs - Fai...
+KILLED   logs: exception text not redacted :: tests/test_deploy.py::test_json_logs_are_structured_and_redacted - ass...
+KILLED   redis: TLS server cert not verified :: tests/test_deploy.py::test_redis_client_uses_tls_auth_and_keeps_password_out_of_url
+KILLED   redis ledger: per-instance (not shared) totals :: tests/test_deploy.py::test_redis_spend_ledger_enforces_caps_per_month
+13/13 mutants killed

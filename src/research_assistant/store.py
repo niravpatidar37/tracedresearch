@@ -7,20 +7,51 @@ Keys (prefix ra:):
   run:{id}:events       stream of progress events (SSE source)
   run:{id}:lease        worker ownership lease (SET NX EX + heartbeat)
   runs:active           set of unfinished run ids (resumed on startup)
+  queue                 list of run ids waiting for a worker (LPUSH new, RPUSH preempted, BRPOP)
+  schema:*              keyspace migrations (see research_assistant.migrations)
+  control:kill_switch   runtime kill switch (set/cleared by `research-assistant kill-switch`)
 """
 
 from __future__ import annotations
 
 import json
 import secrets
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import redis
 
 from research_assistant.schemas import RunState
 
+if TYPE_CHECKING:
+    from research_assistant.config import Settings
+
 P = "ra:"
 DONE_TTL_S = 7 * 24 * 3600
+QUEUE = f"{P}queue"
+KILL_SWITCH_KEY = f"{P}control:kill_switch"
+
+
+def redis_client(settings: Settings) -> redis.Redis:
+    """Build the Redis client. AUTH and the TLS CA come from separate env vars, never from the URL.
+
+    Memorystore with in-transit encryption: REDIS_URL=rediss://<host>:6378/0, REDIS_PASSWORD from
+    Secret Manager, REDIS_CA_CERT_PEM = the instance's server CA (public). The CA is verified and
+    hostname checking is off because Memorystore certificates are issued for the instance IP.
+    """
+    kwargs: dict[str, Any] = {
+        "decode_responses": True,
+        "socket_timeout": 10,
+        "socket_connect_timeout": 5,
+        "health_check_interval": 30,
+    }
+    if settings.redis_password:
+        kwargs["password"] = settings.redis_password
+    if settings.redis_url.startswith("rediss://"):
+        kwargs["ssl_cert_reqs"] = "required"
+        kwargs["ssl_check_hostname"] = False
+        if settings.redis_ca_cert_pem:
+            kwargs["ssl_ca_data"] = settings.redis_ca_cert_pem
+    return redis.Redis.from_url(settings.redis_url, **kwargs)
 
 
 class RunStore:
@@ -31,13 +62,17 @@ class RunStore:
     def from_url(cls, url: str) -> RunStore:
         return cls(redis.Redis.from_url(url, decode_responses=True, socket_timeout=10))
 
+    @classmethod
+    def from_settings(cls, settings: Settings) -> RunStore:
+        return cls(redis_client(settings))
+
     # ------------------------------------------------------------ keys
     @staticmethod
     def k(run_id: str, part: str) -> str:
         return f"{P}run:{run_id}:{part}"
 
     # ------------------------------------------------------------ state
-    def create(self, state: RunState) -> None:
+    def create(self, state: RunState, *, enqueue: bool = False) -> None:
         pipe = self.r.pipeline(transaction=True)
         pipe.set(self.k(state.run_id, "state"), state.model_dump_json())
         pipe.sadd(f"{P}runs:active", state.run_id)
@@ -47,6 +82,8 @@ class RunStore:
             maxlen=2000,
             approximate=True,
         )
+        if enqueue:
+            pipe.lpush(QUEUE, state.run_id)
         pipe.execute()
 
     def load(self, run_id: str) -> RunState | None:
@@ -96,11 +133,38 @@ class RunStore:
     def active_runs(self) -> list[str]:
         return sorted(cast(set[str], self.r.smembers(f"{P}runs:active")))
 
+    # ------------------------------------------------------------ work queue (api -> worker pool)
+    def requeue(self, run_id: str) -> None:
+        """Put a preempted run at the consuming end of the queue so it is picked up next."""
+        self.r.rpush(QUEUE, run_id)
+
+    def pop_queued(self, timeout_s: int = 2) -> str | None:
+        res = self.r.brpop([QUEUE], timeout=timeout_s)
+        if not res:
+            return None
+        return cast(str, cast(Any, res)[1])
+
+    def queue_depth(self) -> int:
+        return int(self.r.llen(QUEUE))
+
+    # ------------------------------------------------------------ runtime kill switch
+    def kill_switch_set(self) -> bool:
+        return bool(self.r.exists(KILL_SWITCH_KEY))
+
+    def set_kill_switch(self, on: bool, reason: str = "") -> None:
+        if on:
+            self.r.set(KILL_SWITCH_KEY, reason or "on")
+        else:
+            self.r.delete(KILL_SWITCH_KEY)
+
     # ------------------------------------------------------------ lease (one worker per run)
     def acquire_lease(self, run_id: str, ttl_s: int) -> str | None:
         token = secrets.token_hex(8)
         ok = self.r.set(self.k(run_id, "lease"), token, nx=True, ex=ttl_s)
         return token if ok else None
+
+    def has_lease(self, run_id: str) -> bool:
+        return self.r.get(self.k(run_id, "lease")) is not None
 
     def renew_lease(self, run_id: str, token: str, ttl_s: int) -> bool:
         key = self.k(run_id, "lease")

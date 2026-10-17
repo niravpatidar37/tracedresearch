@@ -219,3 +219,25 @@ def test_paywall_detection() -> None:
 def test_dns_failure_is_blocked_status() -> None:
     out = _fetcher(lambda r: httpx.Response(200), {}).fetch("http://nx.example/")
     assert out.status == "blocked" and out.detail == "dns_failure"
+
+
+@pytest.mark.parametrize(
+    "host,ip",
+    [
+        ("metadata.google.internal", "169.254.169.254"),  # Cloud Run / GCE metadata server (SA tokens)
+        ("metadata", "169.254.169.254"),
+        ("metadata.google.internal", "fd20:ce::254"),  # GCP IPv6 metadata address
+        ("redis.internal.example", "10.20.0.3"),  # a Memorystore-style private address in the VPC
+    ],
+)
+def test_cloud_metadata_and_vpc_targets_are_blocked(host: str, ip: str) -> None:
+    """On Cloud Run the metadata server is always reachable from the container and the VPC routes private
+    ranges to Memorystore, so this in-code guard is the control (network egress rules cannot express it)."""
+    hits: list[str] = []
+
+    def handler(req: httpx.Request) -> httpx.Response:
+        hits.append(str(req.url))
+        return httpx.Response(200, headers={"content-type": "text/html"}, text="TOKEN")
+
+    out = _fetcher(handler, {host: [ip]}).fetch(f"http://{host}/computeMetadata/v1/instance/service-accounts/")
+    assert out.status == "blocked" and hits == []

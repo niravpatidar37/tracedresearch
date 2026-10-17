@@ -20,3 +20,10 @@ data/cache/
 *.bin
 *.gguf
 scripts/_probe_*.py
+# terraform: commit .terraform.lock.hcl, never state/plans/provider caches
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.terraform.tfstate.lock.info

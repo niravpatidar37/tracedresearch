@@ -22,4 +22,8 @@ USER app
 EXPOSE 8102
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
   CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8102/healthz', timeout=4).status == 200 else 1)"
-CMD ["uvicorn", "research_assistant.api:app_factory", "--factory", "--host", "0.0.0.0", "--port", "8102"]
+# SERVICE_ROLE (all | api | worker) selects the surface; SIGTERM -> uvicorn closes HTTP connections within 2 s, then
+# the lifespan shutdown checkpoints and requeues in-flight runs within SHUTDOWN_GRACE_S (Cloud Run allows 10 s).
+ENV SERVICE_ROLE=all LOG_FORMAT=json
+CMD ["uvicorn", "research_assistant.api:app_factory", "--factory", "--host", "0.0.0.0", "--port", "8102", \
+     "--timeout-graceful-shutdown", "2", "--no-server-header"]
