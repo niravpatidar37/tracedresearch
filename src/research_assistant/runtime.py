@@ -92,7 +92,11 @@ class AgentContext:
             )
             if fallback_model and fallback_model != req.model:
                 self.failover[req.model] = fallback_model  # stick to the fallback for the rest of this node
-                return self.llm.complete(dataclasses.replace(req, model=fallback_model), deadline=self.deadline)
+                req = dataclasses.replace(req, model=fallback_model)
+                try:
+                    return self.llm.complete(req, deadline=self.deadline)
+                except RateLimited as exc2:
+                    exc = exc2  # the fallback is limited too: wait for it if the deadline allows
             if self.clock() + exc.retry_after > self.deadline:
                 raise BudgetExceeded("wall_clock", f"rate limited for {exc.retry_after:.0f}s past deadline") from exc
             self.sleep(exc.retry_after)
@@ -145,7 +149,7 @@ class AgentContext:
                 self.llm_calls.append(
                     LLMCall(
                         role=role,
-                        model=req.model,
+                        model=self._active_model(model),
                         provider=self.llm.provider,
                         input_tokens=estimate_tokens(system + prompt),
                         output_tokens=0,

@@ -216,3 +216,45 @@ def test_strict_schema_rejection_retries_in_json_mode() -> None:
     assert out.title == "Research report"
     assert [r.strict for r in seen] == [True, False]
     assert "JSON Schema of the required output" in seen[1].system
+
+
+def test_fallback_also_limited_waits_within_deadline_then_succeeds() -> None:
+    import time as _t
+
+    from research_assistant.config import Budgets, Models
+    from research_assistant.runtime import AgentContext
+    from research_assistant.schemas import PlanOutput
+
+    calls: list[str] = []
+
+    class BothLimitedOnce:
+        provider = "fake"
+
+        def complete(self, req: LLMRequest, *, deadline: float | None = None) -> LLMResponse:
+            calls.append(req.model)
+            if req.model.endswith("120b"):
+                raise RateLimited(300, "big limited")
+            if calls.count(req.model) == 1:
+                raise RateLimited(25, "small limited")
+            return LLMResponse(json.dumps({"sub_questions": []}), req.model, "fake", 5, 5, 1.0)
+
+    slept: list[float] = []
+    ctx = AgentContext(
+        llm=BothLimitedOnce(),
+        models=Models(),
+        budgets=Budgets(),
+        tokens_used=0,
+        usd_spent=0.0,
+        deadline=_t.monotonic() + 120,
+        sleep=slept.append,
+    )
+    ctx.structured(
+        role="planner",
+        model="openai/gpt-oss-120b",
+        system="s",
+        user="u",
+        schema=PlanOutput,
+        max_tokens=50,
+        fallback_model="openai/gpt-oss-20b",
+    )
+    assert calls == ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "openai/gpt-oss-20b"] and slept == [25]
