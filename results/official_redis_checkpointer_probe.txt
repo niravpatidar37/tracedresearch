@@ -1,0 +1,1 @@
+OFFICIAL REDIS CHECKPOINTER FAILED: RedisSearchError Error while fetching checkpoint index info: unknown command 'FT.INFO', with args beginning with: 'checkpoint' 
