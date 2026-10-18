@@ -1,7 +1,7 @@
 [project]
 name = "research-assistant"
 version = "0.1.0"
-description = "Multi-agent research assistant: LangGraph supervisor + specialists, durable Redis state, budgets, step traces."
+description = "tracedresearch: crash-safe deep-research agent service (LangGraph supervisor + specialists, Redis-durable state, hard budgets, validated citations, step traces)."
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }
@@ -54,6 +54,7 @@ ignore = ["S101", "RUF001", "RUF002", "RUF003"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S", "BLE"]
 "scripts/**" = ["S", "BLE", "E501"]
+"assets/**" = ["S", "BLE", "E501"]
 
 [tool.mypy]
 python_version = "3.12"

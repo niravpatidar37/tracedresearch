@@ -6,7 +6,7 @@ never at third-party systems.
 ## Start the target
 
 ```bash
-cd F:/multi-agent-research-assistant
+cd tracedresearch   # your clone
 docker compose -p p2-research up -d redis                       # redis:7 on 127.0.0.1:16379
 export RESEARCH_API_KEYS="redteam-$(openssl rand -hex 16)"     # >= 16 chars, else the API fails closed (503)
 # Option A - live web (DuckDuckGo + real fetches):

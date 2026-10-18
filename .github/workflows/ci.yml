@@ -23,8 +23,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: uv sync --frozen
-      - run: uv run ruff check src tests scripts
-      - run: uv run ruff format --check src tests scripts
+      - run: uv run ruff check src tests scripts assets
+      - run: uv run ruff format --check src tests scripts assets
       - run: uv run mypy
 
   test:
@@ -69,14 +69,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: docker build -t research-assistant:ci .
+      - run: docker build -t tracedresearch:ci .
       # secrets are gitleaks' job; trivy's secret scanner flags a docstring inside the anthropic SDK (false positive)
       - name: trivy image scan (vulnerabilities)
         run: >
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock
           aquasec/trivy@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222
           image --scanners vuln --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --no-progress
-          research-assistant:ci
+          tracedresearch:ci
 
   terraform:
     runs-on: ubuntu-24.04

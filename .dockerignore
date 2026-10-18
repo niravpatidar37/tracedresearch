@@ -13,4 +13,5 @@ scripts
 *.env
 infra
 docs
+assets
 .github

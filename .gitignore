@@ -27,3 +27,9 @@ scripts/_probe_*.py
 *.tfplan
 crash.log
 .terraform.tfstate.lock.info
+
+# brand build cache (font archive is fetched + checksum-verified)
+assets/brand/tools/.cache/
+# demo recording scratch
+assets/demo/raw.gif
+assets/demo/.work/
