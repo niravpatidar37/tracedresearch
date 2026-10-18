@@ -1,0 +1,12 @@
+INFO:     Started server process [38192]
+INFO:     Waiting for application startup.
+2026-10-18 14:57:19,335 INFO research_assistant.api pid=38192 service started: role=all kill_switch=False
+2026-10-18 14:57:19,336 INFO uvicorn.error pid=38192 Application startup complete.
+2026-10-18 14:57:19,336 INFO uvicorn.error pid=38192 Uvicorn running on http://127.0.0.1:8102 (Press CTRL+C to quit)
+2026-10-18 14:57:19,336 INFO research_assistant.api pid=38192 resuming orphaned run 5a674df42ee8496e
+2026-10-18 14:57:19,340 INFO research_assistant.graph pid=38192 run 5a674df42ee8496e resumed at step 3 (pid 38192); completed nodes: ['supervisor:0', 'planner', 'supervisor:2']
+2026-10-18 14:57:19,501 INFO uvicorn.access pid=38192 127.0.0.1:64780 - "GET /readyz HTTP/1.1" 200
+2026-10-18 14:57:23,221 INFO uvicorn.access pid=38192 127.0.0.1:59964 - "GET /research/5a674df42ee8496e/events HTTP/1.1" 200
+2026-10-18 14:57:55,388 INFO research_assistant.graph pid=38192 run_finished run_id=5a674df42ee8496e status=completed elapsed_s=43.4 tokens=2620 usd=0.000000 findings=3 fallback=True budget=-
+2026-10-18 14:58:00,312 INFO uvicorn.access pid=38192 127.0.0.1:62404 - "GET /research/5a674df42ee8496e/trace HTTP/1.1" 200
+2026-10-18 14:58:07,336 INFO uvicorn.access pid=38192 127.0.0.1:62469 - "GET /research/5a674df42ee8496e HTTP/1.1" 200

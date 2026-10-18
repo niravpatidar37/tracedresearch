@@ -15,6 +15,7 @@ dist/
 build/
 *.log
 !results/**/*.log
+!assets/demo/logs/*.log
 data/cache/
 *.safetensors
 *.bin

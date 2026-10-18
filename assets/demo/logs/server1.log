@@ -1,0 +1,9 @@
+INFO:     Started server process [21200]
+INFO:     Waiting for application startup.
+2026-10-18 14:56:47,468 INFO research_assistant.api pid=21200 service started: role=all kill_switch=False
+2026-10-18 14:56:47,468 INFO uvicorn.error pid=21200 Application startup complete.
+2026-10-18 14:56:47,469 INFO uvicorn.error pid=21200 Uvicorn running on http://127.0.0.1:8102 (Press CTRL+C to quit)
+2026-10-18 14:56:47,590 INFO uvicorn.access pid=21200 127.0.0.1:64684 - "GET /readyz HTTP/1.1" 200
+2026-10-18 14:56:49,126 INFO uvicorn.access pid=21200 127.0.0.1:64693 - "GET /readyz HTTP/1.1" 200
+2026-10-18 14:56:55,900 INFO uvicorn.access pid=21200 127.0.0.1:64717 - "POST /research HTTP/1.1" 202
+2026-10-18 14:57:02,017 INFO uvicorn.access pid=21200 127.0.0.1:64734 - "GET /research/5a674df42ee8496e/events HTTP/1.1" 200
