@@ -13,21 +13,54 @@ Status: **deploy-ready; not applied (no cloud account connected).** The targets 
 | 3 | **Run completion**: accepted runs that reach `completed` | log-based metric on `run_finished ... status=` (JSON logs from the worker) | **>= 90%** | 15/16 = 94% |
 | 4 | **Run wall time** (POST to report) | log-based distribution on `run_finished elapsed_s=` plus queue wait | **p50 <= 90 s, p95 <= 180 s, p99 <= 270 s** (270 s is the hard budget ceiling) | p50 64.8 s, p95 116.5 s (pooled benchmark in the README; contended free-tier Groq key) |
 | 5 | **Citation validity**: report citations that resolve to a provenance record | `citation_check.rate` in the run result | **100%** (enforced by the validator gate) | 72/72 |
-| 6 | **Grounded answer rate**: completed runs whose report is not the deterministic fallback | `run_finished fallback=` | **>= 80%** | 9/15 = 60% (15 completed, 6 fallbacks), **currently misses the target** (writer JSON failures and rate limits; see README "What did not work") |
+| 6 | **Grounded answer rate**: completed runs whose report is not the deterministic fallback | log-based metric `research-ENV_runs_finished{status="completed", fallback}` from `run_finished ... fallback=... fallback_reason=...` | **>= 80%** | 9/15 = 60% (15 completed, 6 fallbacks), **currently misses the target** (writer JSON failures and rate limits; see README "What did not work") |
 | 7 | **Durability**: runs resumed after an instance loss without re-running a committed node | trace `node_key` duplicates (`scripts/show_trace.py`) | **100%** of resumed runs | 2/2 crash tests, 0 duplicate node keys |
 | 8 | **Cost per run** | `run_finished usd=` | **p95 <= $0.005** | mean $0.00089, max $0.00152 |
+
+### SLI 6 misses its target: how the system degrades, and how it is watched
+
+The baseline (9/15) is below the 80% target, and this PR does not claim to fix the cause (writer JSON failures and
+Groq rate limits). What it does:
+
+- **Honest degradation.** When the writer can't produce a valid report, the run still completes, but with the
+  deterministic fallback report: title `Partial findings (degraded report)`, a summary that says the writer was not
+  used and why, and only the extracted findings, each cited to its source (citation validity stays 100%). The API
+  returns `report.degraded: true` and a machine-readable `report.fallback_reason` (`writer_output_invalid`,
+  `writer_model_unavailable`, `no_findings`, `<kind>_budget`, ...). Nothing un-grounded is added.
+- **Measured.** Every finished run logs `run_finished ... fallback=<bool> fallback_reason=<code>`; the log-based
+  counter `research-ENV_runs_finished` carries `status`, `fallback` and `fallback_reason` labels.
+- **Alerted.** `degraded-report rate above the grounded-answer SLO`: fallback / completed > 20% over 1 h
+  (`alert_fallback_rate`). See [RUNBOOK Alerts](RUNBOOK.md#alerts).
 
 Claim-level faithfulness (is each claim supported by its cited snippet) is **not yet measured**. It needs an NLI or
 judge check (Project 4), so it has no SLO yet.
 
-### Alerting (proposed)
+### Alerting (monitoring as code, not applied)
 
-- **SLO 1 burn rate:** page at 14.4x over 1 h (2% of the monthly budget gone), ticket at 3x over 6 h.
-- **SLO 3:** completion rate below 80% over 1 h -> ticket. Check Groq 429s, the kill switch and the worker count.
-- **Queue backlog:** `LLEN ra:queue` > 20 for 10 min -> ticket. The worker pool is fixed-size; raise
-  `worker_instances`.
-- **Memorystore:** memory usage above 80% -> ticket. `noeviction` makes writes fail when Redis is full.
-- **Spend:** a `budget=project_usd` or `global_usd` trip -> notify. The cap did its job; decide whether to raise it.
+All alerts are Terraform resources in
+[`monitoring.tf`](../infra/terraform/modules/research_assistant/monitoring.tf); the table with conditions and first
+actions is in [RUNBOOK Alerts](RUNBOOK.md#alerts). Summary:
+
+- **SLO 1:** a `google_monitoring_slo` (request-based, bad = 5xx except 503) with multi-window burn-rate alerts:
+  page at > 14.4x over 1 h AND 5 min, ticket at > 6x over 6 h AND 30 min. Plus an uptime check on `/healthz` and a
+  5xx-ratio alert (> 2% for 5 min).
+- **SLO 2:** p95 of non-SSE requests (log-based distribution from the request logs, `/events` excluded) > 0.3 s for
+  10 min.
+- **SLO 6:** degraded-report rate > 20% over 1 h (above).
+- **Saturation:** API CPU p99 > 85%, API at max instances, worker CPU / memory p99 > 90%.
+- **Queue:** depth > 20 or oldest queued run > 300 s for 10 min, or no `queue_stats` from the scaler for 10 min.
+- **Memorystore:** memory usage above 80% (`noeviction` makes writes fail when Redis is full).
+- **Scaler:** more than 3 failed scaler executions in 15 min.
+
+Not alerted yet: SLO 3 (completion rate) and spend-cap trips are visible in `research-ENV_runs_finished{status}` and
+the `run_finished budget=` field but have no policy.
+
+### Accepted limits
+
+- **Kill switch propagation: up to ~2 s.** The Redis flag is cached per instance for `KillSwitch.CACHE_S = 2`
+  seconds. Accepted (rationale in [RUNBOOK Kill switch](RUNBOOK.md#kill-switch-stop-all-llm-and-tool-calls)); the
+  smoke test measures it.
+- **Scaler reaction time: about 1 minute** (Cloud Scheduler's finest schedule) plus instance start-up.
 
 ## Monthly cost estimate (ESTIMATE, us-central1, list prices, USD)
 
@@ -50,19 +83,22 @@ Unit prices used:
 | Line item | Staging | Prod | Driver |
 |---|---|---|---|
 | API service | ~$0-3 (scale to zero; 1,000 runs x ~120 s of SSE streaming x (1 vCPU + 0.5 GiB) = $3.03 before free tier) | ~$10 idle floor (min 1 instance: 2.628 M s x $0.00000375) + ~$3 per 1,000 runs | min instances, SSE stream time, request count |
-| Worker pool | ~$18 (1 instance) | ~$36 (2 instances) | instance count x hours (always on) |
+| Worker pool | ~$0-18 (scaler min 0, max 2: billed only while instances run) | ~$18-108 (min 1, max 6; ~$18 per instance-month while running) | instance-hours chosen by the queue-depth scaler |
+| Scaler (Cloud Scheduler + job) | small (not itemised): one scheduler job + ~43,800 executions of a few seconds per month | same | one execution per minute; verify on the Cloud Scheduler and Cloud Run jobs pricing pages |
 | Memorystore | $35.77 (Basic 1 GiB x 730 h x $0.049) | >= $35.77 (Standard HA 1 GiB; rate not captured) | tier x GiB x hours |
 | LLM (Groq, paid-rate pricing) | ~$0.89 per 1,000 runs (measured mean $0.00089/run) | same per run | runs/month; hard monthly cap: $5 staging / $20 project and $25 global prod |
 | Migration job | < $0.01 | < $0.01 | one short execution per deploy |
 | Artifact Registry, Secret Manager, Logging, egress | small (not itemised; verify on their pricing pages) | small | image count (20 kept), secret accesses, log volume, about 4 MB of page fetches per run |
-| **Total (excl. small items)** | **~$55-58 / month** | **>= ~$82 / month + ~$4 per 1,000 runs** | |
+| **Total (excl. small items)** | **~$36-57 / month** (worker 0-1 instance on average) | **>= ~$64 / month** with one warm worker, up to ~$154 with six busy all month, **+ ~$4 per 1,000 runs** | |
 
 Cost drivers, in order:
 1. Memorystore is the largest fixed cost. A BASIC 1 GiB instance holds months of run state at the measured sizes.
-2. The worker pool is always on. Fewer instances save money and reduce parallelism. There is no queue-depth autoscaling yet.
+2. Worker instance-hours. The queue-depth scaler keeps the pool between `worker_min_instances` and
+   `worker_max_instances`; prod keeps one warm worker, staging idles at zero.
 3. The API min-instance floor (prod only) is there to avoid cold starts on `POST`.
 4. LLM spend is the only cost that grows with each run. It is capped in code per calendar month.
 
-Ways to cut cost: staging can scale the worker pool to 0 between test sessions
-(`gcloud run worker-pools update research-staging-worker --region REGION --instances 0`) and use `api_min_instances = 0`.
+Ways to cut cost: staging already idles at zero workers (`worker_min_instances = 0`) and uses
+`api_min_instances = 0`. Pausing the scaler (`gcloud scheduler jobs pause research-staging-scaler --location REGION`)
+freezes the pool at its current size.
 Committed-use discounts apply to always-on worker and Redis capacity.

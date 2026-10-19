@@ -80,6 +80,15 @@ resource "google_cloud_run_v2_service" "api" {
           }
         }
       }
+      env {
+        name = "RESEARCH_SMOKE_API_KEY" # accepted in addition to RESEARCH_API_KEYS; used by deploy.yml only
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.app["smoke-api-key"].secret_id
+            version = "latest"
+          }
+        }
+      }
 
       startup_probe {
         initial_delay_seconds = 0
@@ -125,9 +134,12 @@ resource "google_cloud_run_v2_worker_pool" "worker" {
   deletion_protection = var.deletion_protection
   labels              = local.labels
 
+  # MANUAL scaling with an external queue-depth scaler (the scaler job below sets manual_instance_count every
+  # minute). The provider also offers scaling_mode = "AUTOMATIC" with min/max_instance_count, but nothing in it
+  # sees the Redis queue; Google's documented queue-driven option is CREMA (see docs/RUNBOOK.md "Scaling").
   scaling {
     scaling_mode          = "MANUAL"
-    manual_instance_count = var.worker_instances
+    manual_instance_count = var.worker_instances # initial count only; the scaler owns it afterwards
   }
 
   template {
@@ -207,6 +219,7 @@ resource "google_cloud_run_v2_worker_pool" "worker" {
       template[0].containers[0].image,
       template[0].revision,
       instance_splits,
+      scaling[0].manual_instance_count, # owned by the scaler job
       client,
       client_version,
     ]
@@ -282,4 +295,129 @@ resource "google_cloud_run_v2_job" "migrate" {
   }
 
   depends_on = [google_secret_manager_secret_iam_member.readers]
+}
+
+# ---------------------------------------------------------------- queue-depth scaler (Cloud Scheduler -> job)
+#
+# Every minute Cloud Scheduler calls the Cloud Run Admin API v2 `jobs.run` method for this job (OAuth token of a
+# dedicated caller SA). The job (`research-assistant scale-workers`) reads the Redis queue, logs `queue_stats`
+# (the source of the queue-depth / oldest-job-age metrics in monitoring.tf) and PATCHes the worker pool's
+# scaling.manualInstanceCount within [worker_min_instances, worker_max_instances]. Code: src/research_assistant/scaler.py.
+resource "google_cloud_run_v2_job" "scaler" {
+  project             = var.project_id
+  name                = "${local.prefix}-scaler"
+  location            = var.region
+  deletion_protection = var.deletion_protection
+  labels              = local.labels
+
+  template {
+    task_count  = 1
+    parallelism = 1
+
+    template {
+      service_account = google_service_account.runtime["scaler"].email
+      max_retries     = 0 # the next scheduled run is the retry
+      timeout         = "50s"
+
+      vpc_access {
+        egress = "PRIVATE_RANGES_ONLY"
+        network_interfaces {
+          network    = google_compute_network.vpc.id
+          subnetwork = google_compute_subnetwork.run.id
+          tags       = [local.run_tag]
+        }
+      }
+
+      containers {
+        image   = var.image
+        command = ["research-assistant"]
+        args    = ["scale-workers"]
+
+        resources {
+          limits = {
+            cpu    = "1"
+            memory = "512Mi"
+          }
+        }
+
+        dynamic "env" {
+          for_each = local.scaler_env
+          content {
+            name  = env.key
+            value = env.value
+          }
+        }
+        env {
+          name = "REDIS_PASSWORD"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.app["redis-auth"].secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0].template[0].containers[0].image,
+      client,
+      client_version,
+    ]
+  }
+
+  depends_on = [google_secret_manager_secret_iam_member.readers]
+}
+
+# The scaler may change the worker pool (resource-level role, nothing project-wide) ...
+resource "google_cloud_run_v2_worker_pool_iam_member" "scaler_developer" {
+  project  = var.project_id
+  location = var.region
+  name     = google_cloud_run_v2_worker_pool.worker.name
+  role     = "roles/run.developer"
+  member   = "serviceAccount:${google_service_account.runtime["scaler"].email}"
+}
+
+# ... which requires actAs on the worker's runtime identity (only that one).
+resource "google_service_account_iam_member" "scaler_act_as_worker" {
+  service_account_id = google_service_account.runtime["worker"].name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.runtime["scaler"].email}"
+}
+
+resource "google_cloud_run_v2_job_iam_member" "scheduler_runs_scaler" {
+  project  = var.project_id
+  location = var.region
+  name     = google_cloud_run_v2_job.scaler.name
+  role     = "roles/run.invoker" # includes run.jobs.run
+  member   = "serviceAccount:${google_service_account.runtime["scheduler"].email}"
+}
+
+resource "google_cloud_scheduler_job" "scaler" {
+  project          = var.project_id
+  region           = var.region
+  name             = "${local.prefix}-scaler"
+  description      = "Runs the queue-depth scaler job for the research worker pool"
+  schedule         = var.scaler_schedule
+  time_zone        = "Etc/UTC"
+  attempt_deadline = "60s"
+  paused           = !var.scaler_enabled
+
+  retry_config {
+    retry_count = 0
+  }
+
+  http_target {
+    http_method = "POST"
+    uri         = "https://run.googleapis.com/v2/projects/${var.project_id}/locations/${var.region}/jobs/${google_cloud_run_v2_job.scaler.name}:run"
+
+    oauth_token {
+      service_account_email = google_service_account.runtime["scheduler"].email
+      scope                 = "https://www.googleapis.com/auth/cloud-platform"
+    }
+  }
+
+  depends_on = [google_project_service.apis, google_cloud_run_v2_job_iam_member.scheduler_runs_scaler]
 }

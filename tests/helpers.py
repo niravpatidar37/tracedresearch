@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from typing import Any
 
 import fakeredis
@@ -12,6 +11,14 @@ from research_assistant.config import Budgets, Models
 from research_assistant.graph import Runner
 from research_assistant.llm.base import LLMRequest
 from research_assistant.llm.fake import FakeLLM
+from research_assistant.llm.scripted import (  # noqa: F401 - re-exported for tests
+    FID_RE,
+    PAGE_RE,
+    extraction_responder,
+    plan_responder,
+    review_accept,
+    writer_responder,
+)
 from research_assistant.search.providers import FixtureCorpus
 from research_assistant.store import RunStore
 
@@ -72,68 +79,8 @@ def corpus(extra: list[dict[str, str]] | None = None) -> FixtureCorpus:
     return FixtureCorpus([*CORPUS, *(extra or [])])
 
 
-PAGE_RE = re.compile(r"<<<PAGE id=(P\d+)[^>]*>>>\n(.*?)\n<<<END PAGE>>>", re.S)
-FID_RE = re.compile(r"^(F\d+) \|", re.M)
-
-
-def plan_responder(n: int = 2) -> Any:
-    def r(req: LLMRequest) -> dict[str, Any]:
-        qs = [
-            {
-                "question": "What is the record efficiency of silicon solar cells?",
-                "search_queries": ["silicon solar cell record efficiency"],
-            },
-            {
-                "question": "How efficient are perovskite tandem solar cells?",
-                "search_queries": ["perovskite tandem efficiency record"],
-            },
-            {
-                "question": "How much do solar modules cost per watt?",
-                "search_queries": ["solar module prices per watt"],
-            },
-        ]
-        extra = [
-            {
-                "question": f"Extra sub-question number {i} about solar panels?",
-                "search_queries": [f"solar panel topic {i}"],
-            }
-            for i in range(max(0, n - 3))
-        ]
-        return {"sub_questions": (qs + extra)[:n]}
-
-    return r
-
-
-def extraction_responder(req: LLMRequest) -> dict[str, Any]:
-    """Behaves like a well-formed model: one finding per page, snippet = first sentence of the page block."""
-    findings = []
-    for pid, text in PAGE_RE.findall(req.user)[:3]:
-        sentence = re.split(r"(?<=\.)\s", text.strip())[0][:250]
-        findings.append({"page_id": pid, "claim": f"Claim from {pid}: {sentence[:80]}", "snippet": sentence})
-    return {"findings": findings}
-
-
-def review_accept(req: LLMRequest) -> dict[str, Any]:
-    return {"answered": True, "missing": "", "follow_up_query": ""}
-
-
 def review_reject(req: LLMRequest) -> dict[str, Any]:
     return {"answered": False, "missing": "more detail", "follow_up_query": "solar efficiency detail"}
-
-
-def writer_responder(req: LLMRequest) -> dict[str, Any]:
-    ids = FID_RE.findall(req.user) or ["F1"]
-    return {
-        "title": "Solar report",
-        "summary": {"text": "Solar efficiency keeps improving.", "citations": ids[:2]},
-        "sections": [
-            {
-                "heading": "Efficiency",
-                "paragraphs": [{"text": f"Finding {i} says something.", "citations": [i]} for i in ids[:4]],
-            }
-        ],
-        "limitations": ["Fixture corpus only."],
-    }
 
 
 def default_llm(**overrides: Any) -> FakeLLM:

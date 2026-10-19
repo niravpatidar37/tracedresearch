@@ -1,10 +1,11 @@
 name: deploy
 
-# Build -> push to Artifact Registry -> migrate + deploy STAGING -> smoke -> PROD (manual approval via the
-# `production` environment) -> canary 10% -> 100%, with automatic rollback to the previous revision on failure.
+# Build -> push to Artifact Registry -> keyless cosign signature -> verify signature -> migrate + deploy STAGING ->
+# smoke (scripts/smoke.py) -> PROD (manual approval via the `production` environment) -> canary 10% -> smoke the
+# canary revision -> 100%, with automatic rollback of the API and the worker pool to the recorded previous revisions.
 # Every job is skipped until the repository variables GCP_PROJECT_ID / GCP_REGION / GCP_WIF_PROVIDER /
 # GCP_DEPLOY_SA are set (docs/RUNBOOK.md "One-time GCP bootstrap"), so this workflow passes with no cloud.
-# Auth is keyless (Workload Identity Federation); id-token: write is granted only to the jobs that deploy.
+# Auth is keyless (Workload Identity Federation); id-token: write is granted only to the jobs that deploy/sign.
 
 on:
   push:
@@ -19,6 +20,7 @@ concurrency:
 
 env:
   IMAGE_NAME: research-assistant
+  OIDC_ISSUER: https://token.actions.githubusercontent.com
 
 jobs:
   gcp-not-connected:
@@ -34,7 +36,7 @@ jobs:
     environment: staging
     permissions:
       contents: read
-      id-token: write # WIF token exchange for pushing the image
+      id-token: write # WIF token exchange for pushing the image + Sigstore keyless signing certificate
     outputs:
       image: ${{ steps.push.outputs.image }}
     env:
@@ -49,7 +51,8 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SA }}
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
-      - name: build and push (by digest)
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: build, push (by digest) and sign keylessly
         id: push
         run: |
           repo="${REGION}-docker.pkg.dev/${PROJECT}/research-staging/${IMAGE_NAME}"
@@ -58,8 +61,9 @@ jobs:
           docker push "${repo}:${GITHUB_SHA}"
           ref="$(docker inspect --format='{{index .RepoDigests 0}}' "${repo}:${GITHUB_SHA}")"
           [[ "$ref" == *@sha256:* ]] || { echo "no digest for pushed image"; exit 1; }
+          cosign sign --yes "$ref"
           echo "image=${ref}" >> "$GITHUB_OUTPUT"
-          echo "pushed ${ref}" >> "$GITHUB_STEP_SUMMARY"
+          echo "pushed and signed ${ref}" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-staging:
     if: vars.GCP_PROJECT_ID != ''
@@ -73,9 +77,12 @@ jobs:
       PROJECT: ${{ vars.GCP_PROJECT_ID }}
       REGION: ${{ vars.GCP_REGION }}
       IMAGE: ${{ needs.build.outputs.image }}
+      WORKFLOW_REF: ${{ github.workflow_ref }}
       API: research-staging-api
       WORKER: research-staging-worker
       JOB: research-staging-migrate
+      SCALER: research-staging-scaler
+      SMOKE_SECRET: research-staging-smoke-api-key
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -85,31 +92,58 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SA }}
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: verify the image signature (signed by this workflow on main)
+        run: |
+          gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+          cosign verify "$IMAGE" --certificate-identity "https://github.com/${WORKFLOW_REF}" \
+            --certificate-oidc-issuer "$OIDC_ISSUER" > /dev/null
       - name: run keyspace migrations (Cloud Run job)
         run: |
           gcloud run jobs update "$JOB" --region "$REGION" --image "$IMAGE" --quiet
           gcloud run jobs execute "$JOB" --region "$REGION" --wait
-      - name: deploy API revision with no traffic, smoke its tag URL
-        id: api
+      - name: record rollback targets
+        id: prev
         run: |
-          prev="$(gcloud run services describe "$API" --region "$REGION" --format=json | jq -r '[.status.traffic[] | select(.percent==100)][0].revisionName // empty')"
-          echo "prev=${prev}" >> "$GITHUB_OUTPUT"
+          api_prev="$(gcloud run services describe "$API" --region "$REGION" --format=json | jq -r '[.status.traffic[] | select(.percent==100)][0].revisionName // empty')"
+          wp_prev="$(bash scripts/worker_pool_revision.sh "$PROJECT" "$REGION" "$WORKER")"
+          echo "api=${api_prev}" >> "$GITHUB_OUTPUT"
+          echo "worker=${wp_prev}" >> "$GITHUB_OUTPUT"
+      - name: deploy API revision with no traffic, quick smoke of its tag URL
+        run: |
           tag="c-${GITHUB_SHA::7}"
           gcloud run deploy "$API" --region "$REGION" --image "$IMAGE" --no-traffic --tag "$tag" --quiet
           url="$(gcloud run services describe "$API" --region "$REGION" --format=json | jq -r --arg t "$tag" '.status.traffic[] | select(.tag==$t) | .url')"
-          bash scripts/smoke_test.sh "$url"
+          bash scripts/deploy_smoke.sh "$SMOKE_SECRET" "$url" smoke-results/staging-tag.json \
+            --no-run-completion --skip-rate-limit --wait-ready 120
           gcloud run services update-traffic "$API" --region "$REGION" --to-latest --quiet
-      - name: deploy worker pool
-        run: gcloud run worker-pools deploy "$WORKER" --region "$REGION" --image "$IMAGE" --quiet
-      - name: smoke staging
+      - name: deploy worker pool and the scaler job image
+        run: |
+          gcloud run worker-pools deploy "$WORKER" --region "$REGION" --image "$IMAGE" --quiet
+          gcloud run jobs update "$SCALER" --region "$REGION" --image "$IMAGE" --quiet
+      - name: full smoke of staging (a real, budget-capped research run)
         run: |
           url="$(gcloud run services describe "$API" --region "$REGION" --format='value(status.url)')"
-          bash scripts/smoke_test.sh "$url"
-      - name: roll back staging API on failure
-        if: failure() && steps.api.outputs.prev != ''
+          bash scripts/deploy_smoke.sh "$SMOKE_SECRET" "$url" smoke-results/staging.json --run-timeout 300
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: smoke-staging
+          path: smoke-results/
+          if-no-files-found: warn
+      - name: roll back staging on failure
+        if: failure()
         env:
-          PREV: ${{ steps.api.outputs.prev }}
-        run: gcloud run services update-traffic "$API" --region "$REGION" --to-revisions "${PREV}=100" --quiet
+          API_PREV: ${{ steps.prev.outputs.api }}
+          WP_PREV: ${{ steps.prev.outputs.worker }}
+        run: |
+          if [[ -n "$API_PREV" ]]; then
+            gcloud run services update-traffic "$API" --region "$REGION" --to-revisions "${API_PREV}=100" --quiet
+          fi
+          if [[ -n "$WP_PREV" ]]; then
+            gcloud run worker-pools update-instance-split "$WORKER" --region "$REGION" --to-revisions "${WP_PREV}=100" --quiet
+          fi
+          echo "ROLLED BACK staging to api=${API_PREV:-none} worker=${WP_PREV:-none}" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-prod:
     if: vars.GCP_PROJECT_ID != ''
@@ -123,9 +157,12 @@ jobs:
       PROJECT: ${{ vars.GCP_PROJECT_ID }}
       REGION: ${{ vars.GCP_REGION }}
       SRC_IMAGE: ${{ needs.build.outputs.image }}
+      WORKFLOW_REF: ${{ github.workflow_ref }}
       API: research-prod-api
       WORKER: research-prod-worker
       JOB: research-prod-migrate
+      SCALER: research-prod-scaler
+      SMOKE_SECRET: research-prod-smoke-api-key
       CANARY_PERCENT: "10"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -137,10 +174,13 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOY_SA }}
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
       - uses: imjasonh/setup-crane@feee3b6bb0d4c68370f256a4502498c9227e5c6b # v0.7
-      - name: promote the tested image to the prod registry (same digest)
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: verify the signature, then promote the same digest to the prod registry
         id: promote
         run: |
           gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+          cosign verify "$SRC_IMAGE" --certificate-identity "https://github.com/${WORKFLOW_REF}" \
+            --certificate-oidc-issuer "$OIDC_ISSUER" > /dev/null
           digest="${SRC_IMAGE##*@}"
           dst="${REGION}-docker.pkg.dev/${PROJECT}/research-prod/${IMAGE_NAME}"
           crane copy "$SRC_IMAGE" "${dst}:${GITHUB_SHA}"
@@ -156,11 +196,11 @@ jobs:
         id: prev
         run: |
           api_prev="$(gcloud run services describe "$API" --region "$REGION" --format=json | jq -r '[.status.traffic[] | select(.percent==100)][0].revisionName // empty')"
-          wp_prev="$(gcloud run worker-pools describe "$WORKER" --region "$REGION" --format=json | jq -r '(.latestReadyRevision // "") | split("/") | last')"
+          wp_prev="$(bash scripts/worker_pool_revision.sh "$PROJECT" "$REGION" "$WORKER")"
           echo "api=${api_prev}" >> "$GITHUB_OUTPUT"
           echo "worker=${wp_prev}" >> "$GITHUB_OUTPUT"
-          echo "rollback targets: api=${api_prev} worker=${wp_prev}" >> "$GITHUB_STEP_SUMMARY"
-      - name: deploy API revision with no traffic, smoke its tag URL
+          echo "rollback targets: api=${api_prev:-none} worker=${wp_prev:-none}" >> "$GITHUB_STEP_SUMMARY"
+      - name: deploy API revision with no traffic, quick smoke of its tag URL
         id: api
         env:
           IMAGE: ${{ steps.promote.outputs.image }}
@@ -168,26 +208,39 @@ jobs:
           tag="c-${GITHUB_SHA::7}"
           gcloud run deploy "$API" --region "$REGION" --image "$IMAGE" --no-traffic --tag "$tag" --quiet
           new="$(gcloud run services describe "$API" --region "$REGION" --format='value(status.latestCreatedRevisionName)')"
-          echo "new=${new}" >> "$GITHUB_OUTPUT"
           url="$(gcloud run services describe "$API" --region "$REGION" --format=json | jq -r --arg t "$tag" '.status.traffic[] | select(.tag==$t) | .url')"
-          bash scripts/smoke_test.sh "$url"
-      - name: canary (10%), smoke, then 100%
+          echo "new=${new}" >> "$GITHUB_OUTPUT"
+          echo "tag_url=${url}" >> "$GITHUB_OUTPUT"
+          bash scripts/deploy_smoke.sh "$SMOKE_SECRET" "$url" smoke-results/prod-tag.json \
+            --no-run-completion --skip-rate-limit --wait-ready 120
+      - name: canary (10%), full smoke of the canary revision, then 100%
         env:
           NEW: ${{ steps.api.outputs.new }}
           PREV: ${{ steps.prev.outputs.api }}
+          TAG_URL: ${{ steps.api.outputs.tag_url }}
         run: |
           url="$(gcloud run services describe "$API" --region "$REGION" --format='value(status.url)')"
           if [[ -n "$PREV" ]]; then
             gcloud run services update-traffic "$API" --region "$REGION" \
               --to-revisions "${NEW}=${CANARY_PERCENT},${PREV}=$((100 - CANARY_PERCENT))" --quiet
-            for _ in 1 2 3 4 5; do bash scripts/smoke_test.sh "$url" 3; sleep 12; done
           fi
+          # Same script as CI and staging, against the canary revision itself (its tag URL), before 100%.
+          bash scripts/deploy_smoke.sh "$SMOKE_SECRET" "$TAG_URL" smoke-results/prod-canary.json --run-timeout 300
           gcloud run services update-traffic "$API" --region "$REGION" --to-revisions "${NEW}=100" --quiet
-          bash scripts/smoke_test.sh "$url"
-      - name: deploy worker pool (startup probe = /readyz)
+          bash scripts/deploy_smoke.sh "$SMOKE_SECRET" "$url" smoke-results/prod-100.json \
+            --no-run-completion --skip-rate-limit
+      - name: deploy worker pool (startup probe = /readyz) and the scaler job image
         env:
           IMAGE: ${{ steps.promote.outputs.image }}
-        run: gcloud run worker-pools deploy "$WORKER" --region "$REGION" --image "$IMAGE" --quiet
+        run: |
+          gcloud run worker-pools deploy "$WORKER" --region "$REGION" --image "$IMAGE" --quiet
+          gcloud run jobs update "$SCALER" --region "$REGION" --image "$IMAGE" --quiet
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: smoke-prod
+          path: smoke-results/
+          if-no-files-found: warn
       - name: automatic rollback to the previous revisions
         if: failure()
         env:
@@ -200,4 +253,4 @@ jobs:
           if [[ -n "$WP_PREV" ]]; then
             gcloud run worker-pools update-instance-split "$WORKER" --region "$REGION" --to-revisions "${WP_PREV}=100" --quiet
           fi
-          echo "ROLLED BACK to api=${API_PREV} worker=${WP_PREV}" >> "$GITHUB_STEP_SUMMARY"
+          echo "ROLLED BACK to api=${API_PREV:-none} worker=${WP_PREV:-none}" >> "$GITHUB_STEP_SUMMARY"

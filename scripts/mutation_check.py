@@ -3,6 +3,7 @@
 Each mutant disables one guarantee; at least one test must fail (KILLED). Results -> results/mutation_check.txt
 Run: .venv/Scripts/python.exe scripts/mutation_check.py            (security + budgets -> mutation_check.txt)
      .venv/Scripts/python.exe scripts/mutation_check.py deploy     (deploy controls -> mutation_check_deploy.txt)
+     .venv/Scripts/python.exe scripts/mutation_check.py hardening  (prod hardening -> mutation_check_hardening.txt)
 """
 
 from __future__ import annotations
@@ -201,12 +202,61 @@ DEPLOY_MUTANTS = [
     ),
 ]
 
+HARDENING_MUTANTS = [
+    (
+        S + "config.py",
+        "fake LLM: Settings accepts LLM_PROVIDER=fake in prod",
+        '        if self.llm_provider == "fake" and self.env not in FAKE_LLM_ENVS:',
+        "        if False:",
+    ),
+    (
+        S + "llm/factory.py",
+        "fake LLM: make_llm skips the ENV re-check",
+        "        if settings.env not in FAKE_LLM_ENVS:",
+        "        if False:",
+    ),
+    (
+        S + "search/providers.py",
+        "fixture fetch: skip the SSRF guard",
+        "            resolve_public(target.host, target.port, fixture_resolver)",
+        "            pass",
+    ),
+    (S + "http_security.py", "body limit: ignore Content-Length", "            if too_big:", "            if False:"),
+    (
+        S + "http_security.py",
+        "body limit: no cap on chunked bodies",
+        "            if size > self.max_bytes:",
+        "            if False:",
+    ),
+    (
+        S + "http_security.py",
+        "headers: security headers not added",
+        '                message["headers"] = headers',
+        "                pass",
+    ),
+    (S + "api.py", "errors: no JSON 500 handler", "    @app.exception_handler(Exception)\n", ""),
+    (S + "report.py", "degradation: fallback not labelled", "        fallback_reason=reason_code(reason),\n", ""),
+    (
+        S + "scaler.py",
+        "scaler: scale in without the one-step limit",
+        "        target = max(target, current - 1)",
+        "        pass",
+    ),
+    (
+        S + "scaler.py",
+        "scaler: scales up while the kill switch is on",
+        "    if kill_switch and want > current:",
+        "    if False:",
+    ),
+]
+
 
 def main() -> int:
     env = {k: v for k, v in os.environ.items() if not k.startswith(("VIRTUAL_ENV", "PYTHONPATH", "UV_"))}
-    deploy_set = sys.argv[1:] == ["deploy"]
+    which = sys.argv[1] if len(sys.argv) > 1 else "security"
+    mutants = {"security": MUTANTS, "deploy": DEPLOY_MUTANTS, "hardening": HARDENING_MUTANTS}[which]
     rows = []
-    for rel, label, old, new in DEPLOY_MUTANTS if deploy_set else MUTANTS:
+    for rel, label, old, new in mutants:
         p = ROOT / rel
         orig = p.read_text(encoding="utf-8")
         assert orig.count(old) == 1, f"{label}: old text found {orig.count(old)} times"
@@ -229,7 +279,7 @@ def main() -> int:
             p.write_text(orig, encoding="utf-8", newline="\n")
     killed = sum(r.startswith("KILLED") for r in rows)
     summary = f"{killed}/{len(rows)} mutants killed"
-    out_name = "mutation_check_deploy.txt" if deploy_set else "mutation_check.txt"
+    out_name = {"security": "mutation_check.txt"}.get(which, f"mutation_check_{which}.txt")
     (ROOT / "results" / out_name).write_text("\n".join([*rows, summary]) + "\n", encoding="utf-8")
     print(summary)
     return 0 if killed == len(rows) else 1

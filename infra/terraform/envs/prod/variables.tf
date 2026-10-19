@@ -79,6 +79,22 @@ variable "worker_memory" {
   type        = string
 }
 
+variable "worker_min_instances" {
+  description = "Queue-depth scaler lower bound."
+  type        = number
+}
+
+variable "worker_max_instances" {
+  description = "Queue-depth scaler upper bound."
+  type        = number
+}
+
+variable "alert_email" {
+  description = "On-call email for alert notifications (set via TF_VAR_alert_email; empty = no channel)."
+  type        = string
+  default     = ""
+}
+
 variable "worker_max_concurrent_runs" {
   description = "Concurrent runs per worker instance."
   type        = number

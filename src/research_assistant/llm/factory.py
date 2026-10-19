@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from research_assistant.config import PROJECT, Models, Settings
+from research_assistant.config import FAKE_LLM_ENVS, PROJECT, Models, Settings
 from research_assistant.llm.anthropic_client import PLACEHOLDER_MODEL, AnthropicClient
 from research_assistant.llm.base import LLMClient, LLMError
 from research_assistant.llm.cache import Cache, DiskCache, RedisCache
@@ -47,9 +47,18 @@ def make_cache(settings: Settings, client: redis.Redis | None = None) -> Cache |
 
 def make_llm(settings: Settings, redis_client: redis.Redis | None = None) -> tuple[LLMClient, Models]:
     """`client` is the run store's Redis connection (used by the redis spend/cache backends)."""
+    provider = settings.llm_provider
+    if provider == "fake":
+        # Deterministic canned answers for CI / the compose smoke stack. Never in staging or prod: checked
+        # here as well as in Settings, so a hand-built Settings object cannot bypass it either.
+        if settings.env not in FAKE_LLM_ENVS:
+            raise LLMError(f"LLM_PROVIDER=fake is refused when ENV={settings.env}")
+        from research_assistant.llm.scripted import scripted_llm
+
+        n = max(1, min(settings.budgets.max_sub_questions, 3))
+        return scripted_llm(n), settings.models
     ledger = make_ledger(settings, redis_client)
     cache = make_cache(settings, redis_client)
-    provider = settings.llm_provider
     if provider == "anthropic" or (provider == "auto" and os.environ.get("ANTHROPIC_API_KEY")):
         key = os.environ.get("ANTHROPIC_API_KEY")
         if not key:

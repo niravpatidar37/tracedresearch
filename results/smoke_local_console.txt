@@ -1,0 +1,24 @@
+# Local smoke run, started 2026-10-19T06:37:37Z (see started_at in smoke_local.json). Stack: docker compose -f docker-compose.yml -f docker-compose.smoke.yml --profile api
+# (real Redis 7.4 container, migrate job, api + worker containers built from this repo's Dockerfile), SMOKE_LLM_PROVIDER=ollama
+# SMOKE_ENV=dev: worker calls local Ollama llama3.1:8b on the host (RTX 3060 6 GB, $0), offline fixture corpus fixtures/smoke_corpus.json.
+# Script version: scripts/smoke.py before the liveness-wait retry was added (fix commit 'liveness waits for the server';
+# the 17 checks are unchanged). Command: python scripts/smoke.py --base-url http://127.0.0.1:8102 --worker-url http://127.0.0.1:8112 --kill-switch-redis-url redis://127.0.0.1:16379/0 --expect-ssrf-fixture --wait-ready 60 --run-timeout 330 --json-out results/smoke_local.json
+PASS liveness                               200 {status: ok} (31 ms)
+PASS readiness                              ready role=api schema_version=1 (Redis pinged) (16 ms)
+PASS worker_readiness                       worker ready; exposes probes only (POST /research -> 404) (16 ms)
+PASS auth_rejected_without_or_wrong_key     401 without a key and with a wrong key (POST and GET) (0 ms)
+PASS auth_accepted_with_key                 valid key authenticated (unknown run -> 404, not 401) (15 ms)
+PASS input_validation_422                   422 for 4 invalid bodies (16 ms)
+PASS oversize_input_rejected                501-char question -> 422; 200 KB body -> 413 (0 ms)
+PASS security_headers                       4 headers on 3 responses; no framework server banner (16 ms)
+PASS no_stack_traces_in_errors              10 error responses are JSON without stack traces (0 ms)
+PASS research_submit_returns_run_id         202 run_id=4a8cb9a42d0e4701 (31 ms)
+PASS sse_stream_emits_events                13 events: queued, started, node_completed ... completed (79015 ms)
+PASS run_completes_schema_valid             completed in 78.97s, findings=4, tokens=3614, degraded=True (writer_output_invalid) (32 ms)
+PASS citations_resolve_to_findings          5 markers -> 3 sources -> all resolve to Findings (rate 1.0) (0 ms)
+PASS trace_returns_steps                    10 steps; agents: planner, researcher, supervisor, supervisor/reviewer, writer (15 ms)
+PASS ssrf_guard_blocks_loopback_fixture     2 internal fetches blocked (non_public_address:127.0.0.1, non_public_address:169.254.169.254); none cited (0 ms)
+PASS kill_switch_refuses_new_runs           engaged in 0.0s -> POST 503 + Retry-After; released in 2.1s (cache <= 2 s) (2110 ms)
+PASS rate_limit_429_retry_after             429 after 20 requests in this window, Retry-After=2s (125 ms)
+
+SMOKE OK: 17 passed, 0 failed, 0 skipped of 17 in 81.44s

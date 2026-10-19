@@ -1,0 +1,30 @@
+# Smoke-test overlay for the full local stack: offline fixture corpus, no secrets, and by default the
+# deterministic fake LLM (CI). Used by CI (job `smoke`) and locally:
+#   export SMOKE_API_KEY=ci-smoke-key-not-a-secret-0001      # throwaway test key, >= 16 chars
+#   docker compose -f docker-compose.yml -f docker-compose.smoke.yml --profile api up -d --build
+#   python scripts/smoke.py --base-url http://127.0.0.1:8102 --worker-url http://127.0.0.1:8112 \
+#     --kill-switch-redis-url redis://127.0.0.1:16379/0 --expect-ssrf-fixture --json-out smoke.json
+# Local run on a real model instead: SMOKE_LLM_PROVIDER=ollama SMOKE_ENV=dev (Ollama on the host, $0).
+# LLM_PROVIDER=fake is refused by the app unless ENV is dev/ci/test (prod and staging can never use it).
+services:
+  api:
+    environment:
+      ENV: ${SMOKE_ENV:-ci}
+      RESEARCH_API_KEYS: ${SMOKE_API_KEY:?set SMOKE_API_KEY (a throwaway test key, >= 16 chars)}
+      RATE_LIMIT_PER_MIN: "20"
+
+  worker:
+    env_file: !reset []
+    volumes: !override
+      - ./fixtures:/app/fixtures:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      ENV: ${SMOKE_ENV:-ci}
+      LLM_PROVIDER: ${SMOKE_LLM_PROVIDER:-fake}
+      OLLAMA_BASE_URL: http://host.docker.internal:11434/v1
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.1:8b}
+      SEARCH_FIXTURE_FILE: /app/fixtures/smoke_corpus.json
+      LLM_SPEND_LEDGER: /tmp/ledger.jsonl
+      LLM_CACHE_BACKEND: "off"
+      BUDGET_MAX_SUB_QUESTIONS: "2"

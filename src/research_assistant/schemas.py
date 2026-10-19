@@ -178,7 +178,8 @@ class Report(BaseModel):
     first_draft_check: CitationCheck | None
     final_check: CitationCheck
     writer_attempts: int
-    fallback: bool  # True when produced deterministically (no writer LLM) because of a budget
+    fallback: bool  # True when produced deterministically (no writer LLM): the run degraded, see fallback_reason
+    fallback_reason: str = ""  # machine-readable cause (SLI label): no_findings | budget_<kind> | writer_* | ...
 
 
 RunStatus = Literal["queued", "running", "completed", "failed"]

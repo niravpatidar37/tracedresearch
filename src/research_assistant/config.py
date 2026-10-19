@@ -28,6 +28,9 @@ def _float(name: str, default: float) -> float:
 
 
 ROLES = ("all", "api", "worker")
+# Deployment environment (ENV). The deterministic fake LLM (LLM_PROVIDER=fake) is only allowed in FAKE_LLM_ENVS.
+ENVS = ("dev", "ci", "test", "staging", "prod")
+FAKE_LLM_ENVS = frozenset({"dev", "ci", "test"})
 _TRUE = {"1", "true", "yes", "on"}
 
 
@@ -123,12 +126,18 @@ class Settings:
     spend_backend: str = "file"  # file = shared local JSONL ledger; redis = per-deployment monthly counters
     cache_backend: str = "disk"  # disk | redis (shared, TTL) | off
     cache_ttl_s: int = 86_400
+    env: str = "dev"  # ENV: dev | ci | test | staging | prod (prod/staging refuse the fake LLM)
+
+    def __post_init__(self) -> None:
+        if self.llm_provider == "fake" and self.env not in FAKE_LLM_ENVS:
+            raise ValueError(f"LLM_PROVIDER=fake is refused when ENV={self.env} (allowed: {sorted(FAKE_LLM_ENVS)})")
 
     @classmethod
     def from_env(cls) -> Settings:
         load_env()
         # Keys shorter than 16 chars (or placeholders like "<unset>") are ignored: the API then fails closed.
-        raw = os.environ.get("RESEARCH_API_KEYS", "").split(",")
+        # RESEARCH_SMOKE_API_KEY: a separate key (own Secret Manager secret) used only by the deploy smoke test.
+        raw = [*os.environ.get("RESEARCH_API_KEYS", "").split(","), os.environ.get("RESEARCH_SMOKE_API_KEY", "")]
         keys = tuple(k.strip() for k in raw if len(k.strip()) >= 16 and not k.strip().startswith("<"))
         provider = os.environ.get("LLM_PROVIDER", "groq")
         return cls(
@@ -153,4 +162,5 @@ class Settings:
             spend_backend=_choice("LLM_SPEND_BACKEND", cls.spend_backend, ("file", "redis")),
             cache_backend=_choice("LLM_CACHE_BACKEND", cls.cache_backend, ("disk", "redis", "off")),
             cache_ttl_s=_int("LLM_CACHE_TTL_S", cls.cache_ttl_s),
+            env=_choice("ENV", cls.env, ENVS),
         )

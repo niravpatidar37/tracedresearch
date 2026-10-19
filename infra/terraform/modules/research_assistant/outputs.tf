@@ -13,6 +13,16 @@ output "worker_pool" {
   value       = google_cloud_run_v2_worker_pool.worker.name
 }
 
+output "scaler_job" {
+  description = "Cloud Run job that sets the worker pool size from the queue (run every minute by Cloud Scheduler)."
+  value       = google_cloud_run_v2_job.scaler.name
+}
+
+output "slo_name" {
+  description = "Availability SLO resource name (for select_slo_burn_rate)."
+  value       = google_monitoring_slo.availability.name
+}
+
 output "migrate_job" {
   description = "Cloud Run job that applies keyspace migrations."
   value       = google_cloud_run_v2_job.migrate.name

@@ -14,6 +14,8 @@ worker_instances           = 1
 worker_cpu                 = "1"
 worker_memory              = "1Gi"
 worker_max_concurrent_runs = 2
+worker_min_instances       = 0 # staging idles at zero; the scaler adds a worker within ~1 min of a POST
+worker_max_instances       = 2
 
 kill_switch         = false
 llm_spend_cap_usd   = 5

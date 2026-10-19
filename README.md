@@ -108,9 +108,24 @@ steps hit `rate limited for 542-669 s past deadline`, so that run finished with 
 Durability still holds. The Ollama run shows a resumed run that does real research; its 8B writer produced invalid
 JSON twice, which also led to a fallback report.
 
+### Smoke test (the running stack, end to end)
+
+[`scripts/smoke.py`](scripts/smoke.py) checks a running deployment in 17 steps and writes a JSON summary: liveness,
+readiness (Redis + schema), worker probes, auth rejected/accepted, 422 validation, 413 oversize body, security
+headers, no stack traces in errors, then the product path. `POST /research` returns a `run_id`, the SSE stream
+emits events, the run completes, **every citation resolves to a Finding**, `GET /trace` returns steps, **the SSRF
+guard blocks the corpus's loopback and metadata pages**, the kill switch refuses new runs, and the rate limit
+answers 429 with `Retry-After`.
+
+| Where | Stack | Result |
+|---|---|---|
+| Local, real model ([`results/smoke_local.json`](results/smoke_local.json), [console](results/smoke_local_console.txt)) | docker compose: Redis 7.4 + migrate job + api + worker containers from this Dockerfile; worker on local Ollama `llama3.1:8b` ($0); offline fixture corpus | **17/17 passed in 81.4 s.** The run took 79 s with 4 findings and 3 sources, all resolving. The 8B writer's JSON was invalid, so the report is the labelled degraded fallback (`writer_output_invalid`; see [What did not work](#what-did-not-work)). Kill switch engaged in < 0.1 s and released in 2.1 s. |
+| CI job `smoke` (every PR and push) | same compose stack, deterministic fake LLM (`LLM_PROVIDER=fake`, refused unless `ENV` is dev/ci/test) | all 17 checks; the JSON summary is uploaded as an artifact |
+| `deploy.yml` (not run: no cloud) | staging tag URL, staging after the worker deploy (full run), prod canary revision before 100% | rollback of API + worker pool on failure |
+
 ### Tests and checks
 
-- **153 pytest tests**, run in CI with no secrets; every LLM call in them uses recorded/fake responses. Each
+- **203 pytest tests**, run in CI with no secrets; every LLM call in them uses recorded/fake responses. Each
   specialist is tested alone, every budget is tested to trip, and there are tests for the SSRF guard (including the
   GCP metadata server), the citation validator, injection handling, crash/resume, API auth, rate limiting and
   ownership, and the deployment controls (readiness, migrations, kill switch, graceful drain, api/worker queue,
@@ -119,9 +134,15 @@ JSON twice, which also led to a fallback report.
   is disabled one at a time and the suite must fail for every mutant. The first round left 2 survivors (an IP check
   shadowed by the deny list, and the undefined-footnote check); both were fixed with new tests. Current result:
   **21/21 mutants killed**. The deployment-control set
-  ([`results/mutation_check_deploy.txt`](results/mutation_check_deploy.txt)) killed **13/13** after one round.
-- CI runs ruff, mypy (strict), pytest, bandit, pip-audit, gitleaks, a Docker build, a Trivy image scan, and for the
-  infrastructure `terraform fmt -check`, `init -backend=false` + `validate` (both envs), tflint and checkov.
+  ([`results/mutation_check_deploy.txt`](results/mutation_check_deploy.txt)) killed **13/13** after one round, and
+  the production-hardening set ([`results/mutation_check_hardening.txt`](results/mutation_check_hardening.txt):
+  fake-LLM gate, fixture SSRF guard, body limit, security headers, JSON 500s, degraded-report label, scaler
+  limits) killed **10/10** after one round. The first run left one survivor (the Content-Length check was
+  shadowed by the streaming cap), and a new test fixed it.
+- CI runs ruff, mypy (strict), pytest, bandit, pip-audit, gitleaks, a Docker build, a Trivy image scan, a CycloneDX
+  SBOM of the image (artifact), the compose **smoke** job, and for the infrastructure `terraform fmt -check`,
+  `init -backend=false` + `validate` (both envs), tflint and checkov. Dependabot watches actions, Docker, compose,
+  uv and Terraform.
 
 ## Quick start
 
@@ -152,7 +173,15 @@ Other entry points:
 - Containers (api + worker split, like the cloud):
   `RESEARCH_API_KEYS=... docker compose -p p2-research --profile api up -d --build`. This runs `migrate` once, then
   starts the API on :8102 and the worker probes on :8112.
-- Ops: `uv run research-assistant kill-switch on|off|status` and `uv run research-assistant migrate --check`.
+- Ops: `uv run research-assistant kill-switch on|off|status`, `uv run research-assistant migrate --check`, and
+  `uv run research-assistant queue-stats`.
+- Smoke the full stack ($0, no keys; add `SMOKE_LLM_PROVIDER=ollama SMOKE_ENV=dev` for a real local model):
+  ```bash
+  export SMOKE_API_KEY="ci-$(openssl rand -hex 16)"
+  docker compose -f docker-compose.yml -f docker-compose.smoke.yml --profile api up -d --build
+  python scripts/smoke.py --base-url http://127.0.0.1:8102 --worker-url http://127.0.0.1:8112 \
+    --kill-switch-redis-url redis://127.0.0.1:16379/0 --expect-ssrf-fixture --json-out smoke.json
+  ```
 - Tests: `uv run pytest -q`. Live re-measurement: `python scripts/live_eval.py bench` or `python scripts/live_eval.py crash`.
 - Stop: `docker compose -p p2-research stop`.
 
@@ -335,16 +364,41 @@ GCP project is connected.
   Kill switch: `AGENT_KILL_SWITCH=1`, or the Redis flag via `research-assistant kill-switch on`. Logs are JSON with
   PII redaction. The spend cap and LLM cache move to Redis in the cloud (`LLM_SPEND_BACKEND=redis`,
   `LLM_CACHE_BACKEND=redis`).
-- **CD** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)): build and push the image (deployed **by
-  digest**); staging: migrate, no-traffic tagged revision, smoke `/healthz` + `/readyz`, promote; prod waits for
-  approval on the `production` environment, then a tagged smoke, a 10% canary with repeated smoke, then 100%, with
-  automatic rollback to the recorded previous revisions. Auth is keyless Workload Identity Federation;
-  `id-token: write` is granted only on deploy jobs.
-- **Docs:** [`docs/RUNBOOK.md`](docs/RUNBOOK.md) (bootstrap, first apply, deploy, verify, rollback, secret rotation,
-  kill switch, incidents) and [`docs/SLO.md`](docs/SLO.md) (SLIs/SLOs and a cited monthly cost **estimate**:
-  roughly $55-58 for staging and at least $82 for prod, plus about $4 per 1,000 runs).
+- **Scaling:** a Cloud Scheduler job runs a small **scaler job** every minute. It reads the Redis queue and sets the
+  worker pool's instance count between `worker_min_instances` and `worker_max_instances` through the Cloud Run
+  Admin API ([RUNBOOK "Scaling"](docs/RUNBOOK.md#scaling-queue-depth-scaler)).
+- **CD** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)): build, push and **cosign-sign** the image
+  (deployed **by digest**, signature verified before staging and before the prod promotion). Staging: migrate,
+  no-traffic tagged revision, quick smoke, promote, worker deploy, full smoke. Prod waits for approval on the
+  `production` environment, then a tagged smoke, a 10% canary, the full smoke against the canary revision, then
+  100%. Any failure rolls back the API and the worker pool to the recorded revisions (the worker revision is read
+  from the documented v2 API fields). Auth is keyless Workload Identity Federation; `id-token: write` is granted
+  only on deploy jobs.
+- **Monitoring as code** ([`monitoring.tf`](infra/terraform/modules/research_assistant/monitoring.tf)): uptime check
+  on `/healthz`, an availability SLO with multi-window burn-rate alerts, 5xx ratio, p95 latency, saturation, queue
+  depth / oldest queued run, degraded-report rate, Redis memory and scaler failures, sent to an email channel.
+- **Docs:** [`docs/RUNBOOK.md`](docs/RUNBOOK.md) (bootstrap, first apply, deploy, verify, rollback, scaling, alerts,
+  on-call checklist, secret rotation, kill switch, incidents) and [`docs/SLO.md`](docs/SLO.md) (SLIs/SLOs, alerting,
+  accepted limits and a cited monthly cost **estimate**: roughly $36-57 for staging and at least $64 for prod, plus
+  about $4 per 1,000 runs).
 - **Local evidence (no cloud):** [`results/deploy_local_check.txt`](results/deploy_local_check.txt) shows the
   api/worker split, migrations, kill switch and SIGTERM drain on docker compose with real Redis.
+
+### Production readiness (honest checklist)
+
+| Item | Status |
+|---|---|
+| Smoke suite (17 checks) green in CI on the compose stack, and locally on a real model | done |
+| Deterministic fake-LLM mode for CI, refused when `ENV` is staging/prod (tests + mutation check) | done |
+| Security headers, 413 body limit, JSON errors without stack traces, docs UI off | done |
+| Honest degradation: fallback reports labelled `degraded` + `fallback_reason`, SLI metric + alert | done (the grounded-answer SLO itself is still missed: 9/15 at baseline) |
+| Queue-depth worker scaling (scheduler + scaler job) | done in code + Terraform; **not applied** |
+| Monitoring as code (uptime, SLO burn rate, 5xx, latency, saturation, queue, degraded rate) | done in Terraform; **not applied** |
+| SBOM (CycloneDX, CI artifact), Dependabot, keyless cosign signing + verify in CD | done; signing only runs once GCP is connected |
+| Rollback of API and worker pool on a failed smoke | done in `deploy.yml`; **never exercised** (no cloud) |
+| Kill switch propagation up to ~2 s (cache) | accepted and documented |
+| GCP project, WIF, secrets, alert email, required reviewers on `production` | **human** (RUNBOOK bootstrap) |
+| Claim-level faithfulness check | not built (not yet measured) |
 
 One-time GCP bootstrap (exact commands in the RUNBOOK): create a GCS state bucket; create a `gh-deployer` service
 account with `run.developer` and `artifactregistry.writer`; create a Workload Identity pool and an OIDC provider
@@ -375,10 +429,11 @@ src/research_assistant/   the service (the Python package keeps its original nam
   report.py               citation validator + sanitized markdown renderer
   spend.py  pricing.json  shared spend ledger (file-locked JSONL or Redis) and price table
   migrations/             versioned Redis keyspace migrations
-tests/                    153 tests: agents, budgets, SSRF, citations/injection, resume, API, deploy
-scripts/                  live_eval.py (benchmark + crash test), mutation_check.py, trace tools
+tests/                    203 tests: agents, budgets, SSRF, citations/injection, resume, API, deploy, hardening
+scripts/                  smoke.py (end-to-end smoke), live_eval.py (benchmark + crash test), mutation_check.py,
+                          deploy helpers (deploy_smoke.sh, worker_pool_revision.sh), trace tools
 results/                  raw benchmark, crash/resume and mutation-check data behind every number above
-fixtures/                 offline corpus with a poisoned page (red-team target, demo)
+fixtures/                 offline corpora: poisoned page (red-team, demo) and the smoke corpus (loopback/metadata pages)
 infra/terraform/          Cloud Run module + staging/prod envs
 docs/                     RUNBOOK, SLO, REDTEAM
 assets/brand/             brand kit, generated by tools/build_brand.py
