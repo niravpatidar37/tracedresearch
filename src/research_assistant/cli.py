@@ -13,8 +13,39 @@ from research_assistant.logging_utils import setup_logging
 from research_assistant.store import RunStore
 
 
+def _scale(args: argparse.Namespace, settings: Settings, store: RunStore) -> int:
+    import os
+
+    import httpx
+
+    from research_assistant.control import KillSwitch
+    from research_assistant.scaler import WorkerPoolScaler, metadata_token, run_once
+
+    scaler = None
+    if args.cmd == "scale-workers":
+        pool = os.environ.get("WORKER_POOL_NAME", "")
+        if not pool:
+            print("WORKER_POOL_NAME (projects/P/locations/L/workerPools/NAME) is required", file=sys.stderr)
+            return 2
+        http = httpx.Client(trust_env=False)
+        scaler = WorkerPoolScaler(pool, http, lambda: metadata_token(http))
+    out = run_once(
+        store,
+        scaler,
+        runs_per_instance=settings.max_concurrent_runs,
+        min_n=int(os.environ.get("SCALER_MIN_INSTANCES", "1")),
+        max_n=int(os.environ.get("SCALER_MAX_INSTANCES", "4")),
+        kill_switch=KillSwitch(settings, store).active(),
+        dry_run=getattr(args, "dry_run", False),
+    )
+    print(json.dumps(out))
+    return 0
+
+
 def _ops(args: argparse.Namespace, settings: Settings) -> int:
     store = RunStore.from_settings(settings)  # ops commands never need an LLM key
+    if args.cmd in ("queue-stats", "scale-workers"):
+        return _scale(args, settings, store)
     if args.cmd == "migrate":
         before = migrations.current_version(store.r)
         if args.check:
@@ -46,10 +77,13 @@ def main(argv: list[str] | None = None) -> int:
     ks = sub.add_parser("kill-switch", help="engage/release the runtime kill switch stored in Redis")
     ks.add_argument("state", choices=["on", "off", "status"])
     ks.add_argument("--reason", default="", help="free text stored with the switch (no secrets/PII)")
+    sub.add_parser("queue-stats", help="print queue depth / oldest queued run age (also logged as queue_stats)")
+    sc = sub.add_parser("scale-workers", help="set the worker pool instance count from the queue (Cloud Run job)")
+    sc.add_argument("--dry-run", action="store_true", help="compute and log, do not call the Admin API")
     args = ap.parse_args(argv)
 
     settings = Settings.from_env()
-    if args.cmd in ("migrate", "kill-switch"):
+    if args.cmd in ("migrate", "kill-switch", "queue-stats", "scale-workers"):
         return _ops(args, settings)
 
     from research_assistant.wiring import build_runner
