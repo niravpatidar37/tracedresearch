@@ -77,6 +77,64 @@ jobs:
           aquasec/trivy@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222
           image --scanners vuln --exit-code 1 --severity CRITICAL,HIGH --ignore-unfixed --no-progress
           tracedresearch:ci
+      - name: CycloneDX SBOM of the image (trivy)
+        run: |
+          mkdir -p sbom
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/sbom:/out" \
+            aquasec/trivy@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 \
+            image --format cyclonedx --output /out/tracedresearch-image.cdx.json --no-progress tracedresearch:ci
+          python3 - <<'PY'
+          import json
+          d = json.load(open("sbom/tracedresearch-image.cdx.json"))
+          assert d["bomFormat"] == "CycloneDX" and d.get("components"), "empty or non-CycloneDX SBOM"
+          print(f"CycloneDX {d['specVersion']}: {len(d['components'])} components")
+          PY
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: sbom-cyclonedx
+          path: sbom/tracedresearch-image.cdx.json
+          if-no-files-found: error
+
+  # Full stack (redis + migrate job + api + worker) from the real image, deterministic fake LLM (ENV=ci only),
+  # offline fixture corpus; then the same smoke script deploy.yml runs against staging and the prod canary.
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      COMPOSE: docker compose -f docker-compose.yml -f docker-compose.smoke.yml --profile api
+      PORTFOLIO_ENV_FILE: /dev/null # the base compose file's local secrets path; nothing is read in CI
+      LLM_SPEND_DIR: /tmp/llm-spend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: throwaway API key for this run (not a secret; generated, masked)
+        run: |
+          key="ci-$(openssl rand -hex 16)"
+          echo "::add-mask::${key}"
+          echo "SMOKE_API_KEY=${key}" >> "$GITHUB_ENV"
+      - name: build the image and start the stack
+        run: |
+          $COMPOSE build
+          $COMPOSE up -d
+          $COMPOSE ps
+      - name: smoke test (scripts/smoke.py)
+        run: >
+          python3 scripts/smoke.py --base-url http://127.0.0.1:8102 --worker-url http://127.0.0.1:8112
+          --kill-switch-redis-url redis://127.0.0.1:16379/0 --expect-ssrf-fixture --wait-ready 120
+          --json-out smoke-results/smoke_ci.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: smoke-results
+          path: smoke-results/
+          if-no-files-found: warn
+      - name: compose logs (on failure)
+        if: failure()
+        run: $COMPOSE logs --no-color --timestamps
+      - name: tear down
+        if: always()
+        run: $COMPOSE down -v
 
   terraform:
     runs-on: ubuntu-24.04
