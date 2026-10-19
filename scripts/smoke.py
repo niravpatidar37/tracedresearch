@@ -122,9 +122,20 @@ def expect(cond: bool, msg: str) -> None:
 
 # ----------------------------------------------------------------------------------------------- checks
 def c_liveness(c: Ctx) -> str:
-    r = c.req("GET", "/healthz", key=None)
-    expect(r.status == 200 and r.json() == {"status": "ok"}, f"GET /healthz -> {r.status} {r.body[:80]!r}")
-    return "200 {status: ok}"
+    """Waits up to --wait-ready for the process to accept connections (fresh containers/revisions)."""
+    deadline = time.monotonic() + c.args.wait_ready
+    t0 = time.monotonic()
+    while True:
+        try:
+            r = c.req("GET", "/healthz", key=None)
+        except OSError as exc:  # connection refused/reset while the server starts
+            if time.monotonic() > deadline:
+                raise Fail(f"/healthz unreachable after {c.args.wait_ready}s: {exc}") from exc
+            time.sleep(1)
+            continue
+        expect(r.status == 200 and r.json() == {"status": "ok"}, f"GET /healthz -> {r.status} {r.body[:80]!r}")
+        waited = time.monotonic() - t0
+        return "200 {status: ok}" + (f" after {waited:.0f}s" if waited >= 1 else "")
 
 
 def c_readiness(c: Ctx) -> str:
