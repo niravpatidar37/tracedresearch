@@ -14,6 +14,8 @@ worker_instances           = 2
 worker_cpu                 = "1"
 worker_memory              = "1Gi"
 worker_max_concurrent_runs = 2
+worker_min_instances       = 1
+worker_max_instances       = 6
 
 kill_switch         = false
 llm_spend_cap_usd   = 25

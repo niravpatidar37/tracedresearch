@@ -44,6 +44,10 @@ module "research_assistant" {
   worker_cpu                 = var.worker_cpu
   worker_memory              = var.worker_memory
   worker_max_concurrent_runs = var.worker_max_concurrent_runs
+  worker_min_instances       = var.worker_min_instances
+  worker_max_instances       = var.worker_max_instances
+
+  alert_email = var.alert_email
 
   kill_switch         = var.kill_switch
   llm_spend_cap_usd   = var.llm_spend_cap_usd

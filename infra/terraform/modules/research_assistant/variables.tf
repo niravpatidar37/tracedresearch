@@ -106,9 +106,37 @@ variable "rate_limit_per_min" {
 
 # ---------------------------------------------------------------- worker pool
 variable "worker_instances" {
-  description = "Worker pool instances (manual scaling)."
+  description = "Initial worker pool instance count; afterwards the queue-depth scaler job owns it."
   type        = number
   default     = 1
+}
+
+variable "worker_min_instances" {
+  description = "Lower bound the queue-depth scaler keeps (0 lets an idle pool scale to zero; queued runs then wait <= 1 scheduler tick)."
+  type        = number
+  default     = 1
+}
+
+variable "worker_max_instances" {
+  description = "Upper bound for the queue-depth scaler (caps cost and the parallel load on the LLM provider)."
+  type        = number
+  default     = 4
+  validation {
+    condition     = var.worker_max_instances >= var.worker_min_instances
+    error_message = "worker_max_instances must be >= worker_min_instances."
+  }
+}
+
+variable "scaler_schedule" {
+  description = "Cloud Scheduler cron for the scaler job (Cloud Scheduler's finest granularity is one minute)."
+  type        = string
+  default     = "* * * * *"
+}
+
+variable "scaler_enabled" {
+  description = "Run the queue-depth scaler (false pauses the scheduler job; the pool then stays at its current count)."
+  type        = bool
+  default     = true
 }
 
 variable "worker_cpu" {
@@ -152,6 +180,48 @@ variable "extra_env" {
   description = "Extra non-secret env vars for the worker (e.g. budget overrides)."
   type        = map(string)
   default     = {}
+  validation {
+    # Defence in depth for the fake-LLM gate (the app refuses it anyway when ENV is staging/prod).
+    condition     = !contains(keys(var.extra_env), "ENV") && lookup(var.extra_env, "LLM_PROVIDER", "groq") != "fake"
+    error_message = "extra_env may not override ENV or set LLM_PROVIDER=fake."
+  }
+}
+
+# ---------------------------------------------------------------- monitoring (monitoring.tf)
+variable "alert_email" {
+  description = "Email address for alert notifications. Empty = alert policies are created without a channel."
+  type        = string
+  default     = ""
+}
+
+variable "slo_availability_goal" {
+  description = "API availability SLO (share of non-5xx responses; deliberate 503s excluded) over 30 days."
+  type        = number
+  default     = 0.995
+}
+
+variable "slo_latency_p95_s" {
+  description = "p95 latency objective for non-streaming API requests, in seconds."
+  type        = number
+  default     = 0.3
+}
+
+variable "alert_queue_depth" {
+  description = "Alert when the run queue stays deeper than this for 10 minutes."
+  type        = number
+  default     = 20
+}
+
+variable "alert_oldest_queued_age_s" {
+  description = "Alert when the oldest queued run has waited longer than this (seconds) for 10 minutes."
+  type        = number
+  default     = 300
+}
+
+variable "alert_fallback_rate" {
+  description = "Alert when more than this share of completed runs used the degraded (no-writer) report over 1 h. The grounded-answer SLO is 80%, so 0.2."
+  type        = number
+  default     = 0.2
 }
 
 # ---------------------------------------------------------------- redis
