@@ -1,0 +1,115 @@
+{
+  "base_url": "http://127.0.0.1:8102",
+  "started_at": "2026-10-19T06:37:37+00:00",
+  "duration_s": 81.44,
+  "passed": 17,
+  "failed": 0,
+  "skipped": 0,
+  "total": 17,
+  "ok": true,
+  "run_id": "4a8cb9a42d0e4701",
+  "checks": [
+    {
+      "name": "liveness",
+      "status": "PASS",
+      "detail": "200 {status: ok}",
+      "ms": 31.0
+    },
+    {
+      "name": "readiness",
+      "status": "PASS",
+      "detail": "ready role=api schema_version=1 (Redis pinged)",
+      "ms": 16.0
+    },
+    {
+      "name": "worker_readiness",
+      "status": "PASS",
+      "detail": "worker ready; exposes probes only (POST /research -> 404)",
+      "ms": 16.0
+    },
+    {
+      "name": "auth_rejected_without_or_wrong_key",
+      "status": "PASS",
+      "detail": "401 without a key and with a wrong key (POST and GET)",
+      "ms": 0.0
+    },
+    {
+      "name": "auth_accepted_with_key",
+      "status": "PASS",
+      "detail": "valid key authenticated (unknown run -> 404, not 401)",
+      "ms": 15.0
+    },
+    {
+      "name": "input_validation_422",
+      "status": "PASS",
+      "detail": "422 for 4 invalid bodies",
+      "ms": 16.0
+    },
+    {
+      "name": "oversize_input_rejected",
+      "status": "PASS",
+      "detail": "501-char question -> 422; 200 KB body -> 413",
+      "ms": 0.0
+    },
+    {
+      "name": "security_headers",
+      "status": "PASS",
+      "detail": "4 headers on 3 responses; no framework server banner",
+      "ms": 16.0
+    },
+    {
+      "name": "no_stack_traces_in_errors",
+      "status": "PASS",
+      "detail": "10 error responses are JSON without stack traces",
+      "ms": 0.0
+    },
+    {
+      "name": "research_submit_returns_run_id",
+      "status": "PASS",
+      "detail": "202 run_id=4a8cb9a42d0e4701",
+      "ms": 31.0
+    },
+    {
+      "name": "sse_stream_emits_events",
+      "status": "PASS",
+      "detail": "13 events: queued, started, node_completed ... completed",
+      "ms": 79015.0
+    },
+    {
+      "name": "run_completes_schema_valid",
+      "status": "PASS",
+      "detail": "completed in 78.97s, findings=4, tokens=3614, degraded=True (writer_output_invalid)",
+      "ms": 32.0
+    },
+    {
+      "name": "citations_resolve_to_findings",
+      "status": "PASS",
+      "detail": "5 markers -> 3 sources -> all resolve to Findings (rate 1.0)",
+      "ms": 0.0
+    },
+    {
+      "name": "trace_returns_steps",
+      "status": "PASS",
+      "detail": "10 steps; agents: planner, researcher, supervisor, supervisor/reviewer, writer",
+      "ms": 15.0
+    },
+    {
+      "name": "ssrf_guard_blocks_loopback_fixture",
+      "status": "PASS",
+      "detail": "2 internal fetches blocked (non_public_address:127.0.0.1, non_public_address:169.254.169.254); none cited",
+      "ms": 0.0
+    },
+    {
+      "name": "kill_switch_refuses_new_runs",
+      "status": "PASS",
+      "detail": "engaged in 0.0s -> POST 503 + Retry-After; released in 2.1s (cache <= 2 s)",
+      "ms": 2110.0
+    },
+    {
+      "name": "rate_limit_429_retry_after",
+      "status": "PASS",
+      "detail": "429 after 20 requests in this window, Retry-After=2s",
+      "ms": 125.0
+    }
+  ]
+}
