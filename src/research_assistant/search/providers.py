@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import ipaddress
 import json
 import os
 import re
+import socket
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,6 +16,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import httpx
 
 from research_assistant.fetch.fetcher import FetchOutcome, extract_main_text
+from research_assistant.fetch.ssrf import BlockedURL, parse_target, resolve_public
 from research_assistant.schemas import SearchStatus
 
 
@@ -145,10 +148,28 @@ class TavilySearch:
 
 
 # ------------------------------------------------------------------ Fixture corpus (tests, red-team)
+# Offline resolver for fixture URLs. IP literals resolve to themselves and well-known internal names to their
+# internal addresses, so the SAME SSRF checks as SafeFetcher (fetch/ssrf.py) decide; every other hostname maps
+# to one global unicast address, because fixture hosts are never resolved or contacted.
+FIXTURE_PUBLIC_IP = "1.1.1.1"
+_INTERNAL_NAMES = {"localhost": "127.0.0.1", "metadata.google.internal": "169.254.169.254"}
+
+
+def fixture_resolver(host: str, port: int, *_: Any) -> list[tuple[Any, ...]]:
+    try:
+        ip = str(ipaddress.ip_address(host))
+    except ValueError:
+        name = host.lower().rstrip(".")
+        ip = _INTERNAL_NAMES.get(name) or ("127.0.0.1" if name.endswith(".localhost") else FIXTURE_PUBLIC_IP)
+    return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, port))]
+
+
 class FixtureCorpus:
     """Offline corpus: a JSON file {"pages": [{"url", "title", "html"}]}.
 
-    Used by tests and by Project 6 to inject poisoned web content WITHOUT weakening the SSRF guard.
+    Used by tests, the CI smoke stack and Project 6 to inject poisoned web content WITHOUT weakening the SSRF
+    guard: every fetch first passes parse_target + resolve_public (scheme/port allowlist, public IPs only), so a
+    fixture page that points at loopback, link-local metadata or a private range is reported as `blocked`.
     """
 
     name = "fixture"
@@ -179,6 +200,11 @@ class FixtureCorpus:
         return SearchOutcome(SearchStatus.ok, query, self.name, hits)
 
     def fetch(self, url: str) -> FetchOutcome:
+        try:
+            target = parse_target(url)
+            resolve_public(target.host, target.port, fixture_resolver)
+        except BlockedURL as exc:
+            return FetchOutcome("blocked", url, url, detail=exc.reason)
         for p in self.pages:
             if p["url"] == url:
                 if p.get("status"):

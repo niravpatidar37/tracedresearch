@@ -15,13 +15,14 @@ from contextlib import asynccontextmanager
 from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from research_assistant import migrations
 from research_assistant.config import Settings
 from research_assistant.control import KillSwitch
 from research_assistant.graph import Runner, new_run
+from research_assistant.http_security import SECURITY_HEADERS, BodySizeLimitMiddleware, SecurityHeadersMiddleware
 from research_assistant.logging_utils import setup_logging
 from research_assistant.schemas import RunState, utcnow
 from research_assistant.store import RunStore
@@ -29,6 +30,7 @@ from research_assistant.store import RunStore
 log = logging.getLogger(__name__)
 RUN_ID = re.compile(r"^[a-f0-9]{16}$")
 READ_LIMIT_PER_MIN = 240
+MAX_BODY_BYTES = 16 * 1024  # a request is one question (<= 500 chars); anything bigger is rejected with 413
 
 
 class ResearchRequest(BaseModel):
@@ -227,7 +229,19 @@ def create_app(
         yield
         svc.shutdown()  # uvicorn runs this after SIGTERM, once HTTP connections are closed
 
-    app = FastAPI(title="Multi-Agent Research Assistant", version="0.1.0", lifespan=lifespan)
+    # No interactive docs: this is a JSON API behind an API key, and the CSP below forbids their HTML/JS anyway.
+    app = FastAPI(
+        title="tracedresearch", version="0.1.0", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None
+    )
+    app.add_middleware(BodySizeLimitMiddleware, max_bytes=MAX_BODY_BYTES)
+    app.add_middleware(SecurityHeadersMiddleware)
+
+    @app.exception_handler(Exception)
+    async def unhandled(request: Request, exc: Exception) -> JSONResponse:
+        """Never leak a stack trace or exception text to the client; it goes to the (redacted) log only."""
+        log.error("unhandled error on %s %s", request.method, request.url.path, exc_info=exc)
+        # This handler runs in Starlette's outermost ServerErrorMiddleware, outside SecurityHeadersMiddleware.
+        return JSONResponse({"detail": "internal server error"}, status_code=500, headers=SECURITY_HEADERS)
 
     def service(request: Request) -> Service:
         svc: Service = request.app.state.service
@@ -335,6 +349,8 @@ def create_app(
                 if rep.first_draft_check is None
                 else rep.first_draft_check.model_dump() | {"rate": rep.first_draft_check.rate},
                 "fallback": rep.fallback,
+                "degraded": rep.fallback,
+                "fallback_reason": rep.fallback_reason if rep.fallback else None,
             },
             "findings": [f.model_dump(mode="json") for f in st.findings] if rep is not None else [],
         }
