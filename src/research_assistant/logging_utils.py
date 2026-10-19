@@ -33,6 +33,10 @@ class RedactingFilter(logging.Filter):
 class JsonFormatter(logging.Formatter):
     """One JSON object per line. Exception text is redacted too (it can echo request data)."""
 
+    def __init__(self) -> None:
+        super().__init__()
+        self.env = os.environ.get("ENV", "dev")
+
     def format(self, record: logging.LogRecord) -> str:
         entry: dict[str, object] = {
             "time": datetime.fromtimestamp(record.created, tz=UTC).isoformat(),
@@ -41,6 +45,7 @@ class JsonFormatter(logging.Formatter):
             "message": redact(record.getMessage()),
             "pid": record.process,
             "thread": record.threadName,
+            "env": self.env,  # lets log-based metrics (monitoring.tf) separate staging from prod
         }
         if record.exc_info:
             entry["exception"] = redact(self.formatException(record.exc_info))

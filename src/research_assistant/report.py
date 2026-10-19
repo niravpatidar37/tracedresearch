@@ -174,10 +174,19 @@ def validate_rendered(md: str, cites: list[Citation], findings: list[Finding]) -
     return CitationCheck(total=total, valid=valid, invalid_ids=invalid, uncited_paragraphs=0)
 
 
+def reason_code(reason: str) -> str:
+    """Stable, low-cardinality label for a fallback reason (used in logs, the API and the fallback-rate SLI)."""
+    return re.sub(r"[^a-z0-9]+", "_", reason.lower()).strip("_")[:40] or "unknown"
+
+
 def fallback_report(
     question: str, findings: list[Finding], plan: Plan | None, subqs: dict[str, SubQState], reason: str
 ) -> Report:
-    """Deterministic report (no LLM) used when the writer cannot run within budget."""
+    """Deterministic report (no LLM) used when the writer cannot produce a valid report.
+
+    Honest degradation: the title and summary say the report is degraded and why; the body only restates
+    extracted findings (each one cited to its source), with no synthesis, so nothing un-grounded is added.
+    """
     sections = []
     if plan is not None:
         for sq in plan.sub_questions:
@@ -186,9 +195,10 @@ def fallback_report(
                 sections.append({"heading": sq.question, "paragraphs": paras})
     draft = ReportDraft.model_validate(
         {
-            "title": "Partial findings",
+            "title": "Partial findings (degraded report)",
             "summary": {
-                "text": f"Writer not run ({reason}); listing extracted findings per sub-question.",
+                "text": f"Degraded report: the writer model was not used ({reason}). The extracted findings are "
+                "listed per sub-question without synthesis.",
                 "citations": [findings[0].id] if findings else [],
             },
             "sections": sections,
@@ -204,4 +214,5 @@ def fallback_report(
         final_check=final,
         writer_attempts=0,
         fallback=True,
+        fallback_reason=reason_code(reason),
     )

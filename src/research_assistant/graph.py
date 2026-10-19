@@ -377,7 +377,8 @@ class Runner:
             self.store.finish(final)
             # One line per finished run: the source for the run-level SLIs in docs/SLO.md (log-based metrics).
             log.info(
-                "run_finished run_id=%s status=%s elapsed_s=%.1f tokens=%d usd=%.6f findings=%d fallback=%s budget=%s",
+                "run_finished run_id=%s status=%s elapsed_s=%.1f tokens=%d usd=%.6f findings=%d fallback=%s "
+                "fallback_reason=%s budget=%s",
                 run_id,
                 final.status,
                 final.elapsed_s,
@@ -385,6 +386,7 @@ class Runner:
                 final.usd_spent,
                 len(final.findings),
                 bool(final.report and final.report.fallback),
+                (final.report.fallback_reason if final.report and final.report.fallback else "") or "-",
                 ",".join(final.budget_tripped) or "-",
             )
             self.store.event(

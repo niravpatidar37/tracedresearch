@@ -44,7 +44,7 @@ def _user_prompt(state: RunState) -> str:
 
 def write(ctx: AgentContext, state: RunState) -> Report:
     if not state.findings:
-        return fallback_report(state.question, [], state.plan, state.subqs, "no findings were collected")
+        return fallback_report(state.question, [], state.plan, state.subqs, "no findings")
     user = _user_prompt(state)
     first_check = None
     draft: ReportDraft | None = None
