@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-anthropic = ["anthropic>=0.40"]
+anthropic = ["anthropic>=2.1.0"]
 
 [dependency-groups]
 dev = [
