@@ -6,15 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = { text = "MIT" }
 dependencies = [
-    "langgraph>=1.2,<2",
+    "langgraph>=1.2.18,<2",
     "httpx>=0.28,<0.29",
-    "pydantic>=2.10,<3",
-    "fastapi>=0.115",
+    "pydantic>=2.14.2,<3",
+    "fastapi>=0.162.0",
     "uvicorn>=0.32",
     "redis>=5.2",
-    "ddgs>=9.0",
+    "ddgs>=9.16.1",
     "trafilatura>=2.0",
-    "portalocker>=3.0",
+    "portalocker>=4.4.2",
     "python-dotenv>=1.0",
 ]
 
@@ -23,11 +23,11 @@ anthropic = ["anthropic>=0.40"]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.3",
-    "pytest-asyncio>=0.24",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.4.1",
     "fakeredis>=2.26",
-    "ruff>=0.8",
-    "mypy>=1.13",
+    "ruff>=0.17.3",
+    "mypy>=2.4.1",
     "bandit>=1.8",
     "pip-audit>=2.7",
 ]
