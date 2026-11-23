@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # ---- build stage: resolve locked deps into a venv ----
-FROM python:3.12.15-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS build
+FROM python:3.15.2-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS build
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PIP_NO_CACHE_DIR=1
 RUN pip install --no-cache-dir uv==0.9.21
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY src ./src
 RUN uv sync --frozen --no-dev --extra anthropic --no-editable
 
 # ---- runtime stage: no build tools, non-root ----
-FROM python:3.12.15-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS runtime
+FROM python:3.15.2-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS runtime
 # Pull in Debian security fixes newer than the pinned base image.
 RUN apt-get update && apt-get upgrade -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN groupadd --system app && useradd --system --gid app --home /app --shell /usr/sbin/nologin app
